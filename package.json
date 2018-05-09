@@ -1,0 +1,44 @@
+{
+  "version": "0.0.0",
+  "keywords": [
+    "trails",
+    "trailsjs"
+  ],
+  "main": "index.js",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^5.0.0-alpha.3",
+    "install": "^0.11.0",
+    "npm": "^6.0.0",
+    "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth": "^1.0.0",
+    "passport-google-oauth20": "^1.0.0",
+    "passport-http": "^0.3.0",
+    "passport-jwt": "^4.0.0",
+    "passport-twitter": "^1.0.4",
+    "pg": "^7.4.1",
+    "trailpack-bootstrap": "^2.0.0",
+    "trailpack-express": "^2.0.3",
+    "trailpack-repl": "^2",
+    "trailpack-router": "^2",
+    "trailpack-sequelize": "3.0.0",
+    "trails": "^2",
+    "winston": "^2.3"
+  },
+  "devDependencies": {
+    "eslint": "^3.15.0",
+    "eslint-config-trails": "^2",
+    "mocha": "^3.2.0",
+    "supertest": "^1.2"
+  },
+  "scripts": {
+    "test": "eslint . && mocha"
+  },
+  "engines": {
+    "node": ">= 4.0.0"
+  },
+  "eslintConfig": {
+    "extends": "trails"
+  }
+}
