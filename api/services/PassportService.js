@@ -21,7 +21,7 @@ module.exports = class PassportService extends Service {
 
       User.findOne({ where: { email: userid }, include: [{ model: Passport }] })
        .then(u=> u && u.toJSON())
-       .then(async user=> {
+       .then(async user => {
          if(!user) return done(null, false)
          let { password } = user.Passports.find(o=> { return o.protocol=='basic' })||{}
          let isMatch = await this.app.config.passport.bcrypt.compare(passwd, password)

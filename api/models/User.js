@@ -31,12 +31,13 @@ module.exports = class User extends Model {
 
   static schema (app, Sequelize) {
 
-    let { BOOLEAN, INTEGER, STRING, TEXT } = Sequelize;
+    let { BOOLEAN, literal, STRING, DATE, JSON } = Sequelize;
 
     return {
 
       name: {
         type: STRING,
+            allowNull:false
       },
       email: {
         type: STRING,
@@ -44,6 +45,71 @@ module.exports = class User extends Model {
       },
       mobile: {
         type: STRING,
+      },
+      handle:{
+        type: STRING,
+      },
+      emailSettings:{
+        type: JSON,
+      },
+      username:{
+        type: STRING,
+        allowNull: false
+      },
+      password:{
+        type:STRING,
+        allowNull: false
+      },
+      description:{
+          type: STRING,
+      },
+      location:{
+          type: STRING,
+      },
+      tagline:{
+          type: STRING,
+      },
+      website:{
+          type: STRING,
+      },
+      image:{
+          type: STRING,
+      },
+      emailConfirmationToken: {
+          type: STRING(100),
+      },
+      passwordResetToken: {
+          type: STRING,
+      },
+      passwordResetSentAt: {
+          type:DATE,
+          field: 'updatedAt',
+          defaultValue: literal('NOW()'),
+      },
+      lastSessionId: {
+          type: STRING(100),
+      },
+      lastLogin: {
+          type:DATE,
+          field: 'updatedAt',
+          defaultValue: literal('NOW()'),
+      },
+      confirmed:{
+          type: BOOLEAN
+      },
+      status:{
+          type: STRING,
+          defaultValue:'A'
+      },
+      createdAt: {
+          type:DATE,
+          field: 'createdAt',
+          defaultValue: literal('NOW()'),
+      },
+      updatedAt: {
+          type:DATE,
+          field: 'updatedAt',
+          defaultValue: literal('NOW()'),
       },
     }
   }
