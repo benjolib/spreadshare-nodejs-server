@@ -30,7 +30,7 @@ module.exports = {
     */
     auth_dev: {
       database: 'spreadshare',
-        schema: 'dev',
+      schema: 'dev',
       host: '127.0.0.1',
       port: 5432,
       username: 'postgres',

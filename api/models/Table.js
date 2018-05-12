@@ -32,6 +32,7 @@ module.exports = class Table extends Model {
         return {
             owner: {type: INTEGER, allowNull: false},
             title: {type: STRING(100), allowNull: false},
+            tags:{type: ARRAY(INTEGER)},
             tagline: {type: STRING(140)},
             image: {type: STRING},
             description: {type: STRING(140)},
