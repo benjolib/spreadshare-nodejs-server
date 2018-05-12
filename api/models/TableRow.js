@@ -37,7 +37,9 @@ module.exports = class TableRow extends Model {
 
       return {
           tableId: {type: INTEGER, allowNull:false},
-          createdBy: {type: INTEGER, allowNull:false},
+          rowId:{ type:INTEGER },
+          createdBy: { type: INTEGER, allowNull:false},
+          action: {type: STRING,defaultValue:'S'},
           status:{type: STRING, defaultValue:'P', allowNull:false},
           createdAt: {
               type: DATE,

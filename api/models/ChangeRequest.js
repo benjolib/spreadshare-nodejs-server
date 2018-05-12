@@ -25,6 +25,11 @@ module.exports = class ChangeRequest extends Model {
                           foreignKey: 'userId',
                           onDelete: 'NO ACTION'
                       })
+                      models.ChangeRequest.belongsTo(models.TableRow, {
+                          targetKey: 'rowId',
+                          foreignKey: 'tableRowId',
+                          onDelete: 'NO ACTION'
+                      })
                   }
               }
           }
@@ -38,6 +43,7 @@ module.exports = class ChangeRequest extends Model {
       return {
           cellId: {type: INTEGER, allowNull:false},
           userId: {type: INTEGER, allowNull:false},
+          tableRowId: {type: INTEGER, allowNull:false},
           from: {type: TEXT, allowNull:false},
           to: {type: TEXT, allowNull:false},
           comment: {type: TEXT, allowNull:false},
