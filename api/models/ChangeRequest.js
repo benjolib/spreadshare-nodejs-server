@@ -26,7 +26,7 @@ module.exports = class ChangeRequest extends Model {
                           onDelete: 'NO ACTION'
                       })
                       models.ChangeRequest.belongsTo(models.TableRow, {
-                          targetKey: 'rowId',
+                          targetKey: 'id',
                           foreignKey: 'tableRowId',
                           onDelete: 'NO ACTION'
                       })
