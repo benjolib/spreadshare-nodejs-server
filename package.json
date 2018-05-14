@@ -30,10 +30,23 @@
     "eslint": "^3.15.0",
     "eslint-config-trails": "^2",
     "mocha": "^3.2.0",
+    "prettier": "^1.12.1",
     "supertest": "^1.2"
   },
   "scripts": {
-    "test": "eslint . && mocha"
+    "test": "eslint . && mocha",
+    "lint": "lint-staged",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "{api, config}/*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "engines": {
     "node": ">= 4.0.0"
