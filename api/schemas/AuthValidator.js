@@ -1,5 +1,5 @@
 const Joi       = require('joi');
-const Constant = require('../../config/constant');
+const Constant = require('../../config/constants');
 const _ = require('lodash')
 module.exports = class AuthValidator{
 

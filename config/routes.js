@@ -123,4 +123,27 @@ module.exports = [
         handler: 'SubscriberController.list',
     },
 
+  //tags api route
+  {
+    method: 'POST',
+    path: '/api/w/v1/vote',
+    handler: 'VoteController.addVote',
+    config:{ id : 'VoteValidator.create'}
+  },
+  {
+    method: 'POST',
+    path: '/api/w/v1/vote/remove',
+    handler: 'VoteController.removeVote',
+    config:{ id : 'VoteValidator.create'}
+  },
+  {
+    method: 'GET',
+    path: '/api/v1/tags/:id',
+    handler: 'TagsController.remove',
+  },
+  {
+    method: 'POST',
+    path: '/api/v1/tags/list',
+    handler: 'TagsController.list',
+  },
 ]

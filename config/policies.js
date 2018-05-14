@@ -29,6 +29,10 @@ module.exports = {
     googleCallback: ['PassportPolicy.google'],
     twitter: ['PassportPolicy.twitter'],
     twitterCallback: ['PassportPolicy.twitter'],
-  }
+  },
 
+  VoteController:{
+    addVote:['PassportPolicy.authenticate','JoiPolicy.validate'],
+    removeVote:['PassportPolicy.authenticate','JoiPolicy.validate'],
+  }
 }
