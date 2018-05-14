@@ -29,6 +29,9 @@ module.exports = {
     googleCallback: ['PassportPolicy.google'],
     twitter: ['PassportPolicy.twitter'],
     twitterCallback: ['PassportPolicy.twitter'],
-  }
+  },
+    SubscriberController:{
+        subscriber:['PassportPolicy.authenticate']
+    }
 
 }

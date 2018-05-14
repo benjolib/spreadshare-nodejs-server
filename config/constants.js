@@ -20,5 +20,12 @@ module.exports = {
             ACTIVE : 'A',
             DEACTIVE: 'D',
         }
+    },
+    Table:{
+        Subscribe:{
+            DAILY:'D',
+            WEEKLY:'W',
+            MONTHLY:'M'
+        }
     }
 }
