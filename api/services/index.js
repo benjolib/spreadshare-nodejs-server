@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
-exports.DefaultService = require('./DefaultService')
-exports.PassportService = require('./PassportService')
+exports.DefaultService = require("./DefaultService");
+exports.PassportService = require("./PassportService");

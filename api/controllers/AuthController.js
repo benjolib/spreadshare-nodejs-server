@@ -1,14 +1,13 @@
-'use strict'
+"use strict";
 
-const Controller = require('trails/controller')
-const JWT = require('jsonwebtoken')
+const Controller = require("trails/controller");
+const JWT = require("jsonwebtoken");
 
 /**
  * @module AuthController
  * @description auth controller.
  */
 module.exports = class AuthController extends Controller {
-
   /**
    * User signup
    * @param req
@@ -16,21 +15,37 @@ module.exports = class AuthController extends Controller {
    * @returns {Promise<void>}
    */
   async signup(req, res) {
-
     let model = req.body;
-    if(!model || !model.email || !model.password) {
-      return res.json({ flag: false, data: {}, message: 'Missing parameter', code: 400 });
+    if (!model || !model.email || !model.password) {
+      return res.json({
+        flag: false,
+        data: {},
+        message: "Missing parameter",
+        code: 400
+      });
     }
-    let { User, Passport } = this.app.orm
+    let { User, Passport } = this.app.orm;
 
     try {
-
-      let user = await User.create(model)
-      let passport = await Passport.create({ user_id: user.id, protocol: 'basic', password: model.password })
-      return res.json({ flag: true, data: {}, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      let user = await User.create(model);
+      let passport = await Passport.create({
+        user_id: user.id,
+        protocol: "basic",
+        password: model.password
+      });
+      return res.json({
+        flag: true,
+        data: {},
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -40,21 +55,31 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   async loginBasic(req, res) {
-
-    let { Token } = this.app.orm
-    let { jwt } = this.app.config.passport.strategies
-    let user = req.user
+    let { Token } = this.app.orm;
+    let { jwt } = this.app.config.passport.strategies;
+    let user = req.user;
     let token;
 
     try {
+      if (jwt)
+        token = JWT.sign(user, jwt.tokenOptions.secret, {
+          expiresIn: jwt.tokenOptions.expiresInSeconds
+        });
 
-      if(jwt) token = JWT.sign(user, jwt.tokenOptions.secret, { expiresIn: jwt.tokenOptions.expiresInSeconds })
-
-      await Token.create({ user_id: user.id, token })
-      return res.json({ flag: true, data: { user, token }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      await Token.create({ user_id: user.id, token });
+      return res.json({
+        flag: true,
+        data: { user, token },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -65,24 +90,39 @@ module.exports = class AuthController extends Controller {
    * @returns {Promise<void>}
    */
   async loginBySession(req, res) {
-
-    let { email, password } = req.body
-    let { User, Passport } = this.app.orm
+    let { email, password } = req.body;
+    let { User, Passport } = this.app.orm;
 
     try {
+      let user = await User.findOne({
+        where: { email },
+        include: [{ model: Passport }]
+      });
+      if (!user) throw new Error("User not exists");
+      let passport = user.Passports.find(o => {
+        return o.protocol == "basic";
+      });
+      if (!passport) throw new Error("passport not exists");
+      let isMatch = await this.app.config.passport.bcrypt.compare(
+        password,
+        passport.password
+      );
+      if (!isMatch) throw new Error("Oops! password does not match.");
+      req.session.user = user;
 
-      let user = await User.findOne({ where: { email }, include: [{ model: Passport }] })
-      if(!user) throw new Error('User not exists')
-      let passport = user.Passports.find(o=> { return o.protocol=='basic' })
-      if(!passport) throw new Error('passport not exists')
-      let isMatch = await this.app.config.passport.bcrypt.compare(password, passport.password)
-      if(!isMatch) throw new Error('Oops! password does not match.')
-      req.session.user = user
-
-      return res.json({ flag: true, data: { user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -93,24 +133,39 @@ module.exports = class AuthController extends Controller {
    * @returns {Promise<void>}
    */
   async loginByCookie(req, res) {
-
-    let { email, password } = req.body
-    let { User, Passport } = this.app.orm
+    let { email, password } = req.body;
+    let { User, Passport } = this.app.orm;
 
     try {
+      let user = await User.findOne({
+        where: { email },
+        include: [{ model: Passport }]
+      });
+      if (!user) throw new Error("User not exists");
+      let passport = user.Passports.find(o => {
+        return o.protocol == "basic";
+      });
+      if (!passport) throw new Error("passport not exists");
+      let isMatch = await this.app.config.passport.bcrypt.compare(
+        password,
+        passport.password
+      );
+      if (!isMatch) throw new Error("Oops! password does not match.");
+      res.cookie("uid", user.id, { maxAge: 900000, httpOnly: true });
 
-      let user = await User.findOne({ where: { email }, include: [{ model: Passport }] })
-      if(!user) throw new Error('User not exists')
-      let passport = user.Passports.find(o=> { return o.protocol=='basic' })
-      if(!passport) throw new Error('passport not exists')
-      let isMatch = await this.app.config.passport.bcrypt.compare(password, passport.password)
-      if(!isMatch) throw new Error('Oops! password does not match.')
-      res.cookie('uid',user.id, { maxAge: 900000, httpOnly: true });
-
-      return res.json({ flag: true, data: { user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -120,16 +175,23 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   async profile(req, res) {
-
-    let { User } = this.app.orm
+    let { User } = this.app.orm;
 
     try {
-
-      let user = await User.findOne({ where: { id: req.user.id } })
-      return res.json({ flag: true, data: { user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      let user = await User.findOne({ where: { id: req.user.id } });
+      return res.json({
+        flag: true,
+        data: { user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -139,13 +201,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   checkJWT(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -155,28 +224,35 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   async logout(req, res) {
-
-    let { authorization } = req.headers
-    let token = authorization.substring(4)
-    let { Token } = this.app.orm
+    let { authorization } = req.headers;
+    let token = authorization.substring(4);
+    let { Token } = this.app.orm;
 
     try {
-
-      if(token) {
-        await Token.destroy({ where: { token } })
+      if (token) {
+        await Token.destroy({ where: { token } });
       }
-      req.logOut()
+      req.logOut();
 
       // destroy session for logged in user
       req.session.destroy();
 
       // remove cookie for logged user id
-      res.clearCookie('uid');
+      res.clearCookie("uid");
 
-      return res.json({ flag: true, data: {}, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: {},
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -186,13 +262,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   facebook(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -202,13 +285,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   facebookCallback(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -218,13 +308,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   google(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -234,13 +331,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   googleCallback(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -250,13 +354,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   twitter(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 
@@ -266,13 +377,20 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   twitterCallback(req, res) {
-
     try {
-
-      return res.json({ flag: true, data: { user: req.user }, message: 'Success', code: 200 });
-    }
-    catch (e) {
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: true,
+        data: { user: req.user },
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
-}
+};
