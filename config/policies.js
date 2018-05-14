@@ -19,6 +19,7 @@ module.exports = {
   },
 
   AuthController: {
+    signup:['JoiPolicy.validate'],
     loginBasic: ['PassportPolicy.basic'],
     checkJWT: ['PassportPolicy.jwt'],
     profile: ['PassportPolicy.authenticate'],

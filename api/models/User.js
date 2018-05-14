@@ -31,7 +31,7 @@ module.exports = class User extends Model {
 
   static schema (app, Sequelize) {
 
-    let { BOOLEAN, literal, STRING, DATE, JSON } = Sequelize;
+    let { BOOLEAN, literal, STRING, DATE, JSONB } = Sequelize;
 
     return {
 
@@ -50,7 +50,7 @@ module.exports = class User extends Model {
         type: STRING,
       },
       emailSettings:{
-        type: JSON,
+        type: JSONB,
       },
       username:{
         type: STRING,
@@ -95,11 +95,12 @@ module.exports = class User extends Model {
           defaultValue: literal('NOW()'),
       },
       confirmed:{
-          type: BOOLEAN
+          type: BOOLEAN,
+          defaultValue:false
       },
       status:{
           type: STRING,
-          defaultValue:'A'
+          defaultValue:'D'
       },
       createdAt: {
           type:DATE,

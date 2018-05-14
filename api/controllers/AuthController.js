@@ -2,6 +2,8 @@
 
 const Controller = require('trails/controller')
 const JWT = require('jsonwebtoken')
+const randtoken = require('rand-token');
+
 
 /**
  * @module AuthController
@@ -17,10 +19,29 @@ module.exports = class AuthController extends Controller {
    */
   async signup(req, res) {
 
-    let model = req.body;
-    if(!model || !model.email || !model.password) {
+    let body = req.body;
+
+    if(!body || !body.email || !body.password ) {
       return res.json({ flag: false, data: {}, message: 'Missing parameter', code: 400 });
     }
+
+    let etoken = randtoken.generate(16);
+
+    let model = {
+      name : body.name,
+      email: body.email,
+      mobile: body.mobile,
+      handle: body.handle,
+      emailSettings: body.emailSettings,
+      username: body.username,
+      password:body.password,
+      description: body.description,
+      location: body.location,
+      tagline: body.tagline,
+      image: body.image,
+      emailConfirmationToken : etoken
+    }
+
     let { User, Passport } = this.app.orm
 
     try {
