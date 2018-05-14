@@ -1,6 +1,6 @@
-'use strict'
+"use strict";
 
-const Controller = require('trails/controller')
+const Controller = require("trails/controller");
 
 /**
  * @module DefaultController
@@ -10,11 +10,10 @@ const Controller = require('trails/controller')
  * @this TrailsApp
  */
 module.exports = class DefaultController extends Controller {
-
   /**
    * Return some info about this application
    */
   info(req, res) {
-    res.status(200).json(this.app.services.DefaultService.getApplicationInfo())
+    res.status(200).json(this.app.services.DefaultService.getApplicationInfo());
   }
-}
+};
