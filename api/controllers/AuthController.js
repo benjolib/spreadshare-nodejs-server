@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 const Controller = require('trails/controller')
 const JWT = require('jsonwebtoken')
@@ -10,7 +10,6 @@ const randtoken = require('rand-token');
  * @description auth controller.
  */
 module.exports = class AuthController extends Controller {
-
   /**
    * User signup
    * @param req

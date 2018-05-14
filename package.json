@@ -1,9 +1,6 @@
 {
   "version": "0.0.0",
-  "keywords": [
-    "trails",
-    "trailsjs"
-  ],
+  "keywords": ["trails", "trailsjs"],
   "main": "index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -45,14 +42,8 @@
     "pretty": "prettier --write --tab-width 2 \"api/**/*.js\""
   },
   "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "{api, config}/*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,json,css,md}": ["prettier --write", "git add"],
+    "{api, config}/*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "engines": {
     "node": ">= 4.0.0"
