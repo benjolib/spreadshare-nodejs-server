@@ -29,6 +29,9 @@ module.exports = {
     googleCallback: ['PassportPolicy.google'],
     twitter: ['PassportPolicy.twitter'],
     twitterCallback: ['PassportPolicy.twitter'],
+  },
+  TableController: {
+    create:['PassportPolicy.authenticate'],
+    addColumn:['PassportPolicy.authenticate'],
   }
-
 }

@@ -11,14 +11,14 @@
 
 module.exports = [
 
-    /**
-     * Render the HelloWorld view
-     */
-    {
-        method: 'GET',
-        path: '/',
-        handler: 'ViewController.helloWorld'
-    },
+  /**
+   * Render the HelloWorld view
+   */
+  {
+    method: 'GET',
+    path: '/',
+    handler: 'ViewController.helloWorld'
+  },
 
     /**
      * Constrain the DefaultController.info handler to accept only GET requests.
@@ -121,6 +121,49 @@ module.exports = [
         method: 'POST',
         path: '/api/v1/subscriber/list',
         handler: 'SubscriberController.list',
+    },
+    /**
+     * table api route
+     */
+    {
+        method: 'POST',
+        path: '/api/w/v1/table/create',
+        handler: 'TableController.create',
+    },
+    {
+        method: 'POST',
+        path: '/api/w/v1/table/column',
+        handler: 'TableController.addColumn',
+    },
+    {
+        method: 'PUT',
+        path: '/api/w/v1/table/column/:id',
+        handler: 'TableController.updateColumn',
+    },
+    {
+        method: 'DELETE',
+        path: '/api/w/v1/table/column/:id',
+        handler: 'TableController.removeColumn',
+    },
+    {
+        method: 'PUT',
+        path: '/api/w/v1/table/update/:id',
+        handler: 'TableController.update',
+    },
+    {
+        method: 'PUT',
+        path: '/api/w/v1/table/publish/:id',
+        handler: 'TableController.publish',
+    },
+    {
+        method: 'GET',
+        path: '/api/w/v1/table/:id',
+        handler: 'TableController.tableDetail',
+    },
+    {
+        method: 'DELETE',
+        path: '/api/w/v1/table/:id',
+        handler: 'TableController.remove',
     },
 
 ]
