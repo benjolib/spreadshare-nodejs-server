@@ -1,11 +1,15 @@
 {
   "version": "0.0.0",
-  "keywords": ["trails", "trailsjs"],
+  "keywords": [
+    "trails",
+    "trailsjs"
+  ],
   "main": "index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^5.0.0-alpha.3",
     "install": "^0.11.0",
+    "lodash": "^4.17.10",
     "npm": "^6.0.0",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
@@ -39,8 +43,14 @@
     "pretty": "prettier --write --tab-width 2 \"api/**/*.js\""
   },
   "lint-staged": {
-    "*.{js,json,css,md}": ["prettier --write", "git add"],
-    "{api, config}/*.{js,json,css,md}": ["prettier --write", "git add"]
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "{api, config}/*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "engines": {
     "node": ">= 4.0.0"

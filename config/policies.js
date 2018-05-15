@@ -14,20 +14,23 @@
 
 module.exports = {
 
-  DefaultController: {
-    info: [ ]
-  },
+    DefaultController: {
+        info: []
+    },
 
-  AuthController: {
-    loginBasic: ['PassportPolicy.basic'],
-    checkJWT: ['PassportPolicy.jwt'],
-    profile: ['PassportPolicy.authenticate'],
-    facebook: ['PassportPolicy.facebook'],
-    facebookCallback: ['PassportPolicy.facebook'],
-    google: ['PassportPolicy.google'],
-    googleCallback: ['PassportPolicy.google'],
-    twitter: ['PassportPolicy.twitter'],
-    twitterCallback: ['PassportPolicy.twitter'],
-  }
-
+    AuthController: {
+        loginBasic: ['PassportPolicy.basic'],
+        checkJWT: ['PassportPolicy.jwt'],
+        profile: ['PassportPolicy.authenticate'],
+        facebook: ['PassportPolicy.facebook'],
+        facebookCallback: ['PassportPolicy.facebook'],
+        google: ['PassportPolicy.google'],
+        googleCallback: ['PassportPolicy.google'],
+        twitter: ['PassportPolicy.twitter'],
+        twitterCallback: ['PassportPolicy.twitter'],
+    },
+    TableController: {
+        create:['PassportPolicy.authenticate'],
+        addColumn:['PassportPolicy.authenticate'],
+    }
 }
