@@ -1,117 +1,116 @@
-'use strict'
+"use strict";
 
-const Model = require('trails/model')
+const Model = require("trails/model");
 
 /**
  * @module User
  * @description user model
  */
 module.exports = class User extends Model {
-
-  static config (app, Sequelize) {
-
+  static config(app, Sequelize) {
     return {
       options: {
         underscored: true,
         classMethods: {
-          associate: (models) => {
+          associate: models => {
             models.User.hasMany(models.Passport, {
-              foreignKey: 'user_id',
-              onDelete: 'CASCADE'
-            })
+              foreignKey: "user_id",
+              onDelete: "CASCADE"
+            });
             models.User.hasMany(models.Token, {
-              foreignKey: 'user_id',
-              onDelete: 'CASCADE'
-            })
+              foreignKey: "user_id",
+              onDelete: "CASCADE"
+            });
           }
         }
       }
-    }
+    };
   }
 
   static schema (app, Sequelize) {
 
-    let { BOOLEAN, literal, STRING, DATE, JSONB } = Sequelize;
+     let { BOOLEAN, literal, STRING, DATE, JSON } = Sequelize;
 
     return {
-
       name: {
         type: STRING,
-            allowNull:false
+        allowNull: false
       },
       email: {
         type: STRING,
         allowNull: false
       },
       mobile: {
-        type: STRING,
+        type: STRING
       },
-      handle:{
-        type: STRING,
+      handle: {
+        type: STRING
       },
-      emailSettings:{
-        type: JSONB,
+      emailSettings: {
+        type: JSON
       },
-      username:{
+      username: {
         type: STRING,
         allowNull: false
       },
-      password:{
-        type:STRING,
+      password: {
+        type: STRING,
         allowNull: false
       },
-      description:{
-          type: STRING,
+      description: {
+        type: STRING
       },
-      location:{
-          type: STRING,
+      location: {
+        type: STRING
       },
-      tagline:{
-          type: STRING,
+      tagline: {
+        type: STRING
       },
-      website:{
-          type: STRING,
+      website: {
+        type: STRING
       },
-      image:{
-          type: STRING,
+      image: {
+        type: STRING
       },
       emailConfirmationToken: {
-          type: STRING(100),
+        type: STRING(100)
       },
       passwordResetToken: {
-          type: STRING,
+        type: STRING
       },
       passwordResetSentAt: {
-          type:DATE,
-          field: 'updatedAt',
-          defaultValue: literal('NOW()'),
+        type: DATE,
+        field: "updatedAt",
+        defaultValue: literal("NOW()")
       },
       lastSessionId: {
-          type: STRING(100),
+        type: STRING(100)
       },
       lastLogin: {
-          type:DATE,
-          field: 'updatedAt',
-          defaultValue: literal('NOW()'),
+        type: DATE,
+        field: "updatedAt",
+        defaultValue: literal("NOW()")
       },
+
       confirmed:{
           type: BOOLEAN,
           defaultValue:false
       },
+
       status:{
           type: STRING,
           defaultValue:'D'
       },
       createdAt: {
-          type:DATE,
-          field: 'createdAt',
-          defaultValue: literal('NOW()'),
+        type: DATE,
+        field: "createdAt",
+        defaultValue: literal("NOW()")
       },
       updatedAt: {
-          type:DATE,
-          field: 'updatedAt',
-          defaultValue: literal('NOW()'),
-      },
-    }
+        type: DATE,
+        field: "updatedAt",
+        defaultValue: literal("NOW()")
+      }
+    };
   }
-}
+};

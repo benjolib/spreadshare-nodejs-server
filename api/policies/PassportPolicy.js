@@ -1,15 +1,14 @@
-'use strict'
+"use strict";
 
-const Policy = require('trails/policy')
-const passport = require('passport')
-const JWT = require('jsonwebtoken')
+const Policy = require("trails/policy");
+const passport = require("passport");
+const JWT = require("jsonwebtoken");
 
 /**
  * @module PassportPolicy
  * @description passport policy
  */
 module.exports = class PassportPolicy extends Policy {
-
   /**
    * Check if user is logged in or not
    * @param req
@@ -18,17 +17,21 @@ module.exports = class PassportPolicy extends Policy {
    * @returns {*}
    */
   authenticate(req, res, next) {
-
-    if(req.user) return next()
-    if(req.session.user) {
+    if (req.user) return next();
+    if (req.session.user) {
       req.user = req.session.user;
-      return next()
+      return next();
     }
-    if(req.cookies.uid) {
-      req.user = { id: req.cookies.uid }
-      return next()
+    if (req.cookies.uid) {
+      req.user = { id: req.cookies.uid };
+      return next();
     }
-    return res.json({ flag: false, data: {}, message: 'You are not authorized', code: 500 });
+    return res.json({
+      flag: false,
+      data: {},
+      message: "You are not authorized",
+      code: 500
+    });
   }
 
   /**
@@ -38,7 +41,7 @@ module.exports = class PassportPolicy extends Policy {
    * @param next
    */
   basic(req, res, next) {
-    passport.authenticate('basic', { session: false })(req, res, next)
+    passport.authenticate("basic", { session: false })(req, res, next);
   }
 
   /**
@@ -49,19 +52,24 @@ module.exports = class PassportPolicy extends Policy {
    * @returns {*}
    */
   jwt(req, res, next) {
-
-    let { jwt } = this.app.config.passport.strategies
-    let { authorization } = req.headers
+    let { jwt } = this.app.config.passport.strategies;
+    let { authorization } = req.headers;
 
     try {
-
-      let token = JWT.verify(authorization.substring(4), jwt.tokenOptions.secret)
-      if(token) req.user = token;
-      if(!token) throw new Error('You are not authorized')
-      return next()
-    }
-    catch (e) {
-      return res.json({ flag: false, data: {}, message: e.message||e, code: 500 });
+      let token = JWT.verify(
+        authorization.substring(4),
+        jwt.tokenOptions.secret
+      );
+      if (token) req.user = token;
+      if (!token) throw new Error("You are not authorized");
+      return next();
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: {},
+        message: e.message || e,
+        code: 500
+      });
     }
     // passport.authenticate('jwt', { session: false })(req, res, next)
   }
@@ -73,7 +81,7 @@ module.exports = class PassportPolicy extends Policy {
    * @param next
    */
   facebook(req, res, next) {
-    passport.authenticate('facebook', { scope : ['email'] })(req, res, next)
+    passport.authenticate("facebook", { scope: ["email"] })(req, res, next);
   }
 
   /**
@@ -83,7 +91,11 @@ module.exports = class PassportPolicy extends Policy {
    * @param next
    */
   google(req, res, next) {
-    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
+    passport.authenticate("google", { scope: ["profile", "email"] })(
+      req,
+      res,
+      next
+    );
   }
 
   /**
@@ -93,7 +105,6 @@ module.exports = class PassportPolicy extends Policy {
    * @param next
    */
   twitter(req, res, next) {
-    passport.authenticate('twitter')(req, res, next)
+    passport.authenticate("twitter")(req, res, next);
   }
-}
-
+};
