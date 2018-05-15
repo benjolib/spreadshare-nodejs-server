@@ -1,9 +1,6 @@
 {
   "version": "0.0.0",
-  "keywords": [
-    "trails",
-    "trailsjs"
-  ],
+  "keywords": ["trails", "trailsjs"],
   "main": "index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -32,11 +29,21 @@
   "devDependencies": {
     "eslint": "^3.15.0",
     "eslint-config-trails": "^2",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.1.0",
     "mocha": "^3.2.0",
+    "prettier": "^1.12.1",
     "supertest": "^1.2"
   },
   "scripts": {
-    "test": "eslint . && mocha"
+    "test": "eslint . && mocha",
+    "lint": "lint-staged",
+    "precommit": "lint-staged",
+    "pretty": "prettier --write --tab-width 2 \"api/**/*.js\""
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": ["prettier --write", "git add"],
+    "{api, config}/*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "engines": {
     "node": ">= 4.0.0"
