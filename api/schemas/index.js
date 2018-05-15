@@ -1,1 +1,2 @@
-exports.AuthValidator = require('./AuthValidator')
+exports.AuthValidator = require("./AuthValidator");
+exports.TableValidator = require("./TableValidator");

@@ -1,8 +1,6 @@
 "use strict";
 
-exports.DefaultService = require('./DefaultService')
-exports.PassportService = require('./PassportService')
-exports.ProfileService = require('./ProfileService')
-exports.TagsService = require('./TagsService')
-exports.SubscriberService = require('./SubscriberService')
-exports.TableService = require('./TableService')
+exports.DefaultService = require("./DefaultService");
+exports.PassportService = require("./PassportService");
+exports.TagsService = require("./TagsService");
+exports.TableService = require("./TableService");

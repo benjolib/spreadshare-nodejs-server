@@ -10,28 +10,30 @@
  * @see http://trailsjs.io/doc/config/policies
  */
 
-'use strict'
+"use strict";
 
 module.exports = {
-
   DefaultController: {
-    info: [ ]
+    info: []
   },
 
   AuthController: {
-    signup:['JoiPolicy.validate'],
-    loginBasic: ['PassportPolicy.basic'],
-    checkJWT: ['PassportPolicy.jwt'],
-    profile: ['PassportPolicy.authenticate'],
-    facebook: ['PassportPolicy.facebook'],
-    facebookCallback: ['PassportPolicy.facebook'],
-    google: ['PassportPolicy.google'],
-    googleCallback: ['PassportPolicy.google'],
-    twitter: ['PassportPolicy.twitter'],
-    twitterCallback: ['PassportPolicy.twitter'],
+    signup: ["JoiPolicy.validate"],
+    loginBasic: ["PassportPolicy.basic"],
+    checkJWT: ["PassportPolicy.jwt"],
+    profile: ["PassportPolicy.authenticate"],
+    facebook: ["PassportPolicy.facebook"],
+    facebookCallback: ["PassportPolicy.facebook"],
+    google: ["PassportPolicy.google"],
+    googleCallback: ["PassportPolicy.google"],
+    twitter: ["PassportPolicy.twitter"],
+    twitterCallback: ["PassportPolicy.twitter"]
   },
   TableController: {
-    create:['PassportPolicy.authenticate'],
-    addColumn:['PassportPolicy.authenticate'],
+    create: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    addColumn: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    updateColumn: ["JoiPolicy.validate"],
+    update: ["JoiPolicy.validate"],
+    publish: ["JoiPolicy.validate"]
   }
-}
+};
