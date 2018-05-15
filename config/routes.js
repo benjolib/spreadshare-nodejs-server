@@ -101,17 +101,17 @@ module.exports = [
     //tags api route
     {
         method: 'POST',
-        path: '/api/v1/tags/add',
+        path: '/api/w/v1/tags/add',
         handler: 'TagsController.add',
     },
     {
         method: 'GET',
-        path: '/api/v1/tags/:id',
+        path: '/api/w/v1/tags/:id',
         handler: 'TagsController.remove',
     },
     {
         method: 'POST',
-        path: '/api/v1/tags/list',
+        path: '/api/w/v1/tags/list',
         handler: 'TagsController.list',
     },
     /**
@@ -119,8 +119,18 @@ module.exports = [
      */
     {
         method: 'POST',
-        path: '/api/v1/subscriber/list',
+        path: '/api/w/v1/subscriber/list',
         handler: 'SubscriberController.list',
+    },
+    {
+        method: 'POST',
+        path: '/api/w/v1/subscriber/subscribe',
+        handler: 'SubscriberController.subscribe',
+    },
+    {
+        method: 'GET',
+        path: '/api/w/v1/subscriber/unsubscribe/:id',
+        handler: 'SubscriberController.unsubscribe',
     },
 
 ]

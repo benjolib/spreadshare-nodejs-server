@@ -14,24 +14,24 @@
 
 module.exports = {
 
-  DefaultController: {
-    info: [ ]
-  },
+    DefaultController: {
+        info: []
+    },
 
-  AuthController: {
-    signup:['JoiPolicy.validate'],
-    loginBasic: ['PassportPolicy.basic'],
-    checkJWT: ['PassportPolicy.jwt'],
-    profile: ['PassportPolicy.authenticate'],
-    facebook: ['PassportPolicy.facebook'],
-    facebookCallback: ['PassportPolicy.facebook'],
-    google: ['PassportPolicy.google'],
-    googleCallback: ['PassportPolicy.google'],
-    twitter: ['PassportPolicy.twitter'],
-    twitterCallback: ['PassportPolicy.twitter'],
-  },
-    SubscriberController:{
-        subscriber:['PassportPolicy.authenticate']
+    AuthController: {
+        signup: ['JoiPolicy.validate'],
+        loginBasic: ['PassportPolicy.basic'],
+        checkJWT: ['PassportPolicy.jwt'],
+        profile: ['PassportPolicy.authenticate'],
+        facebook: ['PassportPolicy.facebook'],
+        facebookCallback: ['PassportPolicy.facebook'],
+        google: ['PassportPolicy.google'],
+        googleCallback: ['PassportPolicy.google'],
+        twitter: ['PassportPolicy.twitter'],
+        twitterCallback: ['PassportPolicy.twitter'],
+    },
+    SubscriberController: {
+        subscribe: ['PassportPolicy.authenticate'],
     }
 
 }
