@@ -10,29 +10,33 @@
  * @see http://trailsjs.io/doc/config/policies
  */
 
-'use strict'
+"use strict";
 
 module.exports = {
-
   DefaultController: {
-    info: [ ]
+    info: []
   },
 
   AuthController: {
-    signup:['JoiPolicy.validate'],
-    loginBasic: ['PassportPolicy.basic'],
-    checkJWT: ['PassportPolicy.jwt'],
-    profile: ['PassportPolicy.authenticate'],
-    facebook: ['PassportPolicy.facebook'],
-    facebookCallback: ['PassportPolicy.facebook'],
-    google: ['PassportPolicy.google'],
-    googleCallback: ['PassportPolicy.google'],
-    twitter: ['PassportPolicy.twitter'],
-    twitterCallback: ['PassportPolicy.twitter'],
+    signup: ["JoiPolicy.validate"],
+    loginBasic: ["PassportPolicy.basic"],
+    checkJWT: ["PassportPolicy.jwt"],
+    profile: ["PassportPolicy.authenticate"],
+    facebook: ["PassportPolicy.facebook"],
+    facebookCallback: ["PassportPolicy.facebook"],
+    google: ["PassportPolicy.google"],
+    googleCallback: ["PassportPolicy.google"],
+    twitter: ["PassportPolicy.twitter"],
+    twitterCallback: ["PassportPolicy.twitter"]
   },
 
-  VoteController:{
-    addVote:['PassportPolicy.authenticate','JoiPolicy.validate'],
-    removeVote:['PassportPolicy.authenticate','JoiPolicy.validate'],
+  VoteController: {
+    addVote: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    removeVote: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+  },
+
+  ProfileController: {
+    getProfile: ["PassportPolicy.authenticate"],
+    updateProfile: ["PassportPolicy.authenticate"]
   }
-}
+};
