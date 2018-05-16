@@ -9,4 +9,11 @@ module.exports = class SubscriberValidator {
       status: Joi.string()
     });
   }
+
+  list() {
+    return Joi.object().keys({
+      type: Joi.string(),
+      tableId: Joi.number()
+    });
+  }
 };

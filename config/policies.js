@@ -30,6 +30,7 @@ module.exports = {
     twitterCallback: ["PassportPolicy.twitter"]
   },
   SubscriberController: {
-    subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+    subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    list: ["JoiPolicy.validate"]
   }
 };

@@ -31,6 +31,11 @@ module.exports = class SubscriberService extends Service {
     });
   }
 
+  /**
+   * add subscriber
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
   subscribe(fields) {
     let { TableSubscription } = this.app.orm;
 
@@ -39,6 +44,11 @@ module.exports = class SubscriberService extends Service {
     });
   }
 
+  /**
+   * remove subscriber
+   * @param id
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
   destroy(id) {
     let { TableSubscription } = this.app.orm;
 

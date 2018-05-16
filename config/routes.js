@@ -118,18 +118,19 @@ module.exports = [
    */
   {
     method: "POST",
-    path: "/api/w/v1/subscriber/list",
-    handler: "SubscriberController.list"
+    path: "/api/v1/subscriber/list",
+    handler: "SubscriberController.list",
+    config: { id: "SubscriberValidator.list" }
   },
   {
     method: "POST",
-    path: "/api/w/v1/subscriber/subscribe",
+    path: "/api/v1/subscriber/subscribe",
     handler: "SubscriberController.subscribe",
     config: { id: "SubscriberValidator.subscribe" }
   },
   {
     method: "GET",
-    path: "/api/w/v1/subscriber/unsubscribe/:id",
+    path: "/api/v1/subscriber/unsubscribe/:id",
     handler: "SubscriberController.unsubscribe"
   }
 ];
