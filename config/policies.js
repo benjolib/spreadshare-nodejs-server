@@ -35,5 +35,8 @@ module.exports = {
     updateColumn: ["JoiPolicy.validate"],
     update: ["JoiPolicy.validate"],
     publish: ["JoiPolicy.validate"]
+  },
+  CuratorController: {
+    follow: ["PassportPolicy.authenticate"]
   }
 };

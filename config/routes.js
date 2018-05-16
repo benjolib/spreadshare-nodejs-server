@@ -168,5 +168,24 @@ module.exports = [
     method: "DELETE",
     path: "/api/v1/table/:id",
     handler: "TableController.remove"
+  },
+
+  /**
+   * curator api
+   */
+  {
+    method: "POST",
+    path: "/api/v1/curator/follow",
+    handler: "CuratorController.follow"
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/curator/unfollow/:id",
+    handler: "CuratorController.unfollow"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/curator/list",
+    handler: "CuratorController.list"
   }
 ];
