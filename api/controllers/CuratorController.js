@@ -70,10 +70,15 @@ module.exports = class CuratorController extends Controller {
 
   async list(req, res) {
     let model = req.body;
+    let user = req.user;
     let { CuratorService } = this.app.services;
-
+    let data = {
+      limit: model.limit,
+      start: model.start,
+      userId: user.id
+    };
     try {
-      let curator = await CuratorService.find(model);
+      let curator = await CuratorService.find(data);
       return res.json({
         flag: true,
         data: curator,
@@ -81,6 +86,7 @@ module.exports = class CuratorController extends Controller {
         code: 200
       });
     } catch (e) {
+      console.log(e);
       return res.json({
         flag: false,
         data: e,

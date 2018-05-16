@@ -30,6 +30,8 @@ module.exports = {
     USER_FOLLOWERS: "userfollower",
     USER_CONNECTIONS: "userconnection",
     USER_LOCATION: "userlocation",
-    LOCATION: "location"
+    LOCATION: "location",
+    TABLE: "table",
+    VOTE: "vote"
   }
 };
