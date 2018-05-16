@@ -20,6 +20,7 @@ module.exports = class TagsService extends Service {
         return Tags
             .create(fields)
             .then(data => {
+                if (_.isEmpty(data)) throw new Error(`Tags not created!.`);
                 return data.toJSON()
             })
     }
@@ -67,7 +68,8 @@ module.exports = class TagsService extends Service {
                 limit: parseInt(fields.limit)
             })
             .then(tags => {
-               return _.map(tags, (tag => {
+                if (_.isEmpty(tags)) throw new Error(`Tags not found!.`);
+                return _.map(tags, (tag => {
                     return tag.toJSON()
                 }))
             })

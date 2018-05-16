@@ -6,6 +6,8 @@ module.exports = class TagsValidator{
     list() {
         return Joi.object().keys({
             search: Joi.string(),
+            start:Joi.number(),
+            limit:Joi.number(),
         })
     }
     add() {
