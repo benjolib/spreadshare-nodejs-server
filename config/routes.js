@@ -187,5 +187,29 @@ module.exports = [
     method: "POST",
     path: "/api/v1/curator/list",
     handler: "CuratorController.list"
+  },
+
+  /**
+   * ProfileController
+   */
+  {
+    method: "GET",
+    path: "/api/v1/profile",
+    handler: "ProfileController.getProfile"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile",
+    handler: "ProfileController.updateProfile"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile/userconnection",
+    handler: "ProfileController.upsertConnections"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/profile/userconnection/:userid",
+    handler: "ProfileController.getUserConnections"
   }
 ];

@@ -38,5 +38,9 @@ module.exports = {
   },
   CuratorController: {
     follow: ["PassportPolicy.authenticate"]
+  },
+  ProfileController: {
+    getProfile: ["PassportPolicy.authenticate"],
+    updateProfile: ["PassportPolicy.authenticate"]
   }
 };
