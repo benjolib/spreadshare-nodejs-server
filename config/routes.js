@@ -168,5 +168,15 @@ module.exports = [
     method: "DELETE",
     path: "/api/v1/table/:id",
     handler: "TableController.remove"
+  },
+
+  /**
+   * Comment api route
+   */
+  {
+    method: "POST",
+    path: "/api/v1/table/comment",
+    handler: "CommentController.add",
+    config: { id: "CommentValidator.add" }
   }
 ];
