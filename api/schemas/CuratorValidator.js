@@ -7,4 +7,11 @@ module.exports = class AuthValidator {
       followedBy: Joi.number()
     });
   }
+
+  list() {
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number()
+    });
+  }
 };
