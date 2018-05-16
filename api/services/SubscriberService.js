@@ -24,9 +24,10 @@ module.exports = class SubscriberService extends Service {
       criteria.tableId = fields.tableId;
     }
 
-    return TableSubscription.findAll({ where: criteria }).then(tags => {
-      return _.map(tags, tag => {
-        return tag.toJSON();
+    return TableSubscription.findAll({ where: criteria }).then(result => {
+      if (_.isEmpty(result)) throw new Error("Subscriber Not found!");
+      return _.map(result, data => {
+        return data.toJSON();
       });
     });
   }
@@ -40,6 +41,7 @@ module.exports = class SubscriberService extends Service {
     let { TableSubscription } = this.app.orm;
 
     return TableSubscription.create(fields).then(data => {
+      if (_.isEmpty(result)) throw new Error("Subscriber Not created!");
       return data.toJSON();
     });
   }
