@@ -13,13 +13,13 @@ module.exports = class TagsService extends Service {
      * @param fields
      * @returns {*|PromiseLike<T>|Promise<T>}
      */
-    create(fields){
+    create(fields) {
 
-        let { Tags } = this.app.orm
+        let {Tags} = this.app.orm
 
         return Tags
             .create(fields)
-            .then(data=>{
+            .then(data => {
                 return data.toJSON()
             })
     }
@@ -29,13 +29,13 @@ module.exports = class TagsService extends Service {
      * @param id
      * @returns {*|PromiseLike<T>|Promise<T>}
      */
-    destroy(id){
+    destroy(id) {
 
-        let { Tags } = this.app.orm
+        let {Tags} = this.app.orm
 
         return Tags
-            .destroy({where:{id}})
-            .then(data=>{
+            .destroy({where: {id}})
+            .then(data => {
                 return data
             })
     }
@@ -45,19 +45,29 @@ module.exports = class TagsService extends Service {
      * @param fields
      * @returns {*|PromiseLike<T>|Promise<T>}
      */
-    find(fields){
+    find(fields) {
 
-        let { Tags } = this.app.orm
-        let criteria = {}
-
-        if (fields.hasOwnProperty('id')) {
-            criteria.id = fields.id
+        let {Tags} = this.app.orm
+        let criteria = {
+            title: {
+                $like: '%fields.search%'
+            }
         }
 
+
         return Tags
-            .findAll({where: criteria, offset: parseInt(fields.start), limit: parseInt(fields.limit)})
+            .findAll({
+                where:
+                    {
+                        title: {
+                            $like: `%${fields.search}`
+                        }
+                    },
+                offset: parseInt(fields.start),
+                limit: parseInt(fields.limit)
+            })
             .then(tags => {
-                return _.map(tags, (tag => {
+               return _.map(tags, (tag => {
                     return tag.toJSON()
                 }))
             })

@@ -103,6 +103,7 @@ module.exports = [
         method: 'POST',
         path: '/api/v1/tags/add',
         handler: 'TagsController.add',
+        config: {id: "TagsValidator.add"}
     },
     {
         method: 'GET',
@@ -113,6 +114,7 @@ module.exports = [
         method: 'POST',
         path: '/api/v1/tags/list',
         handler: 'TagsController.list',
+        config: {id: "TagsValidator.list"}
     },
     /**
      * subscriber api routes

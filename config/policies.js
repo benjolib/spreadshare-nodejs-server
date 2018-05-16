@@ -29,6 +29,9 @@ module.exports = {
     googleCallback: ['PassportPolicy.google'],
     twitter: ['PassportPolicy.twitter'],
     twitterCallback: ['PassportPolicy.twitter'],
+  },
+  TagsController:{
+    list : ['JoiPolicy.validate'],
+      add: ['JoiPolicy.validate']
   }
-
 }
