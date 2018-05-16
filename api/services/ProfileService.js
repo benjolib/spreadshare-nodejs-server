@@ -122,4 +122,36 @@ module.exports = class ProfileService extends Service {
       return rows;
     });
   }
+
+  /**
+   * update user connections
+   * @param fields
+   * @param userid
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  updateConnections(fields, userid) {
+    let { UserConnection } = this.app.orm;
+
+    return UserConnection.update(fields, { where: { userId: userid } }).then(
+      rows => {
+        return rows;
+      }
+    );
+  }
+
+  /**
+   * Add user connetions
+   * @param fields
+   * @param userid
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  addConnections(fields, userid) {
+    let { UserConnection } = this.app.orm;
+    let model = _.clone(fields);
+    model.userId = userid;
+
+    return UserConnection.create(model).then(data => {
+      return data.toJSON();
+    });
+  }
 };

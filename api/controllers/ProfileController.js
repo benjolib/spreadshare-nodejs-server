@@ -2,6 +2,8 @@
 
 const Controller = require("trails/controller");
 const _ = require("lodash");
+const fs = require("fs");
+const uuidv4 = require("uuid/v4");
 
 /**
  * @module ProfileController
@@ -61,24 +63,38 @@ module.exports = class ProfileController extends Controller {
     }
   }
 
+  /**
+   * add/update user connections
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async upsertConnections(req, res) {
     let { ProfileService } = this.app.services;
     let body = req.body;
     let user = req.user; // login user
+    let connections = {};
+    let model = _.clone(body);
 
+    //Check user connections exists
     try {
-      let connections = await ProfileService.upsertConnections(params.userid);
+      connections = await ProfileService.getConnections(user.id);
+    } catch (e) {
+      //Not handling error here
+    }
+
+    //Add/update user connections
+    try {
+      if (_.isEmpty(connections))
+        await ProfileService.addConnections(model, user.id);
+      else await ProfileService.updateConnections(model, user.id);
+
       return res.json({
         flag: true,
-        data: connections,
-        message: `User connections detail found`
+        message: `User connections added successfully.`
       });
     } catch (e) {
-      return res.json({
-        flag: false,
-        data: {},
-        message: `Couldn't get user connections , ${e.message}`
-      });
+      return res.json({ flag: false, message: e.message });
     }
   }
 
@@ -150,5 +166,44 @@ module.exports = class ProfileController extends Controller {
         message: `Couldn't update user location detail,${e.message}`
       });
     }
+  }
+
+  /**
+   * Upload base64 image
+   * @param req
+   * @param res
+   */
+  uploadImage(req, res) {
+    let body = req.body;
+    let base64String = body.image;
+
+    // Remove header
+    let base64Image = base64String.split(";base64,").pop();
+    let dir = "./public";
+    let extension = base64String.substring(
+      "data:image/".length,
+      base64String.indexOf(";base64")
+    );
+    let fileName = uuidv4();
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+
+    let filepath = `${fileName}.${extension}`;
+    fs.writeFile(
+      `${dir}/${filepath}`,
+      base64Image,
+      { encoding: "base64" },
+      (e, data) => {
+        if (e) return res.json({ flag: false, message: `${e.message}` });
+
+        return res.json({
+          flag: true,
+          data: `/${filepath}`,
+          message: `file uploaded successfully!`
+        });
+      }
+    );
   }
 };

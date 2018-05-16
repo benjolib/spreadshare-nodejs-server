@@ -37,6 +37,8 @@ module.exports = {
 
   ProfileController: {
     getProfile: ["PassportPolicy.authenticate"],
-    updateProfile: ["PassportPolicy.authenticate"]
+    updateProfile: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    upsertConnections: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    uploadImage: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   }
 };

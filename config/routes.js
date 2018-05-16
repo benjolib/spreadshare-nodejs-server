@@ -157,16 +157,24 @@ module.exports = [
   {
     method: "PUT",
     path: "/api/v1/profile",
-    handler: "ProfileController.updateProfile"
+    handler: "ProfileController.updateProfile",
+    config: { id: "ProfileValidator.updateProfile" }
   },
   {
     method: "PUT",
     path: "/api/v1/profile/userconnection",
-    handler: "ProfileController.upsertConnections"
+    handler: "ProfileController.upsertConnections",
+    config: { id: "ProfileValidator.upsertConnections" }
   },
   {
     method: "GET",
     path: "/api/v1/profile/userconnection/:userid",
     handler: "ProfileController.getUserConnections"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/profile/upload",
+    handler: "ProfileController.uploadImage",
+    config: { id: "ProfileValidator.uploadImage" }
   }
 ];
