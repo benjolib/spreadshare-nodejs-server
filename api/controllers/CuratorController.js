@@ -68,6 +68,12 @@ module.exports = class CuratorController extends Controller {
     }
   }
 
+  /**
+   * get curator list
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async list(req, res) {
     let model = req.body;
     let user = req.user;

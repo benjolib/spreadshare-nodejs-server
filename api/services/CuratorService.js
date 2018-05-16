@@ -14,9 +14,15 @@ module.exports = class CuratorService extends Service {
    */
   create(fields) {
     let { UserFollower } = this.app.orm;
-
     return UserFollower.create(fields).then(data => {
-      return data.toJSON();
+      if (_.isEmpty(data)) throw new Error(`No user profile found!.`);
+      let user = data[0];
+      return _.omit(
+        user,
+        "emailConfirmationToken",
+        "passwordResetToken",
+        "password"
+      );
     });
   }
 
@@ -27,12 +33,16 @@ module.exports = class CuratorService extends Service {
    */
   remove(id) {
     let { UserFollower } = this.app.orm;
-
     return UserFollower.destroy({ where: { userId: id } }).then(data => {
       return data;
     });
   }
 
+  /**
+   * list of all curators
+   * @param fields
+   * @returns {Promise<T>}
+   */
   find(fields) {
     let { sequelize } = this.app.orm.User;
     let {
@@ -62,7 +72,13 @@ module.exports = class CuratorService extends Service {
       })
       .then(result => {
         if (_.isEmpty(result)) throw new Error(`No user profile found!.`);
-        return result;
+        let user = result[0];
+        return _.omit(
+          user,
+          "emailConfirmationToken",
+          "passwordResetToken",
+          "password"
+        );
       })
       .catch(err => {
         throw err;

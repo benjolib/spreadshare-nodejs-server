@@ -176,7 +176,8 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/curator/follow",
-    handler: "CuratorController.follow"
+    handler: "CuratorController.follow",
+    config: { id: "CuratorValidator.follow" }
   },
   {
     method: "DELETE",

@@ -37,7 +37,7 @@ module.exports = {
     publish: ["JoiPolicy.validate"]
   },
   CuratorController: {
-    follow: ["PassportPolicy.authenticate"],
+    follow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     list: ["PassportPolicy.authenticate"]
   },
   ProfileController: {
