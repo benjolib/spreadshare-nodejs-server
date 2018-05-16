@@ -13,7 +13,9 @@ module.exports = class SubscriberValidator {
   list() {
     return Joi.object().keys({
       type: Joi.string(),
-      tableId: Joi.number()
+      tableId: Joi.number(),
+      start: Joi.number(),
+      limit: Joi.number()
     });
   }
 };
