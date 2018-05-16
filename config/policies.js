@@ -10,28 +10,26 @@
  * @see http://trailsjs.io/doc/config/policies
  */
 
-'use strict'
+"use strict";
 
 module.exports = {
+  DefaultController: {
+    info: []
+  },
 
-    DefaultController: {
-        info: []
-    },
-
-    AuthController: {
-        signup: ['JoiPolicy.validate'],
-        loginBasic: ['PassportPolicy.basic'],
-        checkJWT: ['PassportPolicy.jwt'],
-        profile: ['PassportPolicy.authenticate'],
-        facebook: ['PassportPolicy.facebook'],
-        facebookCallback: ['PassportPolicy.facebook'],
-        google: ['PassportPolicy.google'],
-        googleCallback: ['PassportPolicy.google'],
-        twitter: ['PassportPolicy.twitter'],
-        twitterCallback: ['PassportPolicy.twitter'],
-    },
-    SubscriberController: {
-        subscribe: ['PassportPolicy.authenticate'],
-    }
-
-}
+  AuthController: {
+    signup: ["JoiPolicy.validate"],
+    loginBasic: ["PassportPolicy.basic"],
+    checkJWT: ["PassportPolicy.jwt"],
+    profile: ["PassportPolicy.authenticate"],
+    facebook: ["PassportPolicy.facebook"],
+    facebookCallback: ["PassportPolicy.facebook"],
+    google: ["PassportPolicy.google"],
+    googleCallback: ["PassportPolicy.google"],
+    twitter: ["PassportPolicy.twitter"],
+    twitterCallback: ["PassportPolicy.twitter"]
+  },
+  SubscriberController: {
+    subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+  }
+};

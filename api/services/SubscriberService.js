@@ -1,55 +1,49 @@
-'use strict'
+"use strict";
 
-const Service = require('trails/service')
-const _ = require('lodash')
+const Service = require("trails/service");
+const _ = require("lodash");
 /**
  * @module SubscriberService
  * @description subscriber
  */
 module.exports = class SubscriberService extends Service {
-    /**
-     * find list
-     * @param fields
-     * @returns {*|PromiseLike<T>|Promise<T>}
-     */
-    find(fields) {
+  /**
+   * find list
+   * @param fields
+   * @returns {*|PromiseLike<T>|Promise<T>}
+   */
+  find(fields) {
+    let { TableSubscription } = this.app.orm;
+    let criteria = {};
 
-        let {TableSubscription} = this.app.orm
-        let criteria = {}
-
-        if (fields.hasOwnProperty('type')) {
-            criteria.type = fields.type
-        }
-
-        return TableSubscription
-            .findAll({where: criteria})
-            .then(tags => {
-                return _.map(tags, (tag => {
-                    return tag.toJSON()
-                }))
-            })
+    if (fields.hasOwnProperty("type")) {
+      criteria.type = fields.type;
     }
 
-    subscribe(fields) {
-
-        let {TableSubscription} = this.app.orm
-
-        return TableSubscription
-            .create(fields)
-            .then(data => {
-                return data.toJSON()
-            })
+    if (fields.hasOwnProperty("tableId")) {
+      criteria.tableId = fields.tableId;
     }
 
-    destroy(id) {
+    return TableSubscription.findAll({ where: criteria }).then(tags => {
+      return _.map(tags, tag => {
+        return tag.toJSON();
+      });
+    });
+  }
 
-        let {TableSubscription} = this.app.orm
+  subscribe(fields) {
+    let { TableSubscription } = this.app.orm;
 
-        return TableSubscription
-            .destroy({where: {id}})
-            .then(data => {
-                return data
-            })
-    }
-}
+    return TableSubscription.create(fields).then(data => {
+      return data.toJSON();
+    });
+  }
 
+  destroy(id) {
+    let { TableSubscription } = this.app.orm;
+
+    return TableSubscription.destroy({ where: { id } }).then(data => {
+      return data;
+    });
+  }
+};
