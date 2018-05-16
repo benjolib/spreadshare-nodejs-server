@@ -168,5 +168,20 @@ module.exports = [
     method: "DELETE",
     path: "/api/v1/table/:id",
     handler: "TableController.remove"
+  },
+
+  /**
+   * Notification api route
+   */
+
+  {
+    method: "GET",
+    path: "/api/v1/notification/:id",
+    handler: "NotificationController.single"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/notification/:id",
+    handler: "NotificationController.read"
   }
 ];
