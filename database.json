@@ -1,0 +1,26 @@
+{
+  "development": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "127.0.0.1",
+    "database": "spreadshare",
+    "schema": "dev"
+  },
+  "staging": {
+    "driver": "pg",
+    "user": { "ENV": "POSTGRES_USER" },
+    "password": { "ENV": "POSTGRES_PASSWORD" },
+    "host": { "ENV": "POSTGRES_HOST" },
+    "database": { "ENV": "POSTGRES_DB" },
+    "schema": { "ENV": "POSTGRES_SCHEMA" }
+  },
+  "production": {
+    "driver": "pg",
+    "user": { "ENV": "POSTGRES_USER" },
+    "password": { "ENV": "POSTGRES_PASSWORD" },
+    "host": { "ENV": "POSTGRES_HOST" },
+    "database": { "ENV": "POSTGRES_DB" },
+    "schema": { "ENV": "POSTGRES_SCHEMA" }
+  }
+}

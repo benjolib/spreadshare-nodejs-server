@@ -22,3 +22,4 @@ exports.TableSubscription = require("./TableSubscription");
 exports.Vote = require("./Vote");
 exports.UserNotification = require("./UserNotification");
 exports.Tags = require("./Tags");
+exports.TableInfo = require("./TableInfo");

@@ -1,6 +1,16 @@
-'use strict'
+"use strict";
 
-module.exports = function(app){
+const DBMigrate = require("db-migrate");
 
-  app.services.PassportService.init()
-}
+module.exports = function(app) {
+  app.services.PassportService.init();
+
+  // run all migrations
+  let dbm = DBMigrate.getInstance(true);
+  //console.log('dbm.config',dbm.config)
+  dbm.up(err => {
+    if (err) throw err;
+    // else
+    //   console.log(`all migrations run successfully.`)
+  });
+};
