@@ -35,5 +35,9 @@ module.exports = {
     updateColumn: ["JoiPolicy.validate"],
     update: ["JoiPolicy.validate"],
     publish: ["JoiPolicy.validate"]
+  },
+
+  NotificationController: {
+    list: ["PassportPolicy.authenticate"]
   }
 };

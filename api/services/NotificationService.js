@@ -39,4 +39,27 @@ module.exports = class NotificationService extends Service {
       return data;
     });
   }
+
+  /**
+   * List of Notifications
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  find(fields) {
+    let { UserNotification } = this.app.orm;
+    let criteria = {};
+
+    if (fields.hasOwnProperty("userId")) {
+      criteria.userId = fields.userId;
+    }
+
+    return UserNotification.findAll({
+      where: criteria,
+      offset: parseInt(fields.start),
+      limit: parseInt(fields.limit)
+    }).then(data => {
+      if (_.isEmpty(data)) throw new Error(`list empty!`);
+      return data;
+    });
+  }
 };

@@ -65,4 +65,38 @@ module.exports = class NotificationController extends Controller {
       });
     }
   }
+
+  /**
+   * get Notification list
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async list(req, res) {
+    let { NotificationService } = this.app.services;
+    let user = req.user;
+    let id = user.id;
+    let body = req.body;
+    let model = {
+      userId: id,
+      start: body.start,
+      limit: body.limit
+    };
+    try {
+      let table = await NotificationService.find(model);
+      return res.json({
+        flag: true,
+        data: table,
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
 };

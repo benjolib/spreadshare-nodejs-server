@@ -183,5 +183,10 @@ module.exports = [
     method: "PUT",
     path: "/api/v1/notification/:id",
     handler: "NotificationController.read"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/notification",
+    handler: "NotificationController.list"
   }
 ];
