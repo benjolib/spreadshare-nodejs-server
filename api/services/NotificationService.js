@@ -20,11 +20,26 @@ module.exports = class NotificationService extends Service {
     });
   }
 
-  updateIsRead(model, id) {
+  /**
+   * update isRead for read notification
+   * @param isRead
+   * @param id
+   * @returns {Promise<T>}
+   */
+  updateIsRead(isRead, id) {
     let { UserNotification } = this.app.orm;
-    let isRead = model.isRead;
-    return UserNotification.update(isRead, { where: { id } }).then(data => {
-      return data;
-    });
+
+    return UserNotification.update(
+      {
+        isRead
+      },
+      { where: { id: id } }
+    )
+      .then(rows => {
+        return rows;
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 };

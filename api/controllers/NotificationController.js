@@ -1,7 +1,7 @@
 "use strict";
 
 const Controller = require("trails/controller");
-
+const _ = require("lodash");
 /**
  * @module NotificationController
  * @description notification.
@@ -36,21 +36,27 @@ module.exports = class NotificationController extends Controller {
     }
   }
 
+  /**
+   * update isRead of read notification
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async read(req, res) {
     let params = req.params;
     let id = parseInt(params.id);
-    let model = req.body;
     let { NotificationService } = this.app.services;
 
     try {
-      await NotificationService.updateIsRead(model, id);
+      let read = await NotificationService.updateIsRead(true, id);
       return res.json({
         flag: true,
-        data: column,
+        data: read,
         message: "Success",
         code: 200
       });
     } catch (e) {
+      console.log(e);
       return res.json({
         flag: false,
         data: e,
