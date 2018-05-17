@@ -41,7 +41,7 @@ module.exports = class SubscriberService extends Service {
     let { TableSubscription } = this.app.orm;
 
     return TableSubscription.create(fields).then(data => {
-      if (_.isEmpty(result)) throw new Error("Subscriber Not created!");
+      if (_.isEmpty(data)) throw new Error("Subscriber Not created!");
       return data.toJSON();
     });
   }
