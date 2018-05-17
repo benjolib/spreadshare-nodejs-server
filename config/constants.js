@@ -26,6 +26,14 @@ module.exports = {
     TABLE_ROW: "tablerow",
     USER: "user",
     TABLE_SUBSCRIPTION: "tablesubscription",
-    TABLE_INFO: "tableinfo"
+    TABLE_INFO: "tableinfo",
+    VOTE: "vote"
+  },
+  tableSortType: {
+    SPREADS: "totalSpread",
+    SUBSCRIBERS: "totalSubscribers",
+    COLLABORATIONS: "totalCollaborations",
+    VIEWS: "totalView",
+    CREATED_AT: "createdAt"
   }
 };

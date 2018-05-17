@@ -101,4 +101,44 @@ module.exports = class TableService extends Service {
       return data;
     });
   }
+
+  /**
+   * find popular list of table
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  find(fields) {
+    let { sequelize } = this.app.orm.User;
+    let { TABLE, TABLE_INFO } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+
+    let condSql = "";
+
+    if (fields.hasOwnProperty("sort")) {
+      condSql +=
+        " ORDER BY " +
+        fields.sort +
+        (fields.order && fields.order === "asc" ? " ASC" : " DESC");
+    }
+    if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
+    if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
+    let sql = `select t.*                
+           from ${schema}.${TABLE} t 
+           left join ${schema}.${TABLE_INFO} ti on ti."tableId"=t.id 
+          ${condSql}`;
+    console.log(sql);
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(result => {
+        return _.map(result, data => {
+          return data.toJSON;
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
 };

@@ -168,5 +168,10 @@ module.exports = [
     method: "DELETE",
     path: "/api/v1/table/:id",
     handler: "TableController.remove"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/list",
+    handler: "TableController.list"
   }
 ];
