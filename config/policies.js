@@ -34,6 +34,8 @@ module.exports = {
     addColumn: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     updateColumn: ["JoiPolicy.validate"],
     update: ["JoiPolicy.validate"],
-    publish: ["JoiPolicy.validate"]
+    publish: ["JoiPolicy.validate"],
+    list: ["JoiPolicy.validate"],
+    addRow: ["JoiPolicy.validate", "PassportPolicy.authenticate"]
   }
 };

@@ -174,5 +174,11 @@ module.exports = [
     path: "/api/v1/table/list",
     handler: "TableController.list",
     config: { id: "TableValidator.list" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/row",
+    handler: "TableController.addRow",
+    config: { id: "TableValidator.addRow" }
   }
 ];

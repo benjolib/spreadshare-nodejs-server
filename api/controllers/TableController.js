@@ -303,4 +303,32 @@ module.exports = class TableController extends Controller {
       });
     }
   }
+
+  async addRow(req, res) {
+    let model = req.body;
+    let { TableService } = this.app.services;
+    let user = req.user;
+    let data = {
+      tableId: model.tableId,
+      createdBy: user.id,
+      action: model.action
+    };
+
+    try {
+      let column = await TableService.addrow(data);
+      return res.json({
+        flag: true,
+        data: column,
+        message: "Table row created!",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
 };

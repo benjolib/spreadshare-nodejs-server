@@ -34,7 +34,13 @@ module.exports = class TableValidator {
     return Joi.object().keys({
       start: Joi.number(),
       limit: Joi.number(),
-      sort: joi.string()
+      sort: Joi.string()
+    });
+  }
+  addRow() {
+    return Joi.object().keys({
+      tableId: Joi.number(),
+      action: Joi.string()
     });
   }
 };

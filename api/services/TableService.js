@@ -140,4 +140,13 @@ module.exports = class TableService extends Service {
         throw err;
       });
   }
+
+  addrow(fields) {
+    let { TableRow } = this.app.orm;
+
+    return TableRow.create(fields).then(data => {
+      if (_.isEmpty(data)) throw new Error(`Table row not Created!.`);
+      return data.toJSON();
+    });
+  }
 };
