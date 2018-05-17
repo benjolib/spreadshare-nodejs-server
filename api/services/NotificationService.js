@@ -34,12 +34,9 @@ module.exports = class NotificationService extends Service {
         isRead
       },
       { where: { id: id } }
-    )
-      .then(rows => {
-        return rows;
-      })
-      .catch(err => {
-        throw err;
-      });
+    ).then(data => {
+      if (_.isEmpty(data)) throw new Error("Is read Not updated.");
+      return data;
+    });
   }
 };
