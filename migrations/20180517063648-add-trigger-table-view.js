@@ -22,22 +22,21 @@ exports.up = function(db) {
     LANGUAGE plpgsql
     AS $function$
     BEGIN
-    IF NEW.type=='table' THEN
-    EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET totalView = totalView+1 WHERE tableid = $1.tableId' USING NEW;
-    END IF;
+    EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET "totalView" = "totalView"+1 WHERE "tableId" = $1."tableId"' USING NEW;
     RETURN NULL;
     END
-    $function$`;
-
-  ` CREATE TRIGGER incr_table_view AFTER INSERT ON ${schema}.tableview
-    FOR EACH ROW EXECUTE procedure ${schema}.table_view_inc();`;
+    $function$;
+    
+    CREATE TRIGGER incr_table_view AFTER INSERT ON ${schema}.tableview
+    FOR EACH ROW EXECUTE procedure ${schema}.table_view_inc();
+    `;
 
   return db.runSql(sql);
 };
 
 exports.down = function(db) {
   let schema = db.schema;
-  let sql = `DROP TRIGGER IF EXISTS incr_table_view ON ${schema}.tableview;
+  let sql = `  DROP TRIGGER IF EXISTS incr_table_view ON ${schema}.tableview;
                DROP FUNCTION IF EXISTS ${schema}.table_view_inc() ;`;
 
   return db.runSql(sql);

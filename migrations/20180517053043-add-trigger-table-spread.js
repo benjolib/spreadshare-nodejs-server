@@ -23,14 +23,14 @@ exports.up = function(db) {
     AS $function$
     BEGIN
     IF NEW.type=='table' THEN
-    EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET totalSpreads = totalSpreads+1 WHERE tableid = $1.itemid' USING NEW;
+    EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET "totalSpreads" = "totalSpreads"+1 WHERE "tableId" = $1."itemId"' USING NEW;
     END IF;
     RETURN NULL;
     END
-    $function$`;
+    $function$
 
-  ` CREATE TRIGGER incr_table_spreads AFTER INSERT ON ${schema}.vote
-    FOR EACH ROW EXECUTE procedure ${schema}.table_spread_incr();`;
+    CREATE TRIGGER incr_table_spreads AFTER INSERT ON ${schema}.vote
+    FOR EACH ROW EXECUTE procedure ${schema}.table_spread_incr()`;
 
   return db.runSql(sql);
 };
