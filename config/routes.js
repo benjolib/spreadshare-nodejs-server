@@ -172,6 +172,7 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/table/list",
-    handler: "TableController.list"
+    handler: "TableController.list",
+    config: { id: "TableValidator.list" }
   }
 ];

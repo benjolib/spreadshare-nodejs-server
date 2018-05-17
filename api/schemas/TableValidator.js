@@ -29,4 +29,12 @@ module.exports = class TableValidator {
       isPublished: Joi.boolean()
     });
   }
+
+  list() {
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number(),
+      sort: joi.string()
+    });
+  }
 };
