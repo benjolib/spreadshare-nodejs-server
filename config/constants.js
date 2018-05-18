@@ -36,5 +36,10 @@ module.exports = {
     COLLABORATIONS: "totalCollaborations",
     VIEWS: "totalView",
     CREATED_AT: "createdAt"
+  },
+  tableRowActionType: {
+    SUBMITTED: "submitted",
+    DELETED: "deleted",
+    UPDATED: "updated"
   }
 };
