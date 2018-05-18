@@ -107,7 +107,7 @@ module.exports = class TableService extends Service {
    * @param fields
    * @returns {Promise<T>}
    */
-  find(fields) {
+  findPopular(fields) {
     let { sequelize } = this.app.orm.User;
     let { TABLE, TABLE_INFO } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
@@ -147,6 +147,17 @@ module.exports = class TableService extends Service {
     return TableRow.create(fields).then(data => {
       if (_.isEmpty(data)) throw new Error(`Table row not Created!.`);
       return data.toJSON();
+    });
+  }
+
+  addTableCellInBulks(fields) {
+    let { TableCells } = this.app.orm;
+
+    return TableCells.bulkCreate(fields, { returning: true }).then(data => {
+      data = _.map(data, kw => {
+        return kw.toJSON();
+      });
+      return data;
     });
   }
 };

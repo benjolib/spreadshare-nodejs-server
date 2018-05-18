@@ -286,7 +286,7 @@ module.exports = class TableController extends Controller {
       order: sort[sortKey]
     };
     try {
-      let table = await TableService.find(model);
+      let table = await TableService.findPopular(model);
       return res.json({
         flag: true,
         data: table,
@@ -304,6 +304,12 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * adding row in particular table
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async addRow(req, res) {
     let model = req.body;
     let { TableService } = this.app.services;
@@ -315,14 +321,28 @@ module.exports = class TableController extends Controller {
     };
 
     try {
-      let column = await TableService.addrow(data);
+      let table = await TableService.find(model.tableId);
+      let id = parseInt(user.id);
+      if (id == table.owner) {
+        data.status = "A";
+      }
+
+      let row = await TableService.addrow(data);
+
+      let field = _.map(model.rowColumns, rc => {
+        return _.extend({}, rc, { rowId: row.id, userId: user.id });
+      });
+
+      let cell = await TableService.addTableCellInBulks(field);
+      row.column = cell;
       return res.json({
         flag: true,
-        data: column,
+        data: row,
         message: "Table row created!",
         code: 200
       });
     } catch (e) {
+      console.log(e);
       return res.json({
         flag: false,
         data: e,

@@ -37,10 +37,12 @@ module.exports = class TableValidator {
       sort: Joi.string()
     });
   }
+
   addRow() {
     return Joi.object().keys({
       tableId: Joi.number(),
-      action: Joi.string()
+      action: Joi.string(),
+      rowColumns: Joi.array()
     });
   }
 };
