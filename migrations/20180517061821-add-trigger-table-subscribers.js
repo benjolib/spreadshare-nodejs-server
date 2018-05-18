@@ -25,7 +25,7 @@ exports.up = function(db) {
     EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET "totalSubscribers" = "totalSubscribers"+1 WHERE "tableId" = $1."tableId"' USING NEW;
     RETURN NULL;
     END
-    $function$
+    $function$;
     CREATE TRIGGER incr_table_subscriber AFTER INSERT ON ${schema}.tablesubscription
     FOR EACH ROW EXECUTE procedure ${schema}.table_subscriber_inc() `;
 

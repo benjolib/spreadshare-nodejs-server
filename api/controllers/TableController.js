@@ -2,6 +2,7 @@
 
 const Controller = require("trails/controller");
 const _ = require("lodash");
+const moment = require("moment");
 /**
  * @module TableController
  * @description table.
@@ -311,13 +312,14 @@ module.exports = class TableController extends Controller {
    * @returns {Promise<*>}
    */
   async addRow(req, res) {
-    let model = req.body;
     let { TableService } = this.app.services;
+    let { tableRowActionType } = this.app.config.constants;
+    let model = req.body;
     let user = req.user;
     let data = {
       tableId: model.tableId,
       createdBy: user.id,
-      action: model.action
+      action: tableRowActionType.SUBMITTED
     };
 
     try {
@@ -358,15 +360,36 @@ module.exports = class TableController extends Controller {
    * @returns {Promise<*>}
    */
   async deleteTableRow(req, res) {
-    let params = req.params;
-    let id = parseInt(params.id);
     let { TableService } = this.app.services;
+    let { tableRowActionType } = this.app.config.constants;
+    let model = req.body;
+    let user = req.user;
+    let table = req.table;
+    let id = parseInt(model.rowId);
+    let message;
+
     try {
-      let table = await TableService.removeTableRow(id);
+      //Check owner deleting table row then direct delete it
+      if (user.id == table.owner) {
+        await TableService.removeTableRow(id);
+        message = "Remove Row successfully!";
+      } else {
+        //Make delete request entry in tableRow
+        let data = {
+          tableId: model.tableId,
+          rowId: model.rowId,
+          createdBy: user.id,
+          action: tableRowActionType.DELETED
+        };
+        let row = await TableService.addrow(data); //create table row
+        console.log(`added row request`, row);
+        message =
+          "Your delete request has been added! Please wait for approval.";
+      }
+
       return res.json({
         flag: true,
-        data: table,
-        message: "Remove Row successfully!",
+        message: message,
         code: 200
       });
     } catch (e) {
@@ -379,19 +402,61 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * Update table row with with table cells
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async updateTableRow(req, res) {
-    let params = req.params;
-    let model = req.body;
-    let id = parseInt(params.id);
     let { TableService } = this.app.services;
+    let { tableRowActionType } = this.app.config.constants;
+    let model = req.body;
+    let user = req.user;
+    let table = req.table;
+    let id = parseInt(model.rowId);
+    let message;
 
     try {
-      let table = await TableService.updateRow(model, id);
+      //user.id =2
+      //Check owner deleting table row then direct delete it
+      if (user.id == table.owner) {
+        await TableService.updateRowCell({ rowColumns: model.rowColumns });
+        await TableService.updateTableRow({ updatedAt: moment().format() }, id);
+
+        message = "Row cell updated successfully!";
+      } else {
+        //user.id =1
+        //Make delete request entry in tableRow
+        let data = {
+          tableId: model.tableId,
+          rowId: model.rowId,
+          createdBy: user.id,
+          action: tableRowActionType.UPDATED
+        };
+        let row = await TableService.addrow(data); //create table row
+
+        //Add change request for cells
+        let cellData = _.map(model.rowColumns, c => {
+          return {
+            id: c.id,
+            userId: user.id,
+            tableRowId: id,
+            to: c.content || c.link,
+            comment: c.comment
+          };
+        });
+
+        let changeRequests = await TableService.addChangeRequest(cellData);
+
+        console.log(`added row request`, changeRequests);
+        message =
+          "Your update request has been added! Please wait for approval.";
+      }
 
       return res.json({
         flag: true,
-        data: table,
-        message: "Success",
+        message: message,
         code: 200
       });
     } catch (e) {

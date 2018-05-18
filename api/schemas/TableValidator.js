@@ -41,8 +41,22 @@ module.exports = class TableValidator {
   addRow() {
     return Joi.object().keys({
       tableId: Joi.number(),
-      action: Joi.string(),
       rowColumns: Joi.array()
+    });
+  }
+
+  updateTableRow() {
+    return Joi.object().keys({
+      tableId: Joi.number().required(),
+      rowId: Joi.number().required(),
+      rowColumns: Joi.array().required()
+    });
+  }
+
+  deleteTableRow() {
+    return Joi.object().keys({
+      rowId: Joi.number().required(),
+      tableId: Joi.number().required()
     });
   }
 };

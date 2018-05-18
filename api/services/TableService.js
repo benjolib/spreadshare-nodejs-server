@@ -184,32 +184,87 @@ module.exports = class TableService extends Service {
     });
   }
 
-  updateRow(fields, id) {
+  /**
+   * Update row multiple cells in bulk
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  updateRowCell(fields) {
     let { sequelize } = this.app.orm.User;
-    let { TABLE_CELL, TABLE_ROW } = this.app.config.constants.tables;
+    let { TABLE_CELL } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
 
-    let column = _.map(fields.rowColumns, data => {
-      return data;
+    let values = `VALUES `;
+
+    _.map(fields.rowColumns, (data, index) => {
+      if (index > 0) values = `${values},`;
+      values = `${values} (${data.id},'${data.content}','${data.link}')`;
     });
-    let columnkey = _.key();
-    //todo pending api
-    let sql = `UPDATE ${schema}.${TABLE_CELL} as t
-          set ${column}
-          from (values ${column}`;
+
+    let sql = `UPDATE ${schema}.${TABLE_CELL} as t set
+                 content = c.content,
+                 link = c.link 
+              FROM (
+                 ${values}
+              ) AS c(id, content, link)
+              WHERE
+                 c.id  = t.id 
+              RETURNING t.*;`;
 
     return sequelize
       .query(sql, {
         bind: [],
-        type: sequelize.QueryTypes.SELECT
+        type: sequelize.QueryTypes.UPDATE
       })
-      .then(result => {
-        return _.map(result, data => {
-          return data;
-        });
+      .then(rows => {
+        return rows;
       })
       .catch(err => {
         throw err;
       });
+  }
+
+  /**
+   * Update table row
+   * @param fields
+   * @param id
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  updateTableRow(fields, id) {
+    let { TableRow } = this.app.orm;
+
+    return TableRow.update(fields, { where: { id } }).then(rows => {
+      return rows;
+    });
+  }
+
+  /**
+   * Add change request for cell
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  addChangeRequest(fields) {
+    let { ChangeRequest } = this.app.orm;
+    let data = [];
+
+    //Todo change from content
+
+    _.map(fields, f => {
+      data.push({
+        cellId: f.id,
+        userId: f.userId,
+        tableRowId: f.tableRowId,
+        to: f.content || f.link,
+        from: f.content || f.link,
+        comment: f.comment
+      });
+    });
+
+    return ChangeRequest.bulkCreate(data, { returning: true }).then(data => {
+      data = _.map(data, kw => {
+        return kw.toJSON();
+      });
+      return data;
+    });
   }
 };
