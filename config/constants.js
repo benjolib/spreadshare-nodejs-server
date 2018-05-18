@@ -37,5 +37,8 @@ module.exports = {
     COLLABORATIONS: "totalCollaborations",
     VIEWS: "totalView",
     CREATED_AT: "createdAt"
+  },
+  status: {
+    APPROVED: "A"
   }
 };

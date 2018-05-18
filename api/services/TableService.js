@@ -216,11 +216,11 @@ module.exports = class TableService extends Service {
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
     let {
-      TABLE,
       TABLE_CELL,
       TABLE_COLUMN,
       TABLE_ROW
     } = this.app.config.constants.tables;
+    let { APPROVED } = this.app.config.constants.status;
     let { schema } = sequelize.options;
 
     let condSql = "",
@@ -232,6 +232,7 @@ module.exports = class TableService extends Service {
     }
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
+
     let sql = `select tr.*,json_build_object(
                'title',tco.title,
                'position',tco.position,
@@ -240,7 +241,7 @@ module.exports = class TableService extends Service {
            from ${schema}.${TABLE_ROW} tr 
            left join ${schema}.${TABLE_CELL} tc on tc."rowId"= tr.id 
            left join ${schema}.${TABLE_COLUMN} tco on tco."tableId"= tr."tableId" 
-          ${condSql}`;
+         where tr."status" = '${APPROVED}' ${condSql}`;
 
     return sequelize
       .query(sql, {
