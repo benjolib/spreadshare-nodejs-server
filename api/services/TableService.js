@@ -189,7 +189,10 @@ module.exports = class TableService extends Service {
     let { TABLE_CELL, TABLE_ROW } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
 
-    let sql = `UPDATE ${schema}.${TABLE_CELL} as t set `;
+    let sql = `UPDATE ${schema}.${TABLE_CELL} as t
+     set content = c.content,
+      link = c.link
+      from (values `;
 
     return sequelize
       .query(sql, {
