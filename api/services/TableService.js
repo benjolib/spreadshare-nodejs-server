@@ -212,4 +212,44 @@ module.exports = class TableService extends Service {
         throw err;
       });
   }
+
+  findHistory(fields) {
+    let { sequelize } = this.app.orm.User;
+    let {
+      TABLE,
+      TABLE_CELL,
+      TABLE_COLUMN,
+      TABLE_ROW
+    } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+
+    let condSql = "",
+      order;
+
+    if (fields.hasOwnProperty("sort")) {
+      order = fields.order === "asc" ? "ASC" : "DESC";
+      condSql = `${condSql} ORDER BY "${fields.sort}" ${order}`;
+    }
+    if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
+    if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
+    let sql = `select tr.*                
+           from ${schema}.${TABLE_ROW} tr 
+           left join ${schema}.${TABLE_CELL} tc on tc."rowId"= tr.id 
+           left join ${schema}.${TABLE_COLUMN} tco on tco."tableId"= tr."tableId" 
+          ${condSql}`;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(result => {
+        return _.map(result, data => {
+          return data;
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
 };

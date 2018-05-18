@@ -403,4 +403,39 @@ module.exports = class TableController extends Controller {
       });
     }
   }
+
+  async historyList(req, res) {
+    let { TableService } = this.app.services;
+    let { tableSortType } = this.app.config.constants;
+    let body = req.body;
+    let defaultSort = {};
+    defaultSort[tableSortType.CREATED_AT] = "desc";
+
+    let sort = body.sort && !_.isEmpty(body.sort) ? body.sort : defaultSort;
+    let sortKey = Object.keys(sort)[0];
+
+    let model = {
+      start: body.start,
+      limit: body.limit,
+      sort: sortKey,
+      order: sort[sortKey]
+    };
+    try {
+      let table = await TableService.findHistory(model);
+      return res.json({
+        flag: true,
+        data: table,
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      console.log(e);
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
 };

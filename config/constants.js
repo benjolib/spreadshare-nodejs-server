@@ -28,7 +28,8 @@ module.exports = {
     TABLE_SUBSCRIPTION: "tablesubscription",
     TABLE_INFO: "tableinfo",
     VOTE: "vote",
-    TABLE_CELL: "tablecell"
+    TABLE_CELL: "tablecells",
+    TABLE_COLUMN: "tablecolumn"
   },
   tableSortType: {
     SPREADS: "totalSpread",

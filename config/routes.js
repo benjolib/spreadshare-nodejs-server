@@ -190,5 +190,10 @@ module.exports = [
     method: "PUT",
     path: "/api/v1/table/row/:id",
     handler: "TableController.updateTableRow"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/history",
+    handler: "TableController.historyList"
   }
 ];
