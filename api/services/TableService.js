@@ -171,11 +171,38 @@ module.exports = class TableService extends Service {
     });
   }
 
+  /**
+   * particular Table Row delete
+   * @param id
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
   removeTableRow(id) {
     let { TableRow } = this.app.orm;
 
     return TableRow.destroy({ where: { id } }).then(data => {
       return data;
     });
+  }
+
+  updateRow(fields, id) {
+    let { sequelize } = this.app.orm.User;
+    let { TABLE_CELL, TABLE_ROW } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+
+    let sql = `UPDATE ${schema}.${TABLE_CELL} as t set `;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(result => {
+        return _.map(result, data => {
+          return data;
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 };

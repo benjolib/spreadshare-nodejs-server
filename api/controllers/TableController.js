@@ -351,6 +351,12 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * delete Table Row
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async deleteTableRow(req, res) {
     let params = req.params;
     let id = parseInt(params.id);
@@ -361,6 +367,31 @@ module.exports = class TableController extends Controller {
         flag: true,
         data: table,
         message: "Remove Row successfully!",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  async updateTableRow(req, res) {
+    let params = req.params;
+    let model = req.body;
+    let id = parseInt(params.id);
+    let { TableService } = this.app.services;
+
+    try {
+      let table = await TableService.updateRow(model, id);
+
+      return res.json({
+        flag: true,
+        data: table,
+        message: "Success",
         code: 200
       });
     } catch (e) {

@@ -27,7 +27,8 @@ module.exports = {
     USER: "user",
     TABLE_SUBSCRIPTION: "tablesubscription",
     TABLE_INFO: "tableinfo",
-    VOTE: "vote"
+    VOTE: "vote",
+    TABLE_CELL: "tablecell"
   },
   tableSortType: {
     SPREADS: "totalSpread",

@@ -185,5 +185,10 @@ module.exports = [
     method: "DELETE",
     path: "/api/v1/table/row/:id",
     handler: "TableController.deleteTableRow"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/table/row/:id",
+    handler: "TableController.updateTableRow"
   }
 ];
