@@ -180,5 +180,10 @@ module.exports = [
     path: "/api/v1/table/row",
     handler: "TableController.addRow",
     config: { id: "TableValidator.addRow" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/table/row/:id",
+    handler: "TableController.deleteTableRow"
   }
 ];

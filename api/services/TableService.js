@@ -141,6 +141,11 @@ module.exports = class TableService extends Service {
       });
   }
 
+  /**
+   * addRow in table
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
   addrow(fields) {
     let { TableRow } = this.app.orm;
 
@@ -150,6 +155,11 @@ module.exports = class TableService extends Service {
     });
   }
 
+  /**
+   * add cell
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
   addTableCellInBulks(fields) {
     let { TableCells } = this.app.orm;
 
@@ -157,6 +167,14 @@ module.exports = class TableService extends Service {
       data = _.map(data, kw => {
         return kw.toJSON();
       });
+      return data;
+    });
+  }
+
+  removeTableRow(id) {
+    let { TableRow } = this.app.orm;
+
+    return TableRow.destroy({ where: { id } }).then(data => {
       return data;
     });
   }

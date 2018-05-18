@@ -321,19 +321,19 @@ module.exports = class TableController extends Controller {
     };
 
     try {
-      let table = await TableService.find(model.tableId);
+      let table = await TableService.find(model.tableId); //check table is available or not
       let id = parseInt(user.id);
       if (id == table.owner) {
         data.status = "A";
       }
 
-      let row = await TableService.addrow(data);
+      let row = await TableService.addrow(data); //create table row
 
       let field = _.map(model.rowColumns, rc => {
         return _.extend({}, rc, { rowId: row.id, userId: user.id });
       });
 
-      let cell = await TableService.addTableCellInBulks(field);
+      let cell = await TableService.addTableCellInBulks(field); //create table cell
       row.column = cell;
       return res.json({
         flag: true,
@@ -342,7 +342,28 @@ module.exports = class TableController extends Controller {
         code: 200
       });
     } catch (e) {
-      console.log(e);
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  async deleteTableRow(req, res) {
+    let params = req.params;
+    let id = parseInt(params.id);
+    let { TableService } = this.app.services;
+    try {
+      let table = await TableService.removeTableRow(id);
+      return res.json({
+        flag: true,
+        data: table,
+        message: "Remove Row successfully!",
+        code: 200
+      });
+    } catch (e) {
       return res.json({
         flag: false,
         data: e,
