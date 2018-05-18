@@ -232,7 +232,11 @@ module.exports = class TableService extends Service {
     }
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
-    let sql = `select tr.*                
+    let sql = `select tr.*,json_build_object(
+               'title',tco.title,
+               'position',tco.position,
+               'width',tco.width 
+                ) as columns                
            from ${schema}.${TABLE_ROW} tr 
            left join ${schema}.${TABLE_CELL} tc on tc."rowId"= tr.id 
            left join ${schema}.${TABLE_COLUMN} tco on tco."tableId"= tr."tableId" 
