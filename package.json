@@ -45,7 +45,7 @@
   },
   "lint-staged": {
     "*.{js,json,css,md}": ["prettier --write", "git add"],
-    "api/*.{js,json,css,md}": ["prettier --write", "git add"],
+    "api/controllers/*.{js,json,css,md}": ["prettier --write", "git add"],
     "config/*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "engines": {
