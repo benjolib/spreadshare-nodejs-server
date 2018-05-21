@@ -137,6 +137,12 @@ module.exports = [
     config: { id: "TableValidator.addColumn" }
   },
   {
+    method: "POST",
+    path: "/api/v1/table/column/addmultiple",
+    handler: "TableController.addMultipleColumns",
+    config: { id: "TableValidator.addMultipleColumns" }
+  },
+  {
     method: "PUT",
     path: "/api/v1/table/column/:id",
     handler: "TableController.updateColumn",
@@ -162,7 +168,14 @@ module.exports = [
   {
     method: "GET",
     path: "/api/v1/table/:id",
-    handler: "TableController.tableDetail"
+    handler: "TableController.tableDetail",
+    config: { id: "TableValidator.updateTableRow" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/contents/:id",
+    handler: "TableController.tableData",
+    config: { id: "TableValidator.getTableContentList" }
   },
   {
     method: "DELETE",
@@ -192,5 +205,20 @@ module.exports = [
     path: "/api/v1/table/row",
     handler: "TableController.updateTableRow",
     config: { id: "TableValidator.updateTableRow" }
+  },
+
+  /**
+   * Collaboration apis
+   */
+  {
+    method: "GET",
+    path: "/api/v1/collaborate/revoke/:rowid",
+    handler: "CollaborationController.revokeSubmission"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/collaborate/list",
+    handler: "CollaborationController.list",
+    config: { id: "TableValidator.getCollaborateList" }
   }
 ];

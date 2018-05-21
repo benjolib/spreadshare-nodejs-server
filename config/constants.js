@@ -24,11 +24,13 @@ module.exports = {
     TABLE: "table",
     TABLE_VIEW: "tableview",
     TABLE_ROW: "tablerow",
+    TABLE_COLUMN: "tablecolumn",
     USER: "user",
     TABLE_SUBSCRIPTION: "tablesubscription",
     TABLE_INFO: "tableinfo",
     VOTE: "vote",
-    TABLE_CELL: "tablecells"
+    TABLE_CELL: "tablecells",
+    TAGS: "tags"
   },
   tableSortType: {
     SPREADS: "totalSpread",
@@ -41,5 +43,20 @@ module.exports = {
     SUBMITTED: "submitted",
     DELETED: "deleted",
     UPDATED: "updated"
+  },
+  rowStatusType: {
+    PENDING: "P",
+    APPROVED: "A",
+    REJECTED: "R",
+    REVOKED: "RE"
+  },
+  collaborateTypes: {
+    SUBMITTED: "submitted",
+    RECEIVED: "received"
+  },
+  votesType: {
+    TABLE: "table",
+    TABLE_ROW: "tablerow",
+    TABLE_COMMENT: "tablecomment"
   }
 };

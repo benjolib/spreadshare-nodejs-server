@@ -7,36 +7,82 @@ const Controller = require("trails/controller");
  * @description all collaborations apis.
  */
 module.exports = class CollaborationController extends Controller {
-  async addDeleteRowRequest(req, res) {
-    let model = req.body;
+  /**
+   * Revoke submission
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async revokeSubmission(req, res) {
     let { TableService } = this.app.services;
-    let { tableRowActionType } = this.app.config.constants;
+    let { rowStatusType } = this.app.config.constants;
+    let params = req.params;
     let user = req.user;
-    let table = req.table;
+    let tableRow = req.tableRow;
+    let id = parseInt(params.rowid);
 
-    let data = {
-      tableId: model.tableId,
-      rowId: model.rowId,
-      createdBy: user.id,
-      action: tableRowActionType.DELETED
-    };
+    //Check tableRow status & its Owner
+    if (tableRow.createdBy != user.id)
+      return res.json({
+        flag: false,
+        message: `You have no permission to revoke this submission`
+      });
+    else if (tableRow.status != rowStatusType.PENDING) {
+      let status =
+        tableRow.status == rowStatusType.APPROVED ? "Approved" : "rejected";
+      return res.json({
+        flag: false,
+        message: `This submission is already ${status}, please submit delete request to delete this row`
+      });
+    }
 
+    //Revoke submission
     try {
-      let row = await TableService.addrow(data); //create table row
-
+      await TableService.updateTableRow(
+        { status: rowStatusType.REVOKED, updatedBy: user.id },
+        id
+      );
       return res.json({
         flag: true,
-        data: row,
-        message: "Your delete request has been added!",
-        code: 200
+        message: `Your submission has been accepted!`
       });
     } catch (e) {
       return res.json({
         flag: false,
-        data: e,
-        message: e.message,
-        code: 500
+        message: `Couldn't update detail, ${e.message}`
       });
+    }
+  }
+
+  /**
+   * Get collaborations list (Submitted/Received)
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async list(req, res) {
+    let { TableService } = this.app.services;
+    let model = req.body;
+    let user = req.user;
+    let condition = {};
+
+    let start = parseInt(model.start) || 0;
+    let limit = parseInt(model.limit) || 10;
+    let type = model.type;
+    let status = model.status;
+
+    try {
+      condition = {
+        start,
+        limit,
+        type,
+        status,
+        userid: user.id
+      };
+      let data = await TableService.getCollaborationsList(condition);
+      return res.json({ flag: true, data: data });
+    } catch (e) {
+      return res.json({ flag: false, data: [] });
     }
   }
 };

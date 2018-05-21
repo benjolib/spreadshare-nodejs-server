@@ -2,6 +2,7 @@
 
 const Service = require("trails/service");
 const _ = require("lodash");
+const moment = require("moment");
 /**
  * @module TableService
  * @description table
@@ -33,6 +34,24 @@ module.exports = class TableService extends Service {
       if (_.isEmpty(data)) throw new Error(`Table Column not Created!.`);
       return data.toJSON();
     });
+  }
+
+  /**
+   * add multiple column
+   * @param fields
+   * @returns {*|PromiseLike<T>|Promise<T>}
+   */
+  addMultipleColumns(fields) {
+    let { TableColumn } = this.app.orm;
+
+    return TableColumn.bulkCreate(fields.data, { returning: true }).then(
+      data => {
+        data = _.map(data, kw => {
+          return kw.toJSON();
+        });
+        return data;
+      }
+    );
   }
 
   /**
@@ -82,11 +101,76 @@ module.exports = class TableService extends Service {
    * @returns {*|PromiseLike<T>|Promise<T>}
    */
   find(id) {
-    let { Table } = this.app.orm;
-    return Table.find({ where: id }).then(data => {
-      if (_.isEmpty(data)) throw new Error(`Table not found!.`);
-      return data.toJSON();
-    });
+    let { sequelize } = this.app.orm.Table;
+    let { votesType } = this.app.config.constants;
+    let {
+      TABLE_INFO,
+      TABLE,
+      TABLE_COLUMN,
+      VOTE,
+      TAGS,
+      USER
+    } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+    let sql = ``,
+      condSql = ` LIMIT 1`,
+      whereCond = ``,
+      voteSql = ``,
+      tagSql = ``,
+      curatorSql = ``;
+    voteSql = `(SELECT count(*)::int from ${schema}.${VOTE} where "itemId"=t.id AND "type"='${
+      votesType.TABLE
+    }') as votes`;
+    tagSql = `(select json_agg(json_build_object('id', tg.id, 'title' , tg.title)) 
+              from ${schema}.${TAGS} tg where tg.id =ANY(t.tags)) as tags `;
+    curatorSql = `(select json_agg(json_build_object('id', u.id, 'name' , u.name)) 
+              from ${schema}.${USER} u where u.id =ANY(t.curator)) as curators `;
+
+    sql = `SELECT t.*,ti."totalSubscribers"::int,
+             ti."totalCollaborations"::int
+             FROM (select t.*,
+             json_agg(json_build_object('id',tc.id,'title', tc.title, 'position' , tc.position, 'width' , tc.width)) as columns,                       
+             ${voteSql},
+             ${tagSql},        
+             ${curatorSql}        
+            from ${schema}."${TABLE}" t 
+            join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id                                      
+            where t.id=${id} ${whereCond}
+            group by t.id ${condSql})t
+            LEFT join ${schema}."${TABLE_INFO}" ti on ti."tableId"=t.id`;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(data => {
+        if (_.isEmpty(data)) throw new Error(`No table detail found`);
+        return data[0];
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  /**
+   * Find table cells exists
+   * @param cellIds
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  findCells(cellIds) {
+    let { TableCells } = this.app.orm;
+
+    return TableCells.findAll({ where: { id: { $in: cellIds } } }).then(
+      cells => {
+        if (_.isEmpty(cells)) throw new Error(`No cells found`);
+
+        cells = _.map(cells, d => {
+          return d.toJSON();
+        });
+        return cells;
+      }
+    );
   }
 
   /**
@@ -113,7 +197,16 @@ module.exports = class TableService extends Service {
     let { schema } = sequelize.options;
 
     let condSql = "",
-      order;
+      order,
+      whereCond = ``;
+    let cond = [],
+      params = [];
+
+    if (fields.hasOwnProperty("isPublished")) {
+      cond.push(`t."isPublished" = $${params.length + 1}`);
+      params.push(fields.isPublished);
+    }
+    whereCond = cond.length ? " WHERE " + cond.join(" AND ") : "";
 
     if (fields.hasOwnProperty("sort")) {
       order = fields.order === "asc" ? "ASC" : "DESC";
@@ -121,14 +214,15 @@ module.exports = class TableService extends Service {
     }
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
-    let sql = `select t.*                
+    let sql = `select t.*,ti."totalSubscribers",ti."totalCollaborations"                
            from ${schema}.${TABLE} t 
            left join ${schema}.${TABLE_INFO} ti on ti."tableId"= t.id 
+           ${whereCond}
           ${condSql}`;
 
     return sequelize
       .query(sql, {
-        bind: [],
+        bind: params,
         type: sequelize.QueryTypes.SELECT
       })
       .then(result => {
@@ -151,6 +245,20 @@ module.exports = class TableService extends Service {
 
     return TableRow.create(fields).then(data => {
       if (_.isEmpty(data)) throw new Error(`Table row not Created!.`);
+      return data.toJSON();
+    });
+  }
+
+  /**
+   * get row in table
+   * @param rowId
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  getRow(rowId) {
+    let { TableRow } = this.app.orm;
+
+    return TableRow.findOne({ where: { id: rowId } }).then(data => {
+      if (_.isEmpty(data)) throw new Error(`Table row not found!.`);
       return data.toJSON();
     });
   }
@@ -189,24 +297,28 @@ module.exports = class TableService extends Service {
    * @param fields
    * @returns {Promise<T>}
    */
-  updateRowCell(fields) {
+  updateRowCells(fields) {
     let { sequelize } = this.app.orm.User;
     let { TABLE_CELL } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
 
     let values = `VALUES `;
+    let date = moment().format();
 
     _.map(fields.rowColumns, (data, index) => {
       if (index > 0) values = `${values},`;
-      values = `${values} (${data.id},'${data.content}','${data.link}')`;
+      values = `${values} (${data.id},'${data.content}','${
+        data.link
+      }','${date}')`;
     });
 
     let sql = `UPDATE ${schema}.${TABLE_CELL} as t set
                  content = c.content,
-                 link = c.link 
+                 link = c.link, 
+                 "updatedAt" = c.updatedAt::timestamp
               FROM (
                  ${values}
-              ) AS c(id, content, link)
+              ) AS c(id, content, link,updatedAt)
               WHERE
                  c.id  = t.id 
               RETURNING t.*;`;
@@ -245,18 +357,20 @@ module.exports = class TableService extends Service {
    */
   addChangeRequest(fields) {
     let { ChangeRequest } = this.app.orm;
+    let { rowStatusType } = this.app.config.constants;
     let data = [];
 
     //Todo change from content
 
-    _.map(fields, f => {
+    _.map(fields.data, f => {
       data.push({
         cellId: f.id,
         userId: f.userId,
         tableRowId: f.tableRowId,
-        to: f.content || f.link,
-        from: f.content || f.link,
-        comment: f.comment
+        to: f.to,
+        from: f.from,
+        comment: f.comment,
+        status: fields.status || rowStatusType.PENDING
       });
     });
 
@@ -266,5 +380,133 @@ module.exports = class TableService extends Service {
       });
       return data;
     });
+  }
+
+  /**
+   * Get collaborations list
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  getCollaborationsList(fields) {
+    let { sequelize } = this.app.orm.Table;
+    let { collaborateTypes, votesType } = this.app.config.constants;
+    let {
+      TABLE_CELL,
+      TABLE,
+      TABLE_ROW,
+      TABLE_COLUMN,
+      VOTE
+    } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+    let sql = ``,
+      condSql = ``,
+      whereCond = ``,
+      voteSql = ``;
+    voteSql = `(SELECT count(*)::int from ${schema}.${VOTE} where "itemId"=tr.id AND "type"='${
+      votesType.TABLE_ROW
+    }') as votes`;
+
+    if (fields.status) whereCond = ` AND status='${fields.status}'`;
+
+    if (fields.hasOwnProperty("start")) condSql = ` OFFSET ${fields.start}`;
+    if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
+
+    if (fields.type == collaborateTypes.SUBMITTED) {
+      sql = `select tr.*,t.owner,t.title,t.description,
+                 json_agg(json_build_object('columnId', trc."columnId", 'content' , trc.content, 'link' , trc.link)) as cells,
+                 json_agg(json_build_object('id',tc.id,'title', tc.title, 'position' , tc.position, 'width' , tc.width)) as columns,
+                 ${voteSql} 
+                from ${schema}."${TABLE}" t 
+                join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id
+                join ${schema}."${TABLE_ROW}" tr on tr."tableId"=t.id 
+                left join ${schema}."${TABLE_CELL}" trc on trc."rowId" =tr.id 
+                where tr."createdBy"=${fields.userid} ${whereCond}
+                group by tr.id,t.title,t.owner,t.description 
+                order by tr."createdAt" asc
+                ${condSql}`;
+    } else {
+      sql = `select tr.*,t.owner,t.title,t.description,
+                 json_agg(json_build_object('columnId', trc."columnId", 'content' , trc.content, 'link' , trc.link)) as cells,
+                 json_agg(json_build_object('id',tc.id,'title', tc.title, 'position' , tc.position, 'width' , tc.width)) as columns,
+                 ${voteSql}  
+                from ${schema}."${TABLE}" t 
+                join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id
+                join ${schema}."${TABLE_ROW}" tr on tr."tableId"=t.id 
+                left join ${schema}."${TABLE_CELL}" trc on trc."rowId" =tr.id 
+                where t."owner"=${fields.userid} ${whereCond}
+                group by tr.id,t.title,t.owner,t.description 
+                order by tr."createdAt" desc
+                ${condSql}`;
+    }
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(rows => {
+        if (_.isEmpty(rows)) throw new Error(`No list found`);
+        return rows;
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  /**
+   * Get collaborations list
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  getTableContentList(fields) {
+    let { sequelize } = this.app.orm.Table;
+    let { votesType, rowStatusType } = this.app.config.constants;
+    let {
+      TABLE_CELL,
+      TABLE,
+      TABLE_ROW,
+      TABLE_COLUMN,
+      VOTE
+    } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+    let sql = ``,
+      condSql = ``,
+      whereCond = ``,
+      voteSql = ``;
+    voteSql = `(SELECT count(*)::int from ${schema}.${VOTE} where "itemId"=tr.id AND "type"='${
+      votesType.TABLE_ROW
+    }') as votes`;
+
+    fields.status = fields.status || rowStatusType.APPROVED;
+
+    if (fields.status) whereCond = ` AND status='${fields.status}'`;
+
+    if (fields.hasOwnProperty("start")) condSql = ` OFFSET ${fields.start}`;
+    if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
+
+    sql = `select tr.*,
+                 json_agg(json_build_object('columnId', trc."columnId", 'content' , trc.content, 'link' , trc.link)) as cells,                 
+                 ${voteSql}  
+                from ${schema}."${TABLE}" t 
+                join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id
+                join ${schema}."${TABLE_ROW}" tr on tr."tableId"=t.id 
+                join ${schema}."${TABLE_CELL}" trc on trc."rowId" =tr.id 
+                where t."id"=${fields.id} ${whereCond}
+                group by tr.id
+                order by tr."createdAt" asc
+                ${condSql}`;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(rows => {
+        if (_.isEmpty(rows)) throw new Error(`No row list found`);
+        return rows;
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 };

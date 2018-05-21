@@ -32,6 +32,7 @@ module.exports = {
   TableController: {
     create: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     addColumn: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    addMultipleColumns: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     updateColumn: ["JoiPolicy.validate"],
     update: ["JoiPolicy.validate"],
     publish: ["JoiPolicy.validate"],
@@ -45,7 +46,21 @@ module.exports = {
     updateTableRow: [
       "PassportPolicy.authenticate",
       "JoiPolicy.validate",
+      "AuthPoilcy.checkTable",
+      "AuthPoilcy.loadCells"
+    ],
+    tableData: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
       "AuthPoilcy.checkTable"
     ]
+  },
+
+  CollaborationController: {
+    revokeSubmission: [
+      "PassportPolicy.authenticate",
+      "AuthPoilcy.loadTableRow"
+    ],
+    list: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   }
 };
