@@ -49,7 +49,12 @@ module.exports = class UserService extends Service {
 
   find(fields) {
     let { sequelize } = this.app.orm.User;
-    let { USER, TABLE, TABLE_SUBSCRIPTION } = this.app.config.constants.tables;
+    let {
+      USER,
+      TABLE,
+      TABLE_INFO,
+      TABLE_SUBSCRIPTION
+    } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
 
     let condSql = "";
@@ -60,9 +65,13 @@ module.exports = class UserService extends Service {
           (select count(*)::int from ${schema}.${TABLE_SUBSCRIPTION} ts where ts."userId"=u.id and ts."status"= '${
       fields.status
     }') as totalsubscriber,
-          (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as totalpublications 
+          (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as totalpublications, 
+          (select sum("ti"."totalCollaborations")::int from ${schema}.${TABLE_INFO} ti where ti."tableId"= t.id ) as totalCollaborations
           from ${schema}.${USER} u 
+          left join ${schema}.${TABLE} t on t.owner = u.id
+          left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
           where u.id = ${fields.userId} ${condSql}`;
+    //todo Karma Count pending
 
     return sequelize
       .query(sql, {
