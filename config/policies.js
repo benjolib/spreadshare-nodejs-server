@@ -56,5 +56,10 @@ module.exports = {
     updateProfile: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     upsertConnections: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     uploadImage: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+  },
+  NotificationController: {
+    list: ["PassportPolicy.authenticate"],
+    read: ["PassportPolicy.authenticate"],
+    get: ["PassportPolicy.authenticate"]
   }
 };

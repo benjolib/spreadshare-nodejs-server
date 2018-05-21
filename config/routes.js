@@ -199,5 +199,25 @@ module.exports = [
     path: "/api/v1/profile/upload",
     handler: "ProfileController.uploadImage",
     config: { id: "ProfileValidator.uploadImage" }
+  },
+
+  /**
+   * Notification api route
+   */
+
+  {
+    method: "GET",
+    path: "/api/v1/notification/:id",
+    handler: "NotificationController.get"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/notification/:id",
+    handler: "NotificationController.read"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/notification",
+    handler: "NotificationController.list"
   }
 ];

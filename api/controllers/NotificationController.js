@@ -8,12 +8,12 @@ const _ = require("lodash");
  */
 module.exports = class NotificationController extends Controller {
   /**
-   * get single notification
+   * get single notification detail
    * @param req
    * @param res
    * @returns {Promise<*>}
    */
-  async single(req, res) {
+  async get(req, res) {
     let params = req.params;
     let id = parseInt(params.id);
     let { NotificationService } = this.app.services;
