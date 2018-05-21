@@ -52,6 +52,15 @@ module.exports = class TableValidator {
     });
   }
 
+  search() {
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number(),
+      sort: Joi.object(),
+      term: Joi.string().required()
+    });
+  }
+
   addRow() {
     return Joi.object().keys({
       tableId: Joi.number(),

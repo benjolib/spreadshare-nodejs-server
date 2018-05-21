@@ -372,5 +372,15 @@ module.exports = [
     path: "/api/v1/table/comment/list",
     handler: "CommentController.list",
     config: { id: "CommentValidator.list" }
+  },
+
+  /**
+   * Search apis
+   */
+  {
+    method: "POST",
+    path: "/api/v1/search/list",
+    handler: "SearchController.list",
+    config: { id: "TableValidator.search" }
   }
 ];

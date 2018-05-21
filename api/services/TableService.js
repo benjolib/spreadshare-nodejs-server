@@ -206,6 +206,10 @@ module.exports = class TableService extends Service {
       cond.push(`t."isPublished" = $${params.length + 1}`);
       params.push(fields.isPublished);
     }
+    if (fields.hasOwnProperty("term")) {
+      cond.push(`t."title" like $${params.length + 1}`);
+      params.push(`%${fields.term.toLowerCase()}`);
+    }
     whereCond = cond.length ? " WHERE " + cond.join(" AND ") : "";
 
     if (fields.hasOwnProperty("sort")) {

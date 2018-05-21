@@ -14,3 +14,4 @@ exports.NotificationController = require("./NotificationController");
 exports.CuratorController = require("./CuratorController");
 exports.CommentController = require("./CommentController");
 exports.CollaborationController = require("./CollaborationController");
+exports.SearchController = require("./SearchController");

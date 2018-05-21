@@ -96,5 +96,8 @@ module.exports = {
     add: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     remove: ["PassportPolicy.authenticate"],
     list: ["JoiPolicy.validate", "JoiPolicy.validate"]
+  },
+  SearchController: {
+    list: ["JoiPolicy.validate", "JoiPolicy.validate"]
   }
 };
