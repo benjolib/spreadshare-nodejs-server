@@ -12,3 +12,4 @@ exports.SubscriberController = require("./SubscriberController");
 exports.TableController = require("./TableController");
 exports.NotificationController = require("./NotificationController");
 exports.CuratorController = require("./CuratorController");
+exports.CommentController = require("./CommentController");

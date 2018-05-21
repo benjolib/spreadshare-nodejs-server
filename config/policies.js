@@ -66,5 +66,10 @@ module.exports = {
     follow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     unfollow: ["PassportPolicy.authenticate"],
     list: ["JoiPolicy.validate"]
+  },
+  CommentController: {
+    add: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    remove: ["PassportPolicy.authenticate"],
+    list: ["JoiPolicy.validate", "JoiPolicy.validate"]
   }
 };

@@ -239,5 +239,26 @@ module.exports = [
     method: "POST",
     path: "/api/v1/curator/list",
     handler: "CuratorController.list"
+  },
+
+  /**
+   * Comment api route
+   */
+  {
+    method: "POST",
+    path: "/api/v1/table/comment",
+    handler: "CommentController.add",
+    config: { id: "CommentValidator.add" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/table/comment/:id",
+    handler: "CommentController.remove"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/comment/list",
+    handler: "CommentController.list",
+    config: { id: "CommentValidator.list" }
   }
 ];
