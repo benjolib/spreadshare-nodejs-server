@@ -2,6 +2,7 @@
 
 const Controller = require("trails/controller");
 const _ = require("lodash");
+const moment = require("moment");
 /**
  * @module TableController
  * @description table.
@@ -70,6 +71,50 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: column,
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  /**
+   * add multiple column
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async addMultipleColumns(req, res) {
+    let model = req.body;
+    let { TableService } = this.app.services;
+    let user = req.user;
+    let data = {
+      tableId: model.tableId,
+      data: []
+    };
+
+    //map column with tableId
+    _.map(model.data, d => {
+      data.data.push({
+        tableId: model.tableId,
+        userId: user.id,
+        title: d.title,
+        position: d.position,
+        width: d.width
+      });
+    });
+
+    try {
+      let columns = await TableService.addMultipleColumns(data);
+      return res.json({
+        flag: true,
+        data: columns,
         message: "Success",
         code: 200
       });
@@ -283,7 +328,8 @@ module.exports = class TableController extends Controller {
       start: body.start,
       limit: body.limit,
       sort: sortKey,
-      order: sort[sortKey]
+      order: sort[sortKey],
+      isPublished: true
     };
     try {
       let table = await TableService.findPopular(model);
@@ -311,13 +357,14 @@ module.exports = class TableController extends Controller {
    * @returns {Promise<*>}
    */
   async addRow(req, res) {
-    let model = req.body;
     let { TableService } = this.app.services;
+    let { tableRowActionType } = this.app.config.constants;
+    let model = req.body;
     let user = req.user;
     let data = {
       tableId: model.tableId,
       createdBy: user.id,
-      action: model.action
+      action: tableRowActionType.SUBMITTED
     };
 
     try {
@@ -352,21 +399,71 @@ module.exports = class TableController extends Controller {
   }
 
   /**
-   * delete Table Row
+   * Update table row with with table cells
    * @param req
    * @param res
    * @returns {Promise<*>}
    */
-  async deleteTableRow(req, res) {
-    let params = req.params;
-    let id = parseInt(params.id);
+  async updateTableRow(req, res) {
     let { TableService } = this.app.services;
+    let { tableRowActionType, rowStatusType } = this.app.config.constants;
+    let model = req.body;
+    let user = req.user;
+    let table = req.table;
+    let id = parseInt(model.rowId);
+    let tableRowCells = req.tableCells;
+    let message;
+
     try {
-      let table = await TableService.removeTableRow(id);
+      _.map(model.rowColumns, cell => {
+        let existCell = _.find(tableRowCells, { id: cell.id });
+        cell.from = existCell.content;
+      });
+
+      //Add change request for cells
+      let cellData = _.map(model.rowColumns, c => {
+        return {
+          id: c.id,
+          userId: user.id,
+          tableRowId: id,
+          from: c.from,
+          to: c.content || c.link,
+          comment: c.comment
+        };
+      });
+
+      //Check owner deleting table row then direct delete it
+      if (user.id == table.owner) {
+        //Make entry in changeRequest table so that we can have history record for this row
+        let changeRequests = await TableService.addChangeRequest({
+          data: cellData,
+          status: rowStatusType.APPROVED
+        });
+
+        await TableService.updateRowCells({ rowColumns: model.rowColumns });
+        await TableService.updateTableRow({ updatedAt: moment().format() }, id);
+
+        message = "Row cell updated successfully!";
+      } else {
+        //Make delete request entry in tableRow
+        let data = {
+          tableId: model.tableId,
+          rowId: model.rowId,
+          createdBy: user.id,
+          action: tableRowActionType.UPDATED
+        };
+
+        let row = await TableService.addrow(data); //create table row
+        let changeRequests = await TableService.addChangeRequest({
+          data: cellData
+        });
+        message =
+          "Your update request has been added! Please wait for approval.";
+      }
+
       return res.json({
         flag: true,
-        data: table,
-        message: "Remove Row successfully!",
+        message: message,
         code: 200
       });
     } catch (e) {
@@ -379,19 +476,43 @@ module.exports = class TableController extends Controller {
     }
   }
 
-  async updateTableRow(req, res) {
-    let params = req.params;
-    let model = req.body;
-    let id = parseInt(params.id);
+  /**
+   * delete Table Row
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async deleteTableRow(req, res) {
     let { TableService } = this.app.services;
+    let { tableRowActionType } = this.app.config.constants;
+    let model = req.body;
+    let user = req.user;
+    let table = req.table;
+    let id = parseInt(model.rowId);
+    let message;
 
     try {
-      let table = await TableService.updateRow(model, id);
+      //Check owner deleting table row then direct delete it
+      if (user.id == table.owner) {
+        await TableService.removeTableRow(id);
+        message = "Remove Row successfully!";
+      } else {
+        //Make delete request entry in tableRow
+        let data = {
+          tableId: model.tableId,
+          rowId: model.rowId,
+          createdBy: user.id,
+          action: tableRowActionType.DELETED
+        };
+        let row = await TableService.addrow(data); //create table row
+        console.log(`added row request`, row);
+        message =
+          "Your delete request has been added! Please wait for approval.";
+      }
 
       return res.json({
         flag: true,
-        data: table,
-        message: "Success",
+        message: message,
         code: 200
       });
     } catch (e) {
@@ -436,6 +557,39 @@ module.exports = class TableController extends Controller {
         message: e.message,
         code: 500
       });
+    }
+  }
+
+  /**
+   * Get table row-content data
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async tableData(req, res) {
+    let { TableService } = this.app.services;
+    let model = req.body;
+    let params = req.params;
+    let user = req.user;
+    let table = req.table;
+    let condition = {};
+
+    let start = parseInt(model.start) || 0;
+    let limit = parseInt(model.limit) || 10;
+    let status = model.status;
+    let tableId = params.id;
+
+    try {
+      condition = {
+        start,
+        limit,
+        status,
+        id: tableId
+      };
+      let data = await TableService.getTableContentList(condition);
+      return res.json({ flag: true, data: data });
+    } catch (e) {
+      return res.json({ flag: false, data: [] });
     }
   }
 };

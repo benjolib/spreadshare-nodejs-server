@@ -1,6 +1,7 @@
 const Joi = require("joi");
-
 const _ = require("lodash");
+const Constant = require("../../config/constants");
+
 module.exports = class TableValidator {
   create() {
     return Joi.object().keys({
@@ -17,10 +18,23 @@ module.exports = class TableValidator {
 
   addColumn() {
     return Joi.object().keys({
-      tableId: Joi.number(),
-      title: Joi.string(),
+      tableId: Joi.number().required(),
+      title: Joi.string().required(),
       position: Joi.number(),
       width: Joi.number()
+    });
+  }
+
+  addMultipleColumns() {
+    return Joi.object().keys({
+      tableId: Joi.number().required(),
+      data: Joi.array().items(
+        Joi.object().keys({
+          title: Joi.string().required(),
+          position: Joi.number(),
+          width: Joi.number()
+        })
+      )
     });
   }
 
@@ -34,15 +48,50 @@ module.exports = class TableValidator {
     return Joi.object().keys({
       start: Joi.number(),
       limit: Joi.number(),
-      sort: Joi.string()
+      sort: Joi.object()
     });
   }
 
   addRow() {
     return Joi.object().keys({
       tableId: Joi.number(),
-      action: Joi.string(),
       rowColumns: Joi.array()
+    });
+  }
+
+  updateTableRow() {
+    return Joi.object().keys({
+      tableId: Joi.number().required(),
+      rowId: Joi.number().required(),
+      rowColumns: Joi.array().required()
+    });
+  }
+
+  deleteTableRow() {
+    return Joi.object().keys({
+      rowId: Joi.number().required(),
+      tableId: Joi.number().required()
+    });
+  }
+
+  getTableContentList() {
+    let { rowStatusType } = Constant;
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number(),
+      status: Joi.any().valid(_.values(rowStatusType))
+    });
+  }
+
+  getCollaborateList() {
+    let { rowStatusType, collaborateTypes } = Constant;
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number(),
+      status: Joi.any().valid(_.values(rowStatusType)),
+      type: Joi.any()
+        .valid(_.values(collaborateTypes))
+        .required()
     });
   }
 };

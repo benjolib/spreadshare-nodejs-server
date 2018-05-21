@@ -27,7 +27,7 @@ exports.up = function(db) {
     END IF;
     RETURN NULL;
     END
-    $function$
+    $function$;
 
     CREATE TRIGGER incr_table_spreads AFTER INSERT ON ${schema}.vote
     FOR EACH ROW EXECUTE procedure ${schema}.table_spread_incr()`;

@@ -154,6 +154,106 @@ module.exports = [
     path: "/api/v1/subscriber/list",
     handler: "SubscriberController.list"
   },
+  /**
+   * table api route
+   */
+  {
+    method: "POST",
+    path: "/api/v1/table/create",
+    handler: "TableController.create",
+    config: { id: "TableValidator.create" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/column",
+    handler: "TableController.addColumn",
+    config: { id: "TableValidator.addColumn" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/column/addmultiple",
+    handler: "TableController.addMultipleColumns",
+    config: { id: "TableValidator.addMultipleColumns" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/table/column/:id",
+    handler: "TableController.updateColumn",
+    config: { id: "TableValidator.addColumn" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/table/column/:id",
+    handler: "TableController.removeColumn"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/table/update/:id",
+    handler: "TableController.update",
+    config: { id: "TableValidator.create" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/table/publish/:id",
+    handler: "TableController.publish",
+    config: { id: "TableValidator.publish" }
+  },
+  {
+    method: "GET",
+    path: "/api/v1/table/:id",
+    handler: "TableController.tableDetail",
+    config: { id: "TableValidator.updateTableRow" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/contents/:id",
+    handler: "TableController.tableData",
+    config: { id: "TableValidator.getTableContentList" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/table/:id",
+    handler: "TableController.remove"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/list",
+    handler: "TableController.list",
+    config: { id: "TableValidator.list" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/row",
+    handler: "TableController.addRow",
+    config: { id: "TableValidator.addRow" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/row/remove",
+    handler: "TableController.deleteTableRow",
+    config: { id: "TableValidator.deleteTableRow" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/table/row",
+    handler: "TableController.updateTableRow",
+    config: { id: "TableValidator.updateTableRow" }
+  },
+
+  /**
+   * Collaboration apis
+   */
+  {
+    method: "GET",
+    path: "/api/v1/collaborate/revoke/:rowid",
+    handler: "CollaborationController.revokeSubmission"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/collaborate/list",
+    handler: "CollaborationController.list",
+    config: { id: "TableValidator.getCollaborateList" }
+  },
 
   //tags api route
   {

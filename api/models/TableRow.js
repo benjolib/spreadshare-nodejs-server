@@ -17,6 +17,11 @@ module.exports = class TableRow extends Model {
               foreignKey: "createdBy",
               onDelete: "NO ACTION"
             });
+            models.TableRow.belongsTo(models.User, {
+              targetKey: "id",
+              foreignKey: "updatedBy",
+              onDelete: "NO ACTION"
+            });
             models.TableRow.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "tableId",
@@ -35,6 +40,7 @@ module.exports = class TableRow extends Model {
       tableId: { type: INTEGER, allowNull: false },
       rowId: { type: INTEGER },
       createdBy: { type: INTEGER, allowNull: false },
+      updatedBy: { type: INTEGER },
       action: { type: STRING, defaultValue: "S" },
       status: { type: STRING, defaultValue: "P", allowNull: false },
       createdAt: {

@@ -20,18 +20,48 @@ module.exports = {
       DEACTIVE: "D"
     }
   },
-  vote: {
+  tables: {
+    TABLE: "table",
+    TABLE_VIEW: "tableview",
+    TABLE_ROW: "tablerow",
+    TABLE_COLUMN: "tablecolumn",
+    USER: "user",
+    TABLE_SUBSCRIPTION: "tablesubscription",
+    TABLE_INFO: "tableinfo",
+    VOTE: "vote",
+    TABLE_CELL: "tablecells",
+    TAGS: "tags"
+  },
+  tableSortType: {
+    SPREADS: "totalSpread",
+    SUBSCRIBERS: "totalSubscribers",
+    COLLABORATIONS: "totalCollaborations",
+    VIEWS: "totalView",
+    CREATED_AT: "createdAt"
+  },
+  tableRowActionType: {
+    SUBMITTED: "submitted",
+    DELETED: "deleted",
+    UPDATED: "updated"
+  },
+  rowStatusType: {
+    PENDING: "P",
+    APPROVED: "A",
+    REJECTED: "R",
+    REVOKED: "RE"
+  },
+  collaborateTypes: {
+    SUBMITTED: "submitted",
+    RECEIVED: "received"
+  },
+  votesType: {
     TABLE: "table",
     TABLE_ROW: "tablerow",
     TABLE_COMMENT: "tablecomment"
   },
-  tables: {
-    USER: "user",
-    USER_FOLLOWERS: "userfollower",
-    USER_CONNECTIONS: "userconnection",
-    USER_LOCATION: "userlocation",
-    LOCATION: "location",
+  vote: {
     TABLE: "table",
-    VOTE: "vote"
+    TABLE_ROW: "tablerow",
+    TABLE_COMMENT: "tablecomment"
   }
 };
