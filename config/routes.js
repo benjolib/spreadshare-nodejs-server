@@ -204,5 +204,10 @@ module.exports = [
     method: "POST",
     path: "/api/v1/user/history",
     handler: "UserController.history"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/user/statistic",
+    handler: "UserController.statistic"
   }
 ];

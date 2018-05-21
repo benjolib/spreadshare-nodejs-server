@@ -39,6 +39,7 @@ module.exports = {
     addRow: ["JoiPolicy.validate", "PassportPolicy.authenticate"]
   },
   UserController: {
-    history: ["PassportPolicy.authenticate"]
+    history: ["PassportPolicy.authenticate"],
+    statistic: ["PassportPolicy.authenticate"]
   }
 };

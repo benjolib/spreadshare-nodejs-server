@@ -17,7 +17,9 @@ module.exports = {
     },
     status: {
       ACTIVE: "A",
-      DEACTIVE: "D"
+      DEACTIVE: "D",
+      SUBSCRIBE: "S",
+      UNSUBSCRIBE: "U"
     }
   },
   tables: {

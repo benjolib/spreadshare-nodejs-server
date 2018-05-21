@@ -49,26 +49,21 @@ module.exports = class UserService extends Service {
 
   find(fields) {
     let { sequelize } = this.app.orm.User;
-    let {
-      USER,
-      TABLE,
-      USER_FOLLOWERS,
-      VOTE
-    } = this.app.config.constants.tables;
+    let { USER, TABLE, TABLE_SUBSCRIPTION } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
 
     let condSql = "";
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
 
-    let sql = `select u.* ,               
-          (select count(*)::int from ${schema}.${USER_FOLLOWERS} uf where uf."userId"=u.id) as totalfollowers,
-          (select count(*)::int from ${schema}.${USER_FOLLOWERS} uf where uf."followedBy"=u.id) as totalfollowings,
-          (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as Tablelist
+    let sql = `select u.*,              
+          (select count(*)::int from ${schema}.${TABLE_SUBSCRIPTION} ts where ts."userId"=u.id and ts."status"= '${
+      fields.status
+    }') as totalsubscriber,
+          (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as totalpublications 
           from ${schema}.${USER} u 
-          left join ${schema}.${VOTE} v on v."userId"=u.id 
-          ${condSql}`;
-    //todo total share pending
+          where u.id = ${fields.userId} ${condSql}`;
+
     return sequelize
       .query(sql, {
         bind: [],
