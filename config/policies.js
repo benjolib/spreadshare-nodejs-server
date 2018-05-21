@@ -37,5 +37,8 @@ module.exports = {
     publish: ["JoiPolicy.validate"],
     list: ["JoiPolicy.validate"],
     addRow: ["JoiPolicy.validate", "PassportPolicy.authenticate"]
+  },
+  UserController: {
+    history: ["PassportPolicy.authenticate"]
   }
 };
