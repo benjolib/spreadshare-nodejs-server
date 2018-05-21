@@ -2,4 +2,6 @@
 
 exports.DefaultService = require("./DefaultService");
 exports.PassportService = require("./PassportService");
-exports.VoteService = require("./VoteService");
+exports.TagsService = require("./TagsService");
+exports.TableService = require("./TableService");
+exports.UserService = require("./UserService");

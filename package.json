@@ -4,6 +4,8 @@
   "main": "index.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "db-migrate": "^0.11.1",
+    "db-migrate-pg": "^0.4.0",
     "express": "^5.0.0-alpha.3",
     "install": "^0.11.0",
     "joi": "^13.3.0",
@@ -16,7 +18,7 @@
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
     "passport-twitter": "^1.0.4",
-    "pg": "^7.4.1",
+    "pg": "^7.4.3",
     "rand-token": "^0.4.0",
     "trailpack-bootstrap": "^2.0.0",
     "trailpack-express": "^2.0.3",
@@ -43,7 +45,10 @@
   },
   "lint-staged": {
     "*.{js,json,css,md}": ["prettier --write", "git add"],
-    "{api, config}/*.{js,json,css,md}": ["prettier --write", "git add"]
+    "api/controllers/*.{js,json,css,md}": ["prettier --write", "git add"],
+    "api/schemas/*.{js,json,css,md}": ["prettier --write", "git add"],
+    "api/services/*.{js,json,css,md}": ["prettier --write", "git add"],
+    "config/*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "engines": {
     "node": ">= 4.0.0"
