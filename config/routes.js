@@ -119,122 +119,62 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/subscriber/list",
-    handler: "SubscriberController.list",
-    config: { id: "SubscriberValidator.list" }
-  },
-  {
-    method: "POST",
-    path: "/api/v1/subscriber/subscribe",
-    handler: "SubscriberController.subscribe",
-    config: { id: "SubscriberValidator.subscribe" }
-  },
-  {
-    method: "GET",
-    path: "/api/v1/subscriber/unsubscribe/:id",
-    handler: "SubscriberController.unsubscribe"
+    handler: "SubscriberController.list"
   },
 
-  //Votes api route
+  //tags api route
   {
     method: "POST",
-    path: "/api/v1/vote",
+    path: "/api/w/v1/vote",
     handler: "VoteController.addVote",
     config: { id: "VoteValidator.create" }
   },
   {
     method: "POST",
-    path: "/api/v1/vote/remove",
+    path: "/api/w/v1/vote/remove",
     handler: "VoteController.removeVote",
     config: { id: "VoteValidator.create" }
   },
+  {
+    method: "GET",
+    path: "/api/v1/tags/:id",
+    handler: "TagsController.remove"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/tags/list",
+    handler: "TagsController.list"
+  },
 
   /**
-   * table api route
+   * ProfileController
    */
   {
-    method: "POST",
-    path: "/api/v1/table/create",
-    handler: "TableController.create",
-    config: { id: "TableValidator.create" }
-  },
-  {
-    method: "POST",
-    path: "/api/v1/table/column",
-    handler: "TableController.addColumn",
-    config: { id: "TableValidator.addColumn" }
+    method: "GET",
+    path: "/api/v1/profile",
+    handler: "ProfileController.getProfile"
   },
   {
     method: "PUT",
-    path: "/api/v1/table/column/:id",
-    handler: "TableController.updateColumn",
-    config: { id: "TableValidator.addColumn" }
-  },
-  {
-    method: "DELETE",
-    path: "/api/v1/table/column/:id",
-    handler: "TableController.removeColumn"
+    path: "/api/v1/profile",
+    handler: "ProfileController.updateProfile",
+    config: { id: "ProfileValidator.updateProfile" }
   },
   {
     method: "PUT",
-    path: "/api/v1/table/update/:id",
-    handler: "TableController.update",
-    config: { id: "TableValidator.create" }
-  },
-  {
-    method: "PUT",
-    path: "/api/v1/table/publish/:id",
-    handler: "TableController.publish",
-    config: { id: "TableValidator.publish" }
+    path: "/api/v1/profile/userconnection",
+    handler: "ProfileController.upsertConnections",
+    config: { id: "ProfileValidator.upsertConnections" }
   },
   {
     method: "GET",
-    path: "/api/v1/table/:id",
-    handler: "TableController.tableDetail"
-  },
-  {
-    method: "DELETE",
-    path: "/api/v1/table/:id",
-    handler: "TableController.remove"
+    path: "/api/v1/profile/userconnection/:userid",
+    handler: "ProfileController.getUserConnections"
   },
   {
     method: "POST",
-    path: "/api/v1/table/list",
-    handler: "TableController.list",
-    config: { id: "TableValidator.list" }
-  },
-  {
-    method: "POST",
-    path: "/api/v1/table/row",
-    handler: "TableController.addRow",
-    config: { id: "TableValidator.addRow" }
-  },
-  {
-    method: "DELETE",
-    path: "/api/v1/table/row/:id",
-    handler: "TableController.deleteTableRow"
-  },
-  {
-    method: "PUT",
-    path: "/api/v1/table/row/:id",
-    handler: "TableController.updateTableRow"
-  },
-  {
-    method: "POST",
-    path: "/api/v1/table/history",
-    handler: "TableController.historyList"
-  },
-  /**
-   * user Api routes
-   */
-
-  {
-    method: "POST",
-    path: "/api/v1/user/history",
-    handler: "UserController.history"
-  },
-  {
-    method: "POST",
-    path: "/api/v1/user/statistic",
-    handler: "UserController.statistic"
+    path: "/api/v1/profile/upload",
+    handler: "ProfileController.uploadImage",
+    config: { id: "ProfileValidator.uploadImage" }
   }
 ];

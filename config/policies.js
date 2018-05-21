@@ -50,5 +50,11 @@ module.exports = {
   SubscriberController: {
     subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     list: ["JoiPolicy.validate"]
+  },
+  ProfileController: {
+    getProfile: ["PassportPolicy.authenticate"],
+    updateProfile: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    upsertConnections: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    uploadImage: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   }
 };
