@@ -40,6 +40,7 @@ module.exports = {
   },
   UserController: {
     history: ["PassportPolicy.authenticate"],
-    statistic: ["PassportPolicy.authenticate"]
+    statistic: ["PassportPolicy.authenticate"],
+    publication: ["PassportPolicy.authenticate"]
   }
 };

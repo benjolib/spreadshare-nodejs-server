@@ -209,5 +209,10 @@ module.exports = [
     method: "POST",
     path: "/api/v1/user/statistic",
     handler: "UserController.statistic"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/user/publication",
+    handler: "UserController.publication"
   }
 ];
