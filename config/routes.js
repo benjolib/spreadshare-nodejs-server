@@ -219,5 +219,25 @@ module.exports = [
     method: "POST",
     path: "/api/v1/notification",
     handler: "NotificationController.list"
+  },
+
+  /**
+   * curator api
+   */
+  {
+    method: "POST",
+    path: "/api/v1/curator/follow",
+    handler: "CuratorController.follow",
+    config: { id: "CuratorValidator.follow" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/curator/unfollow/:id",
+    handler: "CuratorController.unfollow"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/curator/list",
+    handler: "CuratorController.list"
   }
 ];

@@ -61,5 +61,10 @@ module.exports = {
     list: ["PassportPolicy.authenticate"],
     read: ["PassportPolicy.authenticate"],
     get: ["PassportPolicy.authenticate"]
+  },
+  CuratorController: {
+    follow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    unfollow: ["PassportPolicy.authenticate"],
+    list: ["JoiPolicy.validate"]
   }
 };

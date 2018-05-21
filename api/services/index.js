@@ -9,3 +9,4 @@ exports.SubscriberService = require("./SubscriberService");
 exports.TableService = require("./TableService");
 exports.TagsService = require("./TagsService");
 exports.NotificationService = require("./NotificationService");
+exports.CuratorService = require("./CuratorService");
