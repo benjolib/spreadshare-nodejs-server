@@ -37,6 +37,7 @@ module.exports = {
     publish: ["JoiPolicy.validate"]
   },
   CommentController: {
-    add: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+    add: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    list: ["JoiPolicy.validate"]
   }
 };

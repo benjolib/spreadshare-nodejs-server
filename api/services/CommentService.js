@@ -1,7 +1,7 @@
 "use strict";
 
 const Service = require("trails/service");
-
+const _ = require("lodash");
 /**
  * @module CommentService
  * @description comment
@@ -30,6 +30,32 @@ module.exports = class CommentService extends Service {
 
     return TableComment.destroy({ where: { id } }).then(data => {
       return data;
+    });
+  }
+
+  /**
+   * Get list of comments
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  find(fields) {
+    let { TableComment } = this.app.orm;
+    let criteria = {};
+
+    if (fields.hasOwnProperty("tableId")) {
+      criteria.tableId = fields.tableId;
+    }
+
+    return TableComment.findAll({
+      where: criteria,
+      offset: parseInt(fields.start),
+      limit: parseInt(fields.limit)
+    }).then(data => {
+      if (_.isEmpty(data)) throw new Error("Comment not found!");
+
+      return _.map(data, comment => {
+        return comment.toJSON();
+      });
     });
   }
 };

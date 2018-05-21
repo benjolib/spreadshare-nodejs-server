@@ -69,4 +69,28 @@ module.exports = class CommentController extends Controller {
       });
     }
   }
+
+  /**
+   * get list of comments
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async list(req, res) {
+    let model = req.body;
+    let { CommentService } = this.app.services;
+
+    try {
+      let tag = await CommentService.find(model);
+      return res.json({
+        flag: true,
+        data: tag,
+        message: "tags list",
+        code: 200
+      });
+    } catch (e) {
+      console.log(e);
+      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+    }
+  }
 };

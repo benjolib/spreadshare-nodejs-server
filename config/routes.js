@@ -183,5 +183,11 @@ module.exports = [
     method: "DELETE",
     path: "/api/v1/table/comment/:id",
     handler: "CommentController.remove"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/comment/list",
+    handler: "CommentController.list",
+    config: { id: "CommentValidator.list" }
   }
 ];

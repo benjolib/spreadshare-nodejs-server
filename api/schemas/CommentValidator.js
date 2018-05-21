@@ -10,4 +10,12 @@ module.exports = class CommentValidator {
       comment: Joi.string()
     });
   }
+
+  list() {
+    return Joi.object().keys({
+      tableId: Joi.number(),
+      start: Joi.number(),
+      limit: Joi.number()
+    });
+  }
 };
