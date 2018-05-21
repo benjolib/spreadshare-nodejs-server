@@ -60,7 +60,11 @@ module.exports = class UserController extends Controller {
       let statistics = await UserService.find(data);
       return res.json({
         flag: true,
-        data: statistics,
+        data: {
+          totalsubscriber: statistics.totalsubscriber,
+          totalpublications: statistics.totalpublications,
+          totalcollaborations: statistics.totalcollaborations
+        },
         message: "User Statistics",
         code: 200
       });
