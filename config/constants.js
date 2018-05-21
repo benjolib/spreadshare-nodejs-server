@@ -17,13 +17,16 @@ module.exports = {
     },
     status: {
       ACTIVE: "A",
-      DEACTIVE: "D"
+      DEACTIVE: "D",
+      SUBSCRIBE: "S",
+      UNSUBSCRIBE: "U"
     }
   },
   tables: {
     TABLE: "table",
     USER: "user",
-    TABLEVIEW: "tableview"
+    TABLEVIEW: "tableview",
+    TABLE_SUBSCRIPTION: "tablesubscription"
   },
   tableSortType: {
     CREATED_AT: "createdat"

@@ -37,6 +37,7 @@ module.exports = {
     publish: ["JoiPolicy.validate"]
   },
   UserController: {
-    history: ["PassportPolicy.authenticate"]
+    history: ["PassportPolicy.authenticate"],
+    statistic: ["PassportPolicy.authenticate"]
   }
 };

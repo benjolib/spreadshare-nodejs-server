@@ -30,11 +30,41 @@ module.exports = class UserController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: " User History ",
         code: 200
       });
     } catch (e) {
       console.log(e);
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  async statistic(req, res) {
+    let model = req.body;
+    let user = req.user;
+    let { UserService } = this.app.services;
+    let { SUBSCRIBE } = this.app.config.constants.user.status;
+
+    let data = {
+      limit: model.limit,
+      start: model.start,
+      userId: user.id,
+      status: SUBSCRIBE
+    };
+    try {
+      let statistics = await UserService.find(data);
+      return res.json({
+        flag: true,
+        data: statistics,
+        message: "User Statistics",
+        code: 200
+      });
+    } catch (e) {
       return res.json({
         flag: false,
         data: e,
