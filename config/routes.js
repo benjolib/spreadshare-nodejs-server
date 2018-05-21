@@ -121,6 +121,21 @@ module.exports = [
     path: "/api/v1/subscriber/list",
     handler: "SubscriberController.list"
   },
+
+  //Votes api route
+  {
+    method: "POST",
+    path: "/api/v1/vote",
+    handler: "VoteController.addVote",
+    config: { id: "VoteValidator.create" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/vote/remove",
+    handler: "VoteController.removeVote",
+    config: { id: "VoteValidator.create" }
+  },
+
   /**
    * table api route
    */
