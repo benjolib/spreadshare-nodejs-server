@@ -2,8 +2,8 @@
 
 const assert = require("assert");
 
-describe("VoteController", () => {
+describe("CuratorService", () => {
   it("should exist", () => {
-    assert(global.app.controllers.VoteController);
+    assert(global.app.services.CuratorService);
   });
 });
