@@ -7,3 +7,4 @@ exports.TagsController = require("./TagsController");
 exports.TableController = require("./TableController");
 exports.UserController = require("./UserController");
 exports.VoteController = require("./VoteController");
+exports.SubscriberController = require("./SubscriberController");
