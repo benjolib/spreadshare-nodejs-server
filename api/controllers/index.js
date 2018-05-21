@@ -4,4 +4,9 @@ exports.DefaultController = require("./DefaultController");
 exports.ViewController = require("./ViewController");
 exports.AuthController = require("./AuthController");
 exports.VoteController = require("./VoteController");
+
+exports.TagsController = require("./TagsController");
+exports.UserController = require("./UserController");
 exports.ProfileController = require("./ProfileController");
+exports.SubscriberController = require("./SubscriberController");
+exports.TableController = require("./TableController");

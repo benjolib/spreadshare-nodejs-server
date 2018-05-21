@@ -97,6 +97,39 @@ module.exports = [
     path: "/api/v1/auth/twitter/callback",
     handler: "AuthController.twitterCallback"
   },
+
+  /**
+   * ProfileController
+   */
+  {
+    method: "GET",
+    path: "/api/v1/profile",
+    handler: "ProfileController.getProfile"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile",
+    handler: "ProfileController.updateProfile",
+    config: { id: "ProfileValidator.updateProfile" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile/userconnection",
+    handler: "ProfileController.upsertConnections",
+    config: { id: "ProfileValidator.upsertConnections" }
+  },
+  {
+    method: "GET",
+    path: "/api/v1/profile/userconnection/:userid",
+    handler: "ProfileController.getUserConnections"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/profile/upload",
+    handler: "ProfileController.uploadImage",
+    config: { id: "ProfileValidator.uploadImage" }
+  },
+
   //tags api route
   {
     method: "POST",
@@ -125,25 +158,15 @@ module.exports = [
   //tags api route
   {
     method: "POST",
-    path: "/api/w/v1/vote",
+    path: "/api/v1/vote",
     handler: "VoteController.addVote",
     config: { id: "VoteValidator.create" }
   },
   {
     method: "POST",
-    path: "/api/w/v1/vote/remove",
+    path: "/api/v1/vote/remove",
     handler: "VoteController.removeVote",
     config: { id: "VoteValidator.create" }
-  },
-  {
-    method: "GET",
-    path: "/api/v1/tags/:id",
-    handler: "TagsController.remove"
-  },
-  {
-    method: "POST",
-    path: "/api/v1/tags/list",
-    handler: "TagsController.list"
   },
 
   /**
