@@ -157,7 +157,7 @@ module.exports = [
   },
   {
     method: "POST",
-    path: "/api/v1/subscriber/subscribe",
+    path: "/api/v1/subscriber/subscribe/:id",
     handler: "SubscriberController.subscribe",
     config: { id: "SubscriberValidator.subscribe" }
   },

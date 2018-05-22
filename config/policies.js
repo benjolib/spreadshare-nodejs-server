@@ -74,7 +74,11 @@ module.exports = {
     removeVote: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   },
   SubscriberController: {
-    subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    subscribe: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable"
+    ],
     list: ["JoiPolicy.validate"]
   },
   ProfileController: {

@@ -39,27 +39,44 @@ module.exports = class SubscriberController extends Controller {
    */
   async subscribe(req, res) {
     let body = req.body;
+    let params = req.params;
     let user = req.user;
-    let { SubscriberService } = this.app.services;
+    let { SubscriberService, NotificationService } = this.app.services;
+    let { SUBSCRIBE } = this.app.config.constants.subscribeType;
+    let table = req.table;
 
     let model = {
-      tableId: body.tableId,
-      status: body.status,
+      tableId: params.id,
+      status: SUBSCRIBE,
       type: body.type,
       userId: user.id
     };
     try {
-      let tags = await SubscriberService.subscribe(model);
-      return res.json({
+      let subscriber = await SubscriberService.subscribe(model);
+      res.json({
         flag: true,
-        data: tags,
-        message: "Success",
+        data: subscriber,
+        message: "Successfully subscribe!",
         code: 200
       });
     } catch (e) {
-      console.log(e);
-      return res.json({ flag: false, data: e, message: e.message, code: 500 });
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: SUBSCRIBE,
+        text: `subscribe by`,
+        userId: table.owner
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**

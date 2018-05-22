@@ -71,5 +71,8 @@ module.exports = {
     COLLABORATE_UPDATE_STATUS: "CUS",
     COMMENTS: "COM",
     NEW_LIST: "NL"
+  },
+  subscribeType: {
+    SUBSCRIBE: "S"
   }
 };
