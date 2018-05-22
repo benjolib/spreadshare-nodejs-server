@@ -16,8 +16,10 @@ module.exports = class TableController extends Controller {
    */
   async create(req, res) {
     let model = req.body;
-    let { TableService } = this.app.services;
+    let { TableService, NotificationService } = this.app.services;
+    let { notificationType, notificationItemType } = this.app.config.constants;
     let user = req.user;
+    let table;
     try {
       let data = {
         owner: user.id,
@@ -31,8 +33,9 @@ module.exports = class TableController extends Controller {
         isPublished: model.isPublished
       };
 
-      let table = await TableService.create(data);
-      return res.json({
+      table = await TableService.create(data);
+
+      res.json({
         flag: true,
         data: table,
         message: "Success",
@@ -46,6 +49,18 @@ module.exports = class TableController extends Controller {
         code: 500
       });
     }
+    try {
+      let fields = {
+        createdBy: table.owner,
+        notificationType: notificationType.NEW_LIST,
+        text: `table list created by`,
+        userId: user.id,
+        itemType: notificationItemType.TABLE,
+        itemId: table.id
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**

@@ -75,7 +75,9 @@ module.exports = class NotificationService extends Service {
       notificationType: fields.notificationType,
       text: fields.text,
       createdBy: fields.createdBy,
-      userId: fields.userId
+      userId: fields.userId,
+      itemType: fields.itemType,
+      itemId: fields.itemId
     };
     return UserNotification.create(model)
       .then(msg => {

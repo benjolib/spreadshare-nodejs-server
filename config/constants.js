@@ -74,5 +74,10 @@ module.exports = {
   },
   subscribeType: {
     SUBSCRIBE: "S"
+  },
+  notificationItemType: {
+    TABLE: "T",
+    TABLE_ROW: "TR",
+    TABLE_COLUMN: "TC"
   }
 };

@@ -37,6 +37,8 @@ module.exports = class UserNotification extends Model {
       notificationType: { type: STRING },
       text: { type: TEXT },
       isRead: { type: BOOLEAN, defaultValue: false },
+      itemId: { type: INTEGER },
+      itemType: { type: STRING },
       createdAt: {
         type: DATE,
         field: "createdAt",
