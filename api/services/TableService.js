@@ -564,6 +564,11 @@ module.exports = class TableService extends Service {
       });
   }
 
+  /**
+   * update Row status
+   * @param fields
+   * @param id
+   */
   updateRowStatus(fields, id) {
     let { TableRow } = this.app.orm;
     return TableRow.update(fields, { where: { id } })
@@ -580,20 +585,24 @@ module.exports = class TableService extends Service {
       });
   }
 
-  updateCount(fields, tableId) {
-    let { TableInfo } = this.app.orm;
+  /**
+   * update Count table info
+   * @param tableId
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  updateCount(tableId) {
+    let { sequelize } = this.app.orm.User;
 
-    return TableInfo.update(fields, { where: { tableId } })
-      .then(data => {
-        return data;
+    let { schema } = sequelize.options;
+    let { TABLE_INFO } = this.app.config.constants.tables;
+
+    let sql = `update ${schema}.${TABLE_INFO} set "totalCollaborations" = "totalCollaborations"+1 where "tableId" = '${tableId}'`;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
       })
-      .then(result => {
-        return _.map(result, data => {
-          return data;
-        });
-      })
-      .catch(err => {
-        throw err;
-      });
+      .then(result => {});
   }
 };

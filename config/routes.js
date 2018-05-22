@@ -384,8 +384,9 @@ module.exports = [
     config: { id: "TableValidator.search" }
   },
   {
-    method: "POST",
+    method: "PUT",
     path: "/api/v1/table/updatestatus/:id",
-    handler: "TableController.updateStatus"
+    handler: "TableController.updateStatus",
+    config: { id: "TableValidator.updateStatus" }
   }
 ];
