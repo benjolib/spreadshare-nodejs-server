@@ -30,7 +30,11 @@ module.exports = {
     TABLE_INFO: "tableinfo",
     VOTE: "vote",
     TABLE_CELL: "tablecells",
-    TAGS: "tags"
+    TAGS: "tags",
+    USER_FOLLOWERS: "userfollower",
+    USER_CONNECTIONS: "userconnection",
+    USER_LOCATION: "userlocation",
+    LOCATION: "location"
   },
   tableSortType: {
     SPREADS: "totalSpread",
@@ -63,5 +67,9 @@ module.exports = {
     TABLE: "table",
     TABLE_ROW: "tablerow",
     TABLE_COMMENT: "tablecomment"
+  },
+  resetPasswordStatusType: {
+    PENDING: "P",
+    ACCESSED: "A"
   }
 };

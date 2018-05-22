@@ -65,7 +65,10 @@ module.exports = {
   },
   UserController: {
     history: ["PassportPolicy.authenticate"],
-    statistic: ["PassportPolicy.authenticate"]
+    statistic: ["PassportPolicy.authenticate"],
+    forgotPassword: ["JoiPolicy.validate"],
+    resetPasswordWithToken: ["JoiPolicy.validate"],
+    changePassword: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   },
 
   VoteController: {

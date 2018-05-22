@@ -2,6 +2,9 @@
 
 const Service = require("trails/service");
 const _ = require("lodash");
+const randtoken = require("rand-token");
+const crypto = require("crypto");
+
 /**
  * @module UserService
  * @description user
@@ -89,5 +92,57 @@ module.exports = class UserService extends Service {
       .catch(err => {
         throw err;
       });
+  }
+
+  /**
+   * Create User Password Token (For Forgot Password)
+   * @param userid
+   * @returns {Promise.<TResult>}
+   */
+  createPasswordToken(userid) {
+    let { UserResetPassword } = this.app.orm;
+
+    //let validtime = Math.ceil(new Date().getTime()/1000 + validhours*3600);
+
+    let token = {
+      code: randtoken.generate(48),
+      userId: userid
+    };
+
+    return UserResetPassword.create(token)
+      .then(token => {
+        return token.toJSON();
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  /**
+   * Get reset token detail
+   * @param token
+   * @returns {Promise|Promise.<TResult>|*}
+   */
+  getPasswordToken(token) {
+    let { UserResetPassword } = this.app.orm;
+
+    return UserResetPassword.findOne({ where: { code: token } }).then(token => {
+      if (_.isEmpty(token)) throw new Error(`No token found!`);
+      return token.toJSON();
+    });
+  }
+
+  /**
+   * update password token
+   * @param fields
+   * @param id
+   * @returns {Promise|Promise.<TResult>|*}
+   */
+  updatePasswordToken(fields, id) {
+    let { UserResetPassword } = this.app.orm;
+
+    return UserResetPassword.update(fields, { where: { id } }).then(rows => {
+      return rows;
+    });
   }
 };

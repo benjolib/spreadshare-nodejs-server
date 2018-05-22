@@ -2,12 +2,54 @@
 
 const Service = require("trails/service");
 const _ = require("lodash");
+const randtoken = require("rand-token");
+const crypto = require("crypto");
 
 /**
  * @module ProfileService
  * @description profile apis
  */
 module.exports = class ProfileService extends Service {
+  /**
+   * Encrypt User Password
+   * @param pass
+   * @returns {Buffer | string}
+   */
+  makePassword(pass) {
+    return crypto
+      .createHash("md5")
+      .update("xTrEm35A1t" + pass)
+      .digest("hex");
+  }
+
+  /**
+   * Check user exists
+   * @param userid
+   * @returns {Promise|Promise.<TResult>|*}
+   */
+  checkExist(userid) {
+    let { User } = this.app.orm;
+
+    return User.findOne({ where: { id: userid } }).then(data => {
+      if (_.isEmpty(data)) throw new Error(`No user found!`);
+
+      return data.toJSON();
+    });
+  }
+
+  /**
+   * Validate password
+   * @param pass
+   * @param dbPassword
+   * @returns {boolean}
+   */
+  validatePassword(pass, dbPassword) {
+    console.log(`this.makePassword(pass)`, this.makePassword(pass));
+    console.log(`db password`, dbPassword);
+
+    return this.makePassword(pass) == dbPassword ? true : false;
+  }
+
   /**
    * Get user profile detail
    * @param userid
@@ -54,7 +96,7 @@ module.exports = class ProfileService extends Service {
           left join ${schema}.${USER_CONNECTIONS} uc on uc."userId"=u.id
           left join ${schema}.${USER_LOCATION} ul on ul."userId"=u.id
           left join ${schema}.${LOCATION} l on l.id=ul."locationId"
-          where u.id=$1`;
+          where (u.id::varchar=$1::varchar OR u.email=$1::varchar)`;
 
     let params = [userid];
     //console.log('sql',sql, params)
@@ -100,6 +142,10 @@ module.exports = class ProfileService extends Service {
   update(fields, userid) {
     let { User } = this.app.orm;
     let model = _.omit(fields, "locationId");
+
+    if (fields.password) {
+      model.password = this.makePassword(fields.password);
+    }
 
     return User.update(model, { where: { id: userid } }).then(rows => {
       return rows;
