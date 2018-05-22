@@ -379,6 +379,12 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * update table row
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async updateTableRow(req, res) {
     let params = req.params;
     let model = req.body;
@@ -404,6 +410,12 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * get History list
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async historyList(req, res) {
     let { TableService } = this.app.services;
     let { tableSortType } = this.app.config.constants;
@@ -430,6 +442,39 @@ module.exports = class TableController extends Controller {
       });
     } catch (e) {
       console.log(e);
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  async updateStatus(req, res) {
+    let params = req.params;
+    let model = req.body;
+    let id = parseInt(params.id);
+    let { TableService } = this.app.services;
+    let { APPROVED } = this.app.config.constants.status;
+    let status =
+      model.status && !_.isEmpty(model.status) ? model.status : APPROVED;
+    let user = req.user;
+
+    let data = {
+      status: status,
+      updatedBy: user.id
+    };
+    try {
+      let table = await TableService.updateRowStatus(data, id);
+
+      return res.json({
+        flag: true,
+        data: table,
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
       return res.json({
         flag: false,
         data: e,

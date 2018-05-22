@@ -184,6 +184,12 @@ module.exports = class TableService extends Service {
     });
   }
 
+  /**
+   * updated row
+   * @param fields
+   * @param id
+   * @returns {Promise<T>}
+   */
   updateRow(fields, id) {
     let { sequelize } = this.app.orm.User;
     let { TABLE_CELL, TABLE_ROW } = this.app.config.constants.tables;
@@ -213,6 +219,11 @@ module.exports = class TableService extends Service {
       });
   }
 
+  /**
+   * find history of table
+   * @param fields
+   * @returns {Promise<T>}
+   */
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
     let {
@@ -247,6 +258,39 @@ module.exports = class TableService extends Service {
       .query(sql, {
         bind: [],
         type: sequelize.QueryTypes.SELECT
+      })
+      .then(result => {
+        return _.map(result, data => {
+          return data;
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  updateRowStatus(fields, id) {
+    let { TableRow } = this.app.orm;
+    return TableRow.update(fields, { where: { id } })
+      .then(data => {
+        return data;
+      })
+      .then(result => {
+        return _.map(result, data => {
+          return data;
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  updateCount(fields, tableId) {
+    let { TableInfo } = this.app.orm;
+
+    return TableInfo.update(fields, { where: { tableId } })
+      .then(data => {
+        return data;
       })
       .then(result => {
         return _.map(result, data => {

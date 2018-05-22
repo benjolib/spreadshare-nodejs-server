@@ -195,5 +195,10 @@ module.exports = [
     method: "POST",
     path: "/api/v1/table/history",
     handler: "TableController.historyList"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/updatestatus/:id",
+    handler: "TableController.updateStatus"
   }
 ];
