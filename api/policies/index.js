@@ -1,3 +1,2 @@
-'use strict'
-exports.PassportPolicy = require('./PassportPolicy')
-exports.JoiPolicy = require('./JoiPolicy')
+"use strict";
+exports.PassportPolicy = require("./PassportPolicy");
