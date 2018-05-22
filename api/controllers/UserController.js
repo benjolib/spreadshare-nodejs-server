@@ -7,6 +7,12 @@ const _ = require("lodash");
  * @description user.
  */
 module.exports = class UserController extends Controller {
+  /**
+   * get User History
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async history(req, res) {
     let { UserService } = this.app.services;
     let { CREATED_AT } = this.app.config.constants.tableSortType;
@@ -44,6 +50,12 @@ module.exports = class UserController extends Controller {
     }
   }
 
+  /**
+   * get user statistic
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async statistic(req, res) {
     let model = req.body;
     let user = req.user;
@@ -57,7 +69,7 @@ module.exports = class UserController extends Controller {
       status: SUBSCRIBE
     };
     try {
-      let statistics = await UserService.find(data);
+      let statistics = await UserService.findStatistic(data);
       return res.json({
         flag: true,
         data: {
@@ -66,6 +78,47 @@ module.exports = class UserController extends Controller {
           totalcollaborations: statistics.totalcollaborations
         },
         message: "User Statistics",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  async publication(req, res) {
+    let model = req.body;
+    let user = req.user;
+    let { UserService } = this.app.services;
+    // let { SUBSCRIBE } = this.app.config.constants.user.status;
+
+    let data = {
+      limit: model.limit,
+      start: model.start,
+      userId: user.id
+      //   status: SUBSCRIBE
+    };
+
+    try {
+      let list = await UserService.findPublication(data);
+      _.map(list, data => {
+        if (data.owner == user.id) {
+          data.role = "curator";
+        } else {
+          data.role = "Collaborator";
+        }
+      });
+      list.role = data.role;
+      return res.json({
+        flag: true,
+        data: {
+          list
+        },
+        message: "User publications",
         code: 200
       });
     } catch (e) {

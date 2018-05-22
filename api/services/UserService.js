@@ -7,6 +7,11 @@ const _ = require("lodash");
  * @description user
  */
 module.exports = class UserService extends Service {
+  /**
+   * Find User History
+   * @param fields
+   * @returns {Promise<T>}
+   */
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
     let { TABLE, USER, TABLEVIEW } = this.app.config.constants.tables;
@@ -38,6 +43,7 @@ module.exports = class UserService extends Service {
         type: sequelize.QueryTypes.SELECT
       })
       .then(result => {
+        if (_.isEmpty(result)) throw new Error(`History Not found!`);
         return _.map(result, data => {
           return data;
         });
@@ -47,7 +53,12 @@ module.exports = class UserService extends Service {
       });
   }
 
-  find(fields) {
+  /**
+   * find user statistics
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  findStatistic(fields) {
     let { sequelize } = this.app.orm.User;
     let {
       USER,
@@ -77,7 +88,7 @@ module.exports = class UserService extends Service {
         type: sequelize.QueryTypes.SELECT
       })
       .then(result => {
-        if (_.isEmpty(result)) throw new Error(`No user profile found!.`);
+        if (_.isEmpty(result)) throw new Error(`No user data found!.`);
         let user = result[0];
         return _.omit(
           user,
@@ -85,6 +96,43 @@ module.exports = class UserService extends Service {
           "passwordResetToken",
           "password"
         );
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  findPublication(fields) {
+    let { sequelize } = this.app.orm.User;
+    let { TABLE_ROW, TABLE, TABLE_INFO } = this.app.config.constants.tables;
+    let { APPROVED } = this.app.config.constants.status;
+    let { schema } = sequelize.options;
+
+    let condSql = "";
+    if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
+    if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
+
+    let sql = `select DISTINCT(t.id),t.*
+                   totalSubscribers,ti."totalSubscribers"
+                   from ${schema}.${TABLE} t
+        left join ${schema}.${TABLE_ROW} tr on tr."tableId" = t.id
+        left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
+        where t.owner = ${
+          fields.userId
+        } or tr."createdBy" = t.owner or tr.status = '${APPROVED}'    
+           ${condSql}`;
+    //todo percentage of contribution
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(result => {
+        if (_.isEmpty(result)) throw new Error(`Table not found!.`);
+
+        return _.map(result, data => {
+          return data;
+        });
       })
       .catch(err => {
         throw err;
