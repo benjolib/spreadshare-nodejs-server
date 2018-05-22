@@ -357,7 +357,7 @@ module.exports = [
    */
   {
     method: "POST",
-    path: "/api/v1/table/comment",
+    path: "/api/v1/table/comment/:id",
     handler: "CommentController.add",
     config: { id: "CommentValidator.add" }
   },

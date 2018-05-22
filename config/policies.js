@@ -98,7 +98,11 @@ module.exports = {
     list: ["JoiPolicy.validate"]
   },
   CommentController: {
-    add: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    add: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable"
+    ],
     remove: ["PassportPolicy.authenticate"],
     list: ["JoiPolicy.validate", "JoiPolicy.validate"]
   },
