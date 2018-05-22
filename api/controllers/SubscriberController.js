@@ -69,10 +69,10 @@ module.exports = class SubscriberController extends Controller {
     }
     try {
       let fields = {
-        createdBy: user.id,
+        createdBy: table.owner,
         notificationType: SUBSCRIBE,
         text: `subscribe by`,
-        userId: table.owner
+        userId: user.id
       };
       let notification = await NotificationService.create(fields);
       console.log(notification);

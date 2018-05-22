@@ -15,7 +15,7 @@ module.exports = class CollaborationController extends Controller {
    */
   async revokeSubmission(req, res) {
     let { TableService } = this.app.services;
-    let { rowStatusType } = this.app.config.constants;
+    let { rowStatusType, notificationType } = this.app.config.constants;
     let params = req.params;
     let user = req.user;
     let tableRow = req.tableRow;
@@ -52,6 +52,16 @@ module.exports = class CollaborationController extends Controller {
         message: `Couldn't update detail, ${e.message}`
       });
     }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: notificationType.COLLABORATE_UPDATE_STATUS,
+        text: `Update table row status by`,
+        userId: tableRow.updatedBy
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**
