@@ -113,15 +113,15 @@ module.exports = class UserService extends Service {
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
 
     let sql = `select DISTINCT(t.id),t.*
-           totalSubscribers,ti."totalSubscribers"
-                from ${schema}.${TABLE} t
+                   totalSubscribers,ti."totalSubscribers"
+                   from ${schema}.${TABLE} t
         left join ${schema}.${TABLE_ROW} tr on tr."tableId" = t.id
-         left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
+        left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
         where t.owner = ${
           fields.userId
         } or tr."createdBy" = t.owner or tr.status = '${APPROVED}'    
            ${condSql}`;
-
+    //todo percentage of contribution
     return sequelize
       .query(sql, {
         bind: [],
