@@ -15,12 +15,14 @@ module.exports = class TableColumn extends Model {
             models.TableColumn.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "NO ACTION"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
             models.TableColumn.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "tableId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
           }
         }

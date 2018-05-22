@@ -15,17 +15,20 @@ module.exports = class ChangeRequest extends Model {
             models.ChangeRequest.belongsTo(models.TableCells, {
               targetKey: "id",
               foreignKey: "cellId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
             models.ChangeRequest.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "NO ACTION"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
             models.ChangeRequest.belongsTo(models.TableRow, {
               targetKey: "id",
               foreignKey: "tableRowId",
-              onDelete: "NO ACTION"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
           }
         }

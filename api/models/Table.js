@@ -15,7 +15,50 @@ module.exports = class Table extends Model {
             models.Table.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "owner",
-              onDelete: "NO ACTION"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasMany(models.TableRow, {
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasMany(models.TableView, {
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasMany(models.TableSubscription, {
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasMany(models.TableRelation, {
+              foreignKey: "relatedTableId",
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasMany(models.TableRelation, {
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasMany(models.TableComment, {
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Table.hasOne(models.TableInfo, {
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
           }
         }
@@ -35,6 +78,7 @@ module.exports = class Table extends Model {
       description: { type: STRING(140) },
       isThumbnail: { type: BOOLEAN, defaultValue: false },
       curator: { type: ARRAY(INTEGER) },
+      relatedList: { type: ARRAY(INTEGER) },
       isPublished: { type: BOOLEAN, defaultValue: false },
       publishedAt: {
         type: DATE
