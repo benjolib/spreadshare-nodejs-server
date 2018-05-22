@@ -63,5 +63,13 @@ module.exports = {
     TABLE: "table",
     TABLE_ROW: "tablerow",
     TABLE_COMMENT: "tablecomment"
+  },
+  notificationType: {
+    FOLLOW: "F",
+    SUBSCRIBE: "S",
+    COLLABORATE: "C",
+    COLLABORATE_UPDATE_STATUS: "CUS",
+    COMMENTS: "COM",
+    NEW_LIST: "NL"
   }
 };

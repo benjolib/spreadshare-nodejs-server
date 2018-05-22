@@ -15,14 +15,7 @@ module.exports = class CuratorService extends Service {
   create(fields) {
     let { UserFollower } = this.app.orm;
     return UserFollower.create(fields).then(data => {
-      if (_.isEmpty(data)) throw new Error(`No user profile found!.`);
-      let user = data[0];
-      return _.omit(
-        user,
-        "emailConfirmationToken",
-        "passwordResetToken",
-        "password"
-      );
+      return data.toJSON();
     });
   }
 

@@ -337,10 +337,9 @@ module.exports = [
    * curator api
    */
   {
-    method: "POST",
-    path: "/api/v1/curator/follow",
-    handler: "CuratorController.follow",
-    config: { id: "CuratorValidator.follow" }
+    method: "GET",
+    path: "/api/v1/curator/follow/:id",
+    handler: "CuratorController.follow"
   },
   {
     method: "DELETE",
