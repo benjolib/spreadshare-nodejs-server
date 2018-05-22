@@ -1,9 +1,8 @@
 "use strict";
 
-const Controller = require('trails/controller')
-const JWT = require('jsonwebtoken')
-const randtoken = require('rand-token');
-
+const Controller = require("trails/controller");
+const JWT = require("jsonwebtoken");
+const randtoken = require("rand-token");
 
 /**
  * @module AuthController
@@ -30,21 +29,21 @@ module.exports = class AuthController extends Controller {
     let etoken = randtoken.generate(16);
 
     let model = {
-      name : body.name,
+      name: body.name,
       email: body.email,
       mobile: body.mobile,
       handle: body.handle,
       emailSettings: body.emailSettings,
       username: body.username,
-      password:body.password,
+      password: body.password,
       description: body.description,
       location: body.location,
       tagline: body.tagline,
       image: body.image,
-      emailConfirmationToken : etoken
-    }
+      emailConfirmationToken: etoken
+    };
 
-    let { User, Passport } = this.app.orm
+    let { User, Passport } = this.app.orm;
 
     try {
       let user = await User.create(model);

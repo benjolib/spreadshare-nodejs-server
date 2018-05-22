@@ -10,7 +10,6 @@ module.exports = class UserConnection extends Model {
   static config(app, Sequelize) {
     return {
       options: {
-        underscored: true,
         classMethods: {
           associate: models => {
             models.UserConnection.belongsTo(models.User, {

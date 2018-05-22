@@ -32,11 +32,73 @@ module.exports = {
   TableController: {
     create: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     addColumn: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    addMultipleColumns: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     updateColumn: ["JoiPolicy.validate"],
     update: ["JoiPolicy.validate"],
     publish: ["JoiPolicy.validate"],
     list: ["JoiPolicy.validate"],
-    addRow: ["JoiPolicy.validate", "PassportPolicy.authenticate"],
-    updateStatus: ["PassportPolicy.authenticate"]
+    addRow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    updateStatus: ["PassportPolicy.authenticate"],
+    deleteTableRow: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable"
+    ],
+    updateTableRow: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable",
+      "AuthPoilcy.loadCells"
+    ],
+    tableData: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable"
+    ]
+  },
+
+  CollaborationController: {
+    revokeSubmission: [
+      "PassportPolicy.authenticate",
+      "AuthPoilcy.loadTableRow"
+    ],
+    list: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+  },
+  UserController: {
+    history: ["PassportPolicy.authenticate"],
+    statistic: ["PassportPolicy.authenticate"]
+  },
+
+  VoteController: {
+    addVote: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    removeVote: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+  },
+  SubscriberController: {
+    subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    list: ["JoiPolicy.validate"]
+  },
+  ProfileController: {
+    getProfile: ["PassportPolicy.authenticate"],
+    updateProfile: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    upsertConnections: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    uploadImage: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
+  },
+  NotificationController: {
+    list: ["PassportPolicy.authenticate"],
+    read: ["PassportPolicy.authenticate"],
+    get: ["PassportPolicy.authenticate"]
+  },
+  CuratorController: {
+    follow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    unfollow: ["PassportPolicy.authenticate"],
+    list: ["JoiPolicy.validate"]
+  },
+  CommentController: {
+    add: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    remove: ["PassportPolicy.authenticate"],
+    list: ["JoiPolicy.validate", "JoiPolicy.validate"]
+  },
+  SearchController: {
+    list: ["JoiPolicy.validate", "JoiPolicy.validate"]
   }
 };

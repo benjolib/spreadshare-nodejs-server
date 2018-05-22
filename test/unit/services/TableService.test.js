@@ -1,9 +1,9 @@
-'use strict'
+"use strict";
 
-const assert = require('assert')
+const assert = require("assert");
 
-describe('TableService', () => {
-  it('should exist', () => {
-    assert(global.app.services.TableService)
-  })
-})
+describe("TableService", () => {
+  it("should exist", () => {
+    assert(global.app.services.TableService);
+  });
+});

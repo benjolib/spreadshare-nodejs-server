@@ -97,6 +97,39 @@ module.exports = [
     path: "/api/v1/auth/twitter/callback",
     handler: "AuthController.twitterCallback"
   },
+
+  /**
+   * ProfileController
+   */
+  {
+    method: "GET",
+    path: "/api/v1/profile",
+    handler: "ProfileController.getProfile"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile",
+    handler: "ProfileController.updateProfile",
+    config: { id: "ProfileValidator.updateProfile" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile/userconnection",
+    handler: "ProfileController.upsertConnections",
+    config: { id: "ProfileValidator.upsertConnections" }
+  },
+  {
+    method: "GET",
+    path: "/api/v1/profile/userconnection/:userid",
+    handler: "ProfileController.getUserConnections"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/profile/upload",
+    handler: "ProfileController.uploadImage",
+    config: { id: "ProfileValidator.uploadImage" }
+  },
+
   //tags api route
   {
     method: "POST",
@@ -119,7 +152,19 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/subscriber/list",
-    handler: "SubscriberController.list"
+    handler: "SubscriberController.list",
+    config: { id: "SubscriberValidator.list" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/subscriber/subscribe",
+    handler: "SubscriberController.subscribe",
+    config: { id: "SubscriberValidator.subscribe" }
+  },
+  {
+    method: "GET",
+    path: "/api/v1/subscriber/unsubscribe/:id",
+    handler: "SubscriberController.unsubscribe"
   },
   /**
    * table api route
@@ -135,6 +180,12 @@ module.exports = [
     path: "/api/v1/table/column",
     handler: "TableController.addColumn",
     config: { id: "TableValidator.addColumn" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/column/addmultiple",
+    handler: "TableController.addMultipleColumns",
+    config: { id: "TableValidator.addMultipleColumns" }
   },
   {
     method: "PUT",
@@ -162,7 +213,14 @@ module.exports = [
   {
     method: "GET",
     path: "/api/v1/table/:id",
-    handler: "TableController.tableDetail"
+    handler: "TableController.tableDetail",
+    config: { id: "TableValidator.updateTableRow" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/contents/:id",
+    handler: "TableController.tableData",
+    config: { id: "TableValidator.getTableContentList" }
   },
   {
     method: "DELETE",
@@ -182,19 +240,148 @@ module.exports = [
     config: { id: "TableValidator.addRow" }
   },
   {
-    method: "DELETE",
-    path: "/api/v1/table/row/:id",
-    handler: "TableController.deleteTableRow"
+    method: "POST",
+    path: "/api/v1/table/row/remove",
+    handler: "TableController.deleteTableRow",
+    config: { id: "TableValidator.deleteTableRow" }
   },
   {
     method: "PUT",
-    path: "/api/v1/table/row/:id",
-    handler: "TableController.updateTableRow"
+    path: "/api/v1/table/row",
+    handler: "TableController.updateTableRow",
+    config: { id: "TableValidator.updateTableRow" }
+  },
+
+  /**
+   * Collaboration apis
+   */
+  {
+    method: "GET",
+    path: "/api/v1/collaborate/revoke/:rowid",
+    handler: "CollaborationController.revokeSubmission"
   },
   {
     method: "POST",
-    path: "/api/v1/table/history",
-    handler: "TableController.historyList"
+    path: "/api/v1/collaborate/list",
+    handler: "CollaborationController.list",
+    config: { id: "TableValidator.getCollaborateList" }
+  },
+
+  //tags api route
+  {
+    method: "POST",
+    path: "/api/v1/vote",
+    handler: "VoteController.addVote",
+    config: { id: "VoteValidator.create" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/vote/remove",
+    handler: "VoteController.removeVote",
+    config: { id: "VoteValidator.create" }
+  },
+
+  /**
+   * ProfileController
+   */
+  {
+    method: "GET",
+    path: "/api/v1/profile",
+    handler: "ProfileController.getProfile"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile",
+    handler: "ProfileController.updateProfile",
+    config: { id: "ProfileValidator.updateProfile" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/profile/userconnection",
+    handler: "ProfileController.upsertConnections",
+    config: { id: "ProfileValidator.upsertConnections" }
+  },
+  {
+    method: "GET",
+    path: "/api/v1/profile/userconnection/:userid",
+    handler: "ProfileController.getUserConnections"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/profile/upload",
+    handler: "ProfileController.uploadImage",
+    config: { id: "ProfileValidator.uploadImage" }
+  },
+
+  /**
+   * Notification api route
+   */
+
+  {
+    method: "GET",
+    path: "/api/v1/notification/:id",
+    handler: "NotificationController.get"
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/notification/:id",
+    handler: "NotificationController.read"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/notification",
+    handler: "NotificationController.list"
+  },
+
+  /**
+   * curator api
+   */
+  {
+    method: "POST",
+    path: "/api/v1/curator/follow",
+    handler: "CuratorController.follow",
+    config: { id: "CuratorValidator.follow" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/curator/unfollow/:id",
+    handler: "CuratorController.unfollow"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/curator/list",
+    handler: "CuratorController.list"
+  },
+
+  /**
+   * Comment api route
+   */
+  {
+    method: "POST",
+    path: "/api/v1/table/comment",
+    handler: "CommentController.add",
+    config: { id: "CommentValidator.add" }
+  },
+  {
+    method: "DELETE",
+    path: "/api/v1/table/comment/:id",
+    handler: "CommentController.remove"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/table/comment/list",
+    handler: "CommentController.list",
+    config: { id: "CommentValidator.list" }
+  },
+
+  /**
+   * Search apis
+   */
+  {
+    method: "POST",
+    path: "/api/v1/search/list",
+    handler: "SearchController.list",
+    config: { id: "TableValidator.search" }
   },
   {
     method: "POST",

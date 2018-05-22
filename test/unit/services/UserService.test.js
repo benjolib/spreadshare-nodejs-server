@@ -2,8 +2,8 @@
 
 const assert = require("assert");
 
-describe("TableController", () => {
+describe("UserService", () => {
   it("should exist", () => {
-    assert(global.app.controllers.TableController);
+    assert(global.app.services.UserService);
   });
 });
