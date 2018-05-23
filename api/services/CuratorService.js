@@ -50,14 +50,17 @@ module.exports = class CuratorService extends Service {
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
 
-    let sql = `select u.* ,               
+    let sql = `select distinct(u.id), u.* ,               
           (select count(*)::int from ${schema}.${USER_FOLLOWERS} uf where uf."userId"=u.id) as totalfollowers,
           (select count(*)::int from ${schema}.${USER_FOLLOWERS} uf where uf."followedBy"=u.id) as totalfollowings,
-          (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as Tablelist
+          (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as Tablelist,
+          (select count(*)::int from ${schema}.${VOTE} v where v."userId" = u.id) as totalShare
           from ${schema}.${USER} u 
-          left join ${schema}.${VOTE} v on v."userId"=u.id 
+          join ${schema}.${VOTE} v on v."userId"=u.id 
+          left join ${schema}.${TABLE} t on t.owner = u.id
+          where v."itemId"=t.id
           ${condSql}`;
-    //todo total share pending
+
     return sequelize
       .query(sql, {
         bind: [],
