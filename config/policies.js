@@ -112,5 +112,9 @@ module.exports = {
   },
   SearchController: {
     list: ["JoiPolicy.validate", "JoiPolicy.validate"]
+  },
+  TagsController: {
+    list: ["JoiPolicy.validate"],
+    add: ["JoiPolicy.validate"]
   }
 };

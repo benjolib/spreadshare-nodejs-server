@@ -16,6 +16,7 @@ module.exports = class TagsService extends Service {
     let { Tags } = this.app.orm;
 
     return Tags.create(fields).then(data => {
+      if (_.isEmpty(data)) throw new Error(`Tags not created!.`);
       return data.toJSON();
     });
   }
@@ -40,17 +41,22 @@ module.exports = class TagsService extends Service {
    */
   find(fields) {
     let { Tags } = this.app.orm;
-    let criteria = {};
-
-    if (fields.hasOwnProperty("id")) {
-      criteria.id = fields.id;
-    }
+    let criteria = {
+      title: {
+        $like: "%fields.search%"
+      }
+    };
 
     return Tags.findAll({
-      where: criteria,
+      where: {
+        title: {
+          $like: `%${fields.search}`
+        }
+      },
       offset: parseInt(fields.start),
       limit: parseInt(fields.limit)
     }).then(tags => {
+      if (_.isEmpty(tags)) throw new Error(`Tags not found!.`);
       return _.map(tags, tag => {
         return tag.toJSON();
       });
