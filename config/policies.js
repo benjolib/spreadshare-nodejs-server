@@ -54,6 +54,7 @@ module.exports = {
       "JoiPolicy.validate",
       "AuthPoilcy.checkTable"
     ]
+    // uploadCsv:["PassportPolicy.authenticate"]
   },
 
   CollaborationController: {

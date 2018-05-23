@@ -592,4 +592,53 @@ module.exports = class TableController extends Controller {
       return res.json({ flag: false, data: [] });
     }
   }
+
+  /**
+   * Upload csv file
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async uploadCsv(req, res) {
+    let files = req.files;
+    if (!files)
+      return res
+        .status(400)
+        .json({ flag: false, message: `No files were uploaded.` });
+
+    let file = files.sampleFile;
+    let fileName =
+      files.sampleFile && files.sampleFile.name ? files.sampleFile.name : null;
+    let extension = fileName.split(".")[1].toLowerCase();
+    let tableContents = [];
+
+    if (extension != "csv")
+      return res.json({ flag: false, message: "File must be csv file!" });
+
+    let bufferOriginal = file.data; //Buffer.from(JSON.parse(file.data).data);
+
+    console.log(bufferOriginal);
+    let data = bufferOriginal.toString("utf8");
+    console.log("after utf string", data);
+
+    let csvData = data.split("\n");
+    let columns = csvData[0].split(",");
+    let allRows = csvData[1].split("\n");
+    let rows = [];
+
+    _.map(allRows, row => {
+      rows.push(row.split(","));
+    });
+
+    //trim data
+    columns = _.map(columns, c => {
+      return { title: c.trim() };
+    });
+
+    _.map(rows, r => {
+      let data = { cells: [] };
+    });
+
+    return res.json({ flag: true, data: { columns, rows } });
+  }
 };

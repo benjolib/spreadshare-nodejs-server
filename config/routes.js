@@ -273,6 +273,11 @@ module.exports = [
     handler: "TableController.updateTableRow",
     config: { id: "TableValidator.updateTableRow" }
   },
+  {
+    method: "POST",
+    path: "/api/v1/upload/csv",
+    handler: "TableController.uploadCsv"
+  },
 
   /**
    * Collaboration apis
