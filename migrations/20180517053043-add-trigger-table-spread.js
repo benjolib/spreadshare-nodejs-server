@@ -22,7 +22,7 @@ exports.up = function(db) {
     LANGUAGE plpgsql
     AS $function$
     BEGIN
-    IF NEW.type=='table' THEN
+    IF NEW.type='table' THEN
     EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET "totalSpreads" = "totalSpreads"+1 WHERE "tableId" = $1."itemId"' USING NEW;
     END IF;
     RETURN NULL;
