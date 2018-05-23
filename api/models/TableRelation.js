@@ -15,12 +15,14 @@ module.exports = class TableRelation extends Model {
             models.TableRelation.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "tableId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
             models.TableRelation.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "relatedTableId",
-              onDelete: "CASCADE"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
           }
         }

@@ -70,4 +70,31 @@ module.exports = class ProfileValidator {
       soundcloud: Joi.string()
     });
   }
+
+  forgotPassword() {
+    return Joi.object().keys({
+      email: Joi.string()
+        .email()
+        .required()
+    });
+  }
+
+  resetPassword() {
+    return Joi.object().keys({
+      password: Joi.string()
+        .regex(/^[^\s]{4,30}$/)
+        .required()
+    });
+  }
+
+  changePassword() {
+    return Joi.object().keys({
+      password: Joi.string()
+        .regex(/^[^\s]{4,30}$/)
+        .required(),
+      oldpassword: Joi.string()
+        .regex(/^[^\s]{4,30}$/)
+        .required()
+    });
+  }
 };

@@ -15,7 +15,7 @@ module.exports = class UserConnection extends Model {
             models.UserConnection.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "NO ACTION"
+              onDelete: "CASCADE"
             });
           }
         }

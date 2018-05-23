@@ -21,6 +21,31 @@ module.exports = class User extends Model {
               foreignKey: "user_id",
               onDelete: "CASCADE"
             });
+
+            models.User.hasMany(models.UserFollower, {
+              foreignKey: "userId",
+              onDelete: "CASCADE"
+            });
+
+            models.User.hasMany(models.UserFollower, {
+              foreignKey: "followedBy",
+              onDelete: "CASCADE"
+            });
+
+            models.User.hasMany(models.Table, {
+              foreignKey: "owner",
+              onDelete: "NO ACTION"
+            });
+
+            models.User.hasOne(models.UserConnection, {
+              foreignKey: "userId",
+              onDelete: "CASCADE"
+            });
+
+            models.User.hasOne(models.UserLocation, {
+              foreignKey: "userId",
+              onDelete: "CASCADE"
+            });
           }
         }
       }

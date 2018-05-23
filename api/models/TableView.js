@@ -15,12 +15,14 @@ module.exports = class TableView extends Model {
             models.TableView.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "tableId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
             models.TableView.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "NO ACTION"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
           }
         }

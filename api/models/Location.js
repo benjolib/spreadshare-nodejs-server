@@ -15,7 +15,15 @@ module.exports = class Location extends Model {
             models.Location.belongsTo(models.Cities, {
               targetKey: "id",
               foreignKey: "cityId",
-              onDelete: "CASCADE"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
+            });
+
+            models.Location.hasMany(models.UserLocation, {
+              targetKey: "id",
+              foreignKey: "cityId",
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
           }
         }

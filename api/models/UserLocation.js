@@ -15,12 +15,14 @@ module.exports = class UserLocation extends Model {
             models.UserLocation.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "NO ACTION"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
             models.UserLocation.belongsTo(models.Location, {
               targetKey: "id",
               foreignKey: "locationId",
-              onDelete: "CASCADE"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
           }
         }

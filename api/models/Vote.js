@@ -12,15 +12,11 @@ module.exports = class Vote extends Model {
       options: {
         classMethods: {
           associate: models => {
-            models.Vote.belongsTo(models.Table, {
-              targetKey: "id",
-              foreignKey: "itemId",
-              onDelete: "CASCADE"
-            });
             models.Vote.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
           }
         }

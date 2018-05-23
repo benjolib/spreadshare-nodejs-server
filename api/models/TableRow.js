@@ -15,17 +15,32 @@ module.exports = class TableRow extends Model {
             models.TableRow.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "createdBy",
-              onDelete: "NO ACTION"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
             models.TableRow.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "updatedBy",
-              onDelete: "NO ACTION"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
             models.TableRow.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "tableId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.TableRow.hasMany(models.TableCells, {
+              foreignKey: "rowId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+
+            models.TableRow.hasMany(models.ChangeRequest, {
+              foreignKey: "rowId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
           }
         }

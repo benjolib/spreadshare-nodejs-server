@@ -7,7 +7,22 @@ const Model = require("trails/model");
  * @description table info
  */
 module.exports = class TableInfo extends Model {
-  static config(app, Sequelize) {}
+  static config(app, Sequelize) {
+    return {
+      options: {
+        classMethods: {
+          associate: models => {
+            models.TableInfo.belongsTo(models.Table, {
+              targetKey: "id",
+              foreignKey: "tableId",
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
+            });
+          }
+        }
+      }
+    };
+  }
 
   static schema(app, Sequelize) {
     let { INTEGER, DATE, literal } = Sequelize;

@@ -16,16 +16,7 @@ module.exports = class AuthController extends Controller {
    * @returns {Promise<void>}
    */
   async signup(req, res) {
-    let model = req.body;
-    if (!model || !model.email || !model.password) {
-      return res.json({
-        flag: false,
-        data: {},
-        message: "Missing parameter",
-        code: 400
-      });
-    }
-
+    let body = req.body;
     let etoken = randtoken.generate(16);
 
     let model = {

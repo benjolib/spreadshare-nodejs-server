@@ -7,7 +7,22 @@ const Model = require("trails/model");
  * @description cities
  */
 module.exports = class Cities extends Model {
-  static config(app, Sequelize) {}
+  static config(app, Sequelize) {
+    return {
+      options: {
+        classMethods: {
+          //If you need associations, put them here
+          associate: models => {
+            models.Cities.hasMany(models.Location, {
+              foreignKey: "cityId",
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
+            });
+          }
+        }
+      }
+    };
+  }
 
   static schema(app, Sequelize) {
     let { STRING, FLOAT, DATE, literal } = Sequelize;

@@ -15,12 +15,14 @@ module.exports = class TableComment extends Model {
             models.TableComment.belongsTo(models.Table, {
               targetKey: "id",
               foreignKey: "tableId",
-              onDelete: "CASCADE"
+              onDelete: "CASCADE",
+              onUpdate: "NO ACTION"
             });
             models.TableComment.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
-              onDelete: "NO ACTION"
+              onDelete: "NO ACTION",
+              onUpdate: "NO ACTION"
             });
           }
         }

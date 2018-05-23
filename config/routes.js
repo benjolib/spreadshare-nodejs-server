@@ -99,6 +99,28 @@ module.exports = [
   },
 
   /**
+   * User Controller
+   */
+  {
+    method: "POST",
+    path: "/api/v1/user/password/forgot",
+    handler: "UserController.forgotPassword",
+    config: { id: "ProfileValidator.forgotPassword" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/user/password/reset/:token",
+    handler: "UserController.resetPasswordWithToken",
+    config: { id: "ProfileValidator.resetPassword" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/user/change-password",
+    handler: "UserController.changePassword",
+    config: { id: "ProfileValidator.changePassword" }
+  },
+
+  /**
    * ProfileController
    */
   {
