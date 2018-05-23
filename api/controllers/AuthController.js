@@ -50,6 +50,7 @@ module.exports = class AuthController extends Controller {
         code: 200
       });
     } catch (e) {
+      console.log(e);
       return res.json({
         flag: false,
         data: e,

@@ -11,3 +11,4 @@ exports.web = require("./web");
 exports.passport = require("./passport");
 exports.bootstrap = require("./bootstrap");
 exports.constants = require("./constants");
+exports.validators = require("./validators");

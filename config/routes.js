@@ -31,14 +31,12 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/auth/signup",
-    handler: "AuthController.signup",
-    config: { id: "AuthValidator.signup" }
+    handler: "AuthController.signup"
   },
   {
     method: "POST",
     path: "/api/v1/auth/login/basic",
-    handler: "AuthController.loginBasic",
-    config: { id: "AuthValidator.triggerSession" }
+    handler: "AuthController.loginBasic"
   },
   {
     method: "POST",
@@ -104,20 +102,17 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/user/password/forgot",
-    handler: "UserController.forgotPassword",
-    config: { id: "ProfileValidator.forgotPassword" }
+    handler: "UserController.forgotPassword"
   },
   {
     method: "POST",
     path: "/api/v1/user/password/reset/:token",
-    handler: "UserController.resetPasswordWithToken",
-    config: { id: "ProfileValidator.resetPassword" }
+    handler: "UserController.resetPasswordWithToken"
   },
   {
     method: "POST",
     path: "/api/v1/user/change-password",
-    handler: "UserController.changePassword",
-    config: { id: "ProfileValidator.changePassword" }
+    handler: "UserController.changePassword"
   },
 
   /**
@@ -131,14 +126,12 @@ module.exports = [
   {
     method: "PUT",
     path: "/api/v1/profile",
-    handler: "ProfileController.updateProfile",
-    config: { id: "ProfileValidator.updateProfile" }
+    handler: "ProfileController.updateProfile"
   },
   {
     method: "PUT",
     path: "/api/v1/profile/userconnection",
-    handler: "ProfileController.upsertConnections",
-    config: { id: "ProfileValidator.upsertConnections" }
+    handler: "ProfileController.upsertConnections"
   },
   {
     method: "GET",
@@ -148,11 +141,13 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/profile/upload",
-    handler: "ProfileController.uploadImage",
-    config: { id: "ProfileValidator.uploadImage" }
+    handler: "ProfileController.uploadImage"
   },
 
-  //tags api route
+  /**
+   * tags api route
+   */
+
   {
     method: "POST",
     path: "/api/v1/tags/add",
@@ -174,14 +169,12 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/subscriber/list",
-    handler: "SubscriberController.list",
-    config: { id: "SubscriberValidator.list" }
+    handler: "SubscriberController.list"
   },
   {
     method: "POST",
     path: "/api/v1/subscriber/subscribe/:id",
-    handler: "SubscriberController.subscribe",
-    config: { id: "SubscriberValidator.subscribe" }
+    handler: "SubscriberController.subscribe"
   },
   {
     method: "GET",
@@ -194,26 +187,22 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/table/create",
-    handler: "TableController.create",
-    config: { id: "TableValidator.create" }
+    handler: "TableController.create"
   },
   {
     method: "POST",
     path: "/api/v1/table/column",
-    handler: "TableController.addColumn",
-    config: { id: "TableValidator.addColumn" }
+    handler: "TableController.addColumn"
   },
   {
     method: "POST",
     path: "/api/v1/table/column/addmultiple",
-    handler: "TableController.addMultipleColumns",
-    config: { id: "TableValidator.addMultipleColumns" }
+    handler: "TableController.addMultipleColumns"
   },
   {
     method: "PUT",
     path: "/api/v1/table/column/:id",
-    handler: "TableController.updateColumn",
-    config: { id: "TableValidator.addColumn" }
+    handler: "TableController.updateColumn"
   },
   {
     method: "DELETE",
@@ -223,26 +212,22 @@ module.exports = [
   {
     method: "PUT",
     path: "/api/v1/table/update/:id",
-    handler: "TableController.update",
-    config: { id: "TableValidator.create" }
+    handler: "TableController.update"
   },
   {
     method: "PUT",
     path: "/api/v1/table/publish/:id",
-    handler: "TableController.publish",
-    config: { id: "TableValidator.publish" }
+    handler: "TableController.publish"
   },
   {
     method: "GET",
     path: "/api/v1/table/:id",
-    handler: "TableController.tableDetail",
-    config: { id: "TableValidator.updateTableRow" }
+    handler: "TableController.tableDetail"
   },
   {
     method: "POST",
     path: "/api/v1/table/contents/:id",
-    handler: "TableController.tableData",
-    config: { id: "TableValidator.getTableContentList" }
+    handler: "TableController.tableData"
   },
   {
     method: "DELETE",
@@ -252,26 +237,22 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/table/list",
-    handler: "TableController.list",
-    config: { id: "TableValidator.list" }
+    handler: "TableController.list"
   },
   {
     method: "POST",
     path: "/api/v1/table/row",
-    handler: "TableController.addRow",
-    config: { id: "TableValidator.addRow" }
+    handler: "TableController.addRow"
   },
   {
     method: "POST",
     path: "/api/v1/table/row/remove",
-    handler: "TableController.deleteTableRow",
-    config: { id: "TableValidator.deleteTableRow" }
+    handler: "TableController.deleteTableRow"
   },
   {
     method: "PUT",
     path: "/api/v1/table/row",
-    handler: "TableController.updateTableRow",
-    config: { id: "TableValidator.updateTableRow" }
+    handler: "TableController.updateTableRow"
   },
   {
     method: "POST",
@@ -289,22 +270,22 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/collaborate/list",
-    handler: "CollaborationController.list",
-    config: { id: "TableValidator.getCollaborateList" }
+    handler: "CollaborationController.list"
   },
 
-  //tags api route
+  /**
+   *   Vote api route
+   */
+
   {
     method: "POST",
     path: "/api/v1/vote",
-    handler: "VoteController.addVote",
-    config: { id: "VoteValidator.create" }
+    handler: "VoteController.addVote"
   },
   {
     method: "POST",
     path: "/api/v1/vote/remove",
-    handler: "VoteController.removeVote",
-    config: { id: "VoteValidator.create" }
+    handler: "VoteController.removeVote"
   },
 
   /**
@@ -318,14 +299,12 @@ module.exports = [
   {
     method: "PUT",
     path: "/api/v1/profile",
-    handler: "ProfileController.updateProfile",
-    config: { id: "ProfileValidator.updateProfile" }
+    handler: "ProfileController.updateProfile"
   },
   {
     method: "PUT",
     path: "/api/v1/profile/userconnection",
-    handler: "ProfileController.upsertConnections",
-    config: { id: "ProfileValidator.upsertConnections" }
+    handler: "ProfileController.upsertConnections"
   },
   {
     method: "GET",
@@ -335,8 +314,7 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/profile/upload",
-    handler: "ProfileController.uploadImage",
-    config: { id: "ProfileValidator.uploadImage" }
+    handler: "ProfileController.uploadImage"
   },
 
   /**
@@ -384,8 +362,7 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/table/comment/:id",
-    handler: "CommentController.add",
-    config: { id: "CommentValidator.add" }
+    handler: "CommentController.add"
   },
   {
     method: "DELETE",
@@ -395,8 +372,7 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/table/comment/list",
-    handler: "CommentController.list",
-    config: { id: "CommentValidator.list" }
+    handler: "CommentController.list"
   },
 
   /**
@@ -405,14 +381,12 @@ module.exports = [
   {
     method: "POST",
     path: "/api/v1/search/list",
-    handler: "SearchController.list",
-    config: { id: "TableValidator.search" }
+    handler: "SearchController.list"
   },
   {
     method: "PUT",
     path: "/api/v1/table/updatestatus/:id",
-    handler: "TableController.updateStatus",
-    config: { id: "TableValidator.updateStatus" }
+    handler: "TableController.updateStatus"
   },
 
   /**
