@@ -59,9 +59,10 @@ module.exports = class CollaborationController extends Controller {
         text: `Update table row status by`,
         userId: tableRow.updatedBy
       };
-      let notification = await NotificationService.create(fields);
-      console.log(notification);
-    } catch (e) {}
+      await NotificationService.create(fields);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   /**
