@@ -3,20 +3,23 @@
 
 module.exports = {
   AuthController: {
-    signup: "AuthValidator.signup"
+    signup: "AuthValidator.signup",
+    loginBasic: "AuthValidator.triggerSession"
   },
   TableController: {
     create: "TableValidator.create",
     addColumn: "TableValidator.addColumn",
     addMultipleColumns: "TableValidator.addMultipleColumns",
-    updateColumn: "TableValidator.updateColumn",
+    updateColumn: "TableValidator.addColumn",
     update: "TableValidator.create",
     publish: "TableValidator.publish",
     list: "TableValidator.list",
     addRow: "TableValidator.addRow",
     deleteTableRow: "TableValidator.deleteTableRow",
     updateTableRow: "TableValidator.updateTableRow",
-    tableData: "TableValidator.getTableContentList"
+    tableData: "TableValidator.getTableContentList",
+    updateStatus: "TableValidator.updateStatus",
+    historyList: "TableValidator.historyList"
   },
 
   CollaborationController: {
@@ -50,5 +53,8 @@ module.exports = {
   },
   SearchController: {
     list: "TableValidator.search"
+  },
+  NotificationController: {
+    list: "NotificationValidator.list"
   }
 };

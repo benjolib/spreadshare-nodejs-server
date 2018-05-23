@@ -256,7 +256,7 @@ module.exports = [
   },
   {
     method: "POST",
-    path: "/api/v1/table/historylist",
+    path: "/api/v1/table/history",
     handler: "TableController.historyList"
   },
   /**

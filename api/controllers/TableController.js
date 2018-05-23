@@ -38,7 +38,7 @@ module.exports = class TableController extends Controller {
       res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "table successfully created!",
         code: 200
       });
     } catch (e) {
@@ -58,8 +58,7 @@ module.exports = class TableController extends Controller {
         itemType: notificationItemType.TABLE,
         itemId: table.id
       };
-      let notification = await NotificationService.create(fields);
-      console.log(notification);
+      await NotificationService.create(fields);
     } catch (e) {}
   }
 
@@ -86,7 +85,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: column,
-        message: "Success",
+        message: "add column successfully!",
         code: 200
       });
     } catch (e) {
@@ -130,7 +129,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: columns,
-        message: "Success",
+        message: "add Multiplecolumn successfully!",
         code: 200
       });
     } catch (e) {
@@ -160,7 +159,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: column,
-        message: "Success",
+        message: "update column ",
         code: 200
       });
     } catch (e) {
@@ -188,7 +187,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: column,
-        message: "Success",
+        message: "removed column",
         code: 200
       });
     } catch (e) {
@@ -219,7 +218,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "update table successfully!",
         code: 200
       });
     } catch (e) {
@@ -253,7 +252,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "table published!",
         code: 200
       });
     } catch (e) {
@@ -282,7 +281,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "table details",
         code: 200
       });
     } catch (e) {
@@ -310,7 +309,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "removed table successfully!",
         code: 200
       });
     } catch (e) {
@@ -351,7 +350,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "Populer table list",
         code: 200
       });
     } catch (e) {
@@ -567,7 +566,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "get table history sucessfully!",
         code: 200
       });
     } catch (e) {
@@ -644,7 +643,7 @@ module.exports = class TableController extends Controller {
       res.json({
         flag: true,
         data: table,
-        message: "Success",
+        message: "Table row status updated!",
         code: 200
       });
     } catch (e) {

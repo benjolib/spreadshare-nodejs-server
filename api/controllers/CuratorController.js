@@ -30,7 +30,7 @@ module.exports = class CuratorController extends Controller {
       res.json({
         flag: true,
         data: follower,
-        message: "Success",
+        message: "followed Successfully!",
         code: 200
       });
     } catch (e) {
@@ -68,7 +68,7 @@ module.exports = class CuratorController extends Controller {
       return res.json({
         flag: true,
         data: unfollow,
-        message: "Success",
+        message: "Successfully unfollowed!",
         code: 200
       });
     } catch (e) {
@@ -101,7 +101,7 @@ module.exports = class CuratorController extends Controller {
       return res.json({
         flag: true,
         data: curator,
-        message: "Success",
+        message: "curator list",
         code: 200
       });
     } catch (e) {

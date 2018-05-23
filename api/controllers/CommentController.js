@@ -71,7 +71,7 @@ module.exports = class CommentController extends Controller {
       return res.json({
         flag: true,
         data: comment,
-        message: "Successfully remove",
+        message: "Successfully removem comment",
         code: 200
       });
     } catch (e) {
@@ -99,7 +99,7 @@ module.exports = class CommentController extends Controller {
       return res.json({
         flag: true,
         data: tag,
-        message: "tags list",
+        message: "comments list",
         code: 200
       });
     } catch (e) {
