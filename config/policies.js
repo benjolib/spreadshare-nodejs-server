@@ -98,6 +98,8 @@ module.exports = {
     list: ["JoiPolicy.validate", "JoiPolicy.validate"]
   },
   SearchController: {
-    list: ["JoiPolicy.validate", "JoiPolicy.validate"]
+    list: ["JoiPolicy.validate"],
+    getFeed: ["PassportPolicy.authenticate"],
+    getFeedUnreadCount: ["PassportPolicy.authenticate"]
   }
 };

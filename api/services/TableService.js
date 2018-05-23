@@ -514,6 +514,11 @@ module.exports = class TableService extends Service {
       });
   }
 
+  /**
+   * Get table History
+   * @param fields
+   * @returns {Promise<T>}
+   */
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
     let {

@@ -44,9 +44,8 @@ module.exports = class FeedAction extends Model {
         allowNull: false,
         defaultValue: "stream"
       },
-      contents: {
-        type: JSONB,
-        allowNull: false
+      tableId: {
+        type: INTEGER
       },
       feedType: {
         type: STRING,

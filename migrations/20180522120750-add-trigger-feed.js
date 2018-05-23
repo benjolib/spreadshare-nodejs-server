@@ -22,8 +22,7 @@ exports.up = function(db) {
                RETURNS trigger
                LANGUAGE plpgsql
               AS $function$
-                  declare
-                    content varchar;
+                  declare                    
                     status varchar;
                                
                   begin
@@ -32,10 +31,9 @@ exports.up = function(db) {
                           status:='A';
                   else 
                       status:='P';
-                  end if;
-                       content = '{"id":"' ||new.id || '","type":"table"}'; 	
-                       INSERT INTO ${schema}.feedaction(id,"userId","itemId","itemType",contents,"feedType",status)
-                       VALUES(default,NEW.owner,NEW.id,'table',content::jsonb,'created',status);                     
+                  end if;                      
+                       INSERT INTO ${schema}.feedaction(id,"userId","itemId","itemType","tableId","feedType",status)
+                       VALUES(default,NEW.owner,NEW.id,'table',NEW.id,'created',status);                     
                       RETURN NULL;
                   END
               $function$;         
@@ -45,12 +43,10 @@ exports.up = function(db) {
            RETURNS trigger
            LANGUAGE plpgsql
           AS $function$
-              declare
-                content varchar;
-              BEGIN
-                   content = '{"id":"' ||new.id || '","type":"tablerow"}'; 	
-                   INSERT INTO ${schema}.feedaction(id,"userId","itemId","itemType",contents,"feedType",status)
-                   VALUES(default,NEW."createdBy",NEW.id,'tablerow',content::jsonb,'collaborated','P');                     
+             
+              BEGIN                  
+                   INSERT INTO ${schema}.feedaction(id,"userId","itemId","itemType","tableId","feedType",status)
+                   VALUES(default,NEW."createdBy",NEW.id,'tablerow', NEW."tableId",'collaborated','P');                     
                   RETURN NULL;
               END
           $function$;

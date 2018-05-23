@@ -30,7 +30,9 @@ module.exports = {
     TABLE_INFO: "tableinfo",
     VOTE: "vote",
     TABLE_CELL: "tablecells",
-    TAGS: "tags"
+    TAGS: "tags",
+    USER_FOLLOWER: "userfollower",
+    FEED_ACTION: "feedaction"
   },
   tableSortType: {
     SPREADS: "totalSpread",
@@ -63,5 +65,13 @@ module.exports = {
     TABLE: "table",
     TABLE_ROW: "tablerow",
     TABLE_COMMENT: "tablecomment"
+  },
+  feedItemType: {
+    TABLE: "table",
+    TABLE_ROW: "tablerow"
+  },
+  feedStatus: {
+    PENDING: "P",
+    APPROVED: "A"
   }
 };
