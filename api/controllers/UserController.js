@@ -90,17 +90,21 @@ module.exports = class UserController extends Controller {
     }
   }
 
+  /**
+   * get user publications
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async publication(req, res) {
     let model = req.body;
     let user = req.user;
     let { UserService } = this.app.services;
-    // let { SUBSCRIBE } = this.app.config.constants.user.status;
 
     let data = {
       limit: model.limit,
       start: model.start,
       userId: user.id
-      //   status: SUBSCRIBE
     };
 
     try {

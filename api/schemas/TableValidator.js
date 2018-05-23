@@ -110,6 +110,7 @@ module.exports = class TableValidator {
       status: Joi.any().valid(_.values(rowStatusType))
     });
   }
+
   historyList() {
     return Joi.object().keys({
       start: Joi.number(),

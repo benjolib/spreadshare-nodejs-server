@@ -97,4 +97,19 @@ module.exports = class ProfileValidator {
         .required()
     });
   }
+
+  history() {
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number(),
+      sort: Joi.object()
+    });
+  }
+
+  statistic() {
+    return Joi.object().keys({
+      start: Joi.number(),
+      limit: Joi.number()
+    });
+  }
 };

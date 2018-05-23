@@ -6,3 +6,4 @@ exports.TableValidator = require("./TableValidator");
 exports.CuratorValidator = require("./CuratorValidator");
 exports.CommentValidator = require("./CommentValidator");
 exports.TagsValidator = require("./TagsValidator");
+exports.NotificationValidator = require("./NotificationValidator");

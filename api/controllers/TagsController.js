@@ -22,7 +22,7 @@ module.exports = class TagsController extends Controller {
       return res.json({
         flag: true,
         data: tags,
-        message: "Success",
+        message: "Add tags Successfully!",
         code: 200
       });
     } catch (e) {
@@ -70,7 +70,7 @@ module.exports = class TagsController extends Controller {
       return res.json({
         flag: true,
         data: tag,
-        message: "tags list",
+        message: "get tags list",
         code: 200
       });
     } catch (e) {

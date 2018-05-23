@@ -28,7 +28,10 @@ module.exports = {
   UserController: {
     forgotPassword: "ProfileValidator.forgotPassword",
     resetPasswordWithToken: "ProfileValidator.resetPassword",
-    changePassword: "ProfileValidator.changePassword"
+    changePassword: "ProfileValidator.changePassword",
+    history: "ProfileValidator.history",
+    statistic: "ProfileValidator.statistic",
+    publication: "ProfileValidator.statistic"
   },
 
   VoteController: {
@@ -56,5 +59,9 @@ module.exports = {
   },
   NotificationController: {
     list: "NotificationValidator.list"
+  },
+  TagsController: {
+    list: "TagsValidator.list",
+    add: "TagsValidator.add"
   }
 };
