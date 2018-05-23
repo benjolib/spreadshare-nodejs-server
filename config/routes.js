@@ -382,5 +382,25 @@ module.exports = [
     path: "/api/v1/search/list",
     handler: "SearchController.list",
     config: { id: "TableValidator.search" }
+  },
+
+  /**
+   * user Api routes
+   */
+
+  {
+    method: "POST",
+    path: "/api/v1/user/history",
+    handler: "UserController.history"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/user/statistic",
+    handler: "UserController.statistic"
+  },
+  {
+    method: "POST",
+    path: "/api/v1/user/publication",
+    handler: "UserController.publication"
   }
 ];
