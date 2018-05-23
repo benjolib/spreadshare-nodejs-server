@@ -45,7 +45,7 @@ module.exports = class AuthController extends Controller {
       });
       return res.json({
         flag: true,
-        data: {},
+        data: user,
         message: "Success",
         code: 200
       });
