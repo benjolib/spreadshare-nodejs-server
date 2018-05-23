@@ -34,7 +34,9 @@ module.exports = {
     USER_FOLLOWERS: "userfollower",
     USER_CONNECTIONS: "userconnection",
     USER_LOCATION: "userlocation",
-    LOCATION: "location"
+    LOCATION: "location",
+    USER_FOLLOWER: "userfollower",
+    FEED_ACTION: "feedaction"
   },
   tableSortType: {
     SPREADS: "totalSpread",
@@ -71,5 +73,13 @@ module.exports = {
   resetPasswordStatusType: {
     PENDING: "P",
     ACCESSED: "A"
+  },
+  feedItemType: {
+    TABLE: "table",
+    TABLE_ROW: "tablerow"
+  },
+  feedStatus: {
+    PENDING: "P",
+    APPROVED: "A"
   }
 };

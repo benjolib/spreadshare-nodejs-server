@@ -404,5 +404,15 @@ module.exports = [
     path: "/api/v1/search/list",
     handler: "SearchController.list",
     config: { id: "TableValidator.search" }
+  },
+  {
+    method: "POST",
+    path: "/api/v1/search/feed",
+    handler: "SearchController.getFeed"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/search/feed/count",
+    handler: "SearchController.getFeedUnreadCount"
   }
 ];
