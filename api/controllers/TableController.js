@@ -540,6 +540,12 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * get History list
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async historyList(req, res) {
     let { TableService } = this.app.services;
     let { tableSortType } = this.app.config.constants;
@@ -605,6 +611,47 @@ module.exports = class TableController extends Controller {
       return res.json({ flag: true, data: data });
     } catch (e) {
       return res.json({ flag: false, data: [] });
+    }
+  }
+
+  /**
+   * update Row status
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async updateStatus(req, res) {
+    let params = req.params;
+    let body = req.body;
+    let tableId = req.tableRow.tableId;
+    let id = parseInt(params.id);
+    let { TableService } = this.app.services;
+    let { APPROVED } = this.app.config.constants.rowStatusType;
+    let user = req.user;
+
+    let status = body.sort && !_.isEmpty(body.sort) ? body.sort : APPROVED;
+    let data = {
+      status: status,
+      updatedBy: user.id
+    };
+    try {
+      let table = await TableService.updateRowStatus(data, id);
+
+      await TableService.updateCount(tableId); //add Total collaborations count
+
+      return res.json({
+        flag: true,
+        data: table,
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
     }
   }
 };

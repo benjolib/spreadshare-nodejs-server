@@ -382,6 +382,12 @@ module.exports = [
     handler: "SearchController.list",
     config: { id: "TableValidator.search" }
   },
+  {
+    method: "PUT",
+    path: "/api/v1/table/updatestatus/:id",
+    handler: "TableController.updateStatus",
+    config: { id: "TableValidator.updateStatus" }
+  },
 
   /**
    * user Api routes

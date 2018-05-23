@@ -514,6 +514,11 @@ module.exports = class TableService extends Service {
       });
   }
 
+  /**
+   * find history of table
+   * @param fields
+   * @returns {Promise<T>}
+   */
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
     let {
@@ -557,5 +562,47 @@ module.exports = class TableService extends Service {
       .catch(err => {
         throw err;
       });
+  }
+
+  /**
+   * update Row status
+   * @param fields
+   * @param id
+   */
+  updateRowStatus(fields, id) {
+    let { TableRow } = this.app.orm;
+    return TableRow.update(fields, { where: { id } })
+      .then(data => {
+        return data;
+      })
+      .then(result => {
+        return _.map(result, data => {
+          return data;
+        });
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+  /**
+   * update Count table info
+   * @param tableId
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  updateCount(tableId) {
+    let { sequelize } = this.app.orm.User;
+
+    let { schema } = sequelize.options;
+    let { TABLE_INFO } = this.app.config.constants.tables;
+
+    let sql = `update ${schema}.${TABLE_INFO} set "totalCollaborations" = "totalCollaborations"+1 where "tableId" = '${tableId}'`;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(result => {});
   }
 };
