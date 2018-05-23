@@ -263,6 +263,12 @@ module.exports = [
   },
   {
     method: "POST",
+    path: "/api/v1/table/row/multiple",
+    handler: "TableController.addMultipleRows",
+    config: { id: "TableValidator.addRowMultiple" }
+  },
+  {
+    method: "POST",
     path: "/api/v1/table/row/remove",
     handler: "TableController.deleteTableRow",
     config: { id: "TableValidator.deleteTableRow" }

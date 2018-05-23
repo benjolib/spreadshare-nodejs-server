@@ -12,7 +12,24 @@ module.exports = class TableValidator {
       description: Joi.string(),
       isThumbnail: Joi.boolean(),
       curator: Joi.array(),
-      isPublished: Joi.boolean()
+      isPublished: Joi.boolean(),
+      columns: Joi.array().items(
+        Joi.object().keys({
+          title: Joi.string().required(),
+          position: Joi.number(),
+          width: Joi.number()
+        })
+      ),
+      rows: Joi.array().items(
+        Joi.object().keys({
+          rowColumns: Joi.array().items(
+            Joi.object().keys({
+              content: Joi.string(),
+              link: Joi.string()
+            })
+          )
+        })
+      )
     });
   }
 
@@ -65,6 +82,25 @@ module.exports = class TableValidator {
     return Joi.object().keys({
       tableId: Joi.number(),
       rowColumns: Joi.array()
+    });
+  }
+
+  addRowMultiple() {
+    return Joi.object().keys({
+      tableId: Joi.number().required(),
+      rows: Joi.array()
+        .items(
+          Joi.object().keys({
+            rowColumns: Joi.array().items(
+              Joi.object().keys({
+                content: Joi.string(),
+                link: Joi.string(),
+                columnId: Joi.number().required()
+              })
+            )
+          })
+        )
+        .required()
     });
   }
 

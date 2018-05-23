@@ -38,6 +38,7 @@ module.exports = {
     publish: ["JoiPolicy.validate"],
     list: ["JoiPolicy.validate"],
     addRow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    addMultipleRows: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     deleteTableRow: [
       "PassportPolicy.authenticate",
       "JoiPolicy.validate",
