@@ -46,21 +46,39 @@ module.exports = class NotificationService extends Service {
    * @returns {Promise|*|PromiseLike<T>|Promise<T>}
    */
   find(fields) {
-    let { UserNotification } = this.app.orm;
-    let criteria = {};
+    let { sequelize } = this.app.orm.Table;
 
-    if (fields.hasOwnProperty("userId")) {
-      criteria.userId = fields.userId;
-    }
+    let {
+      USER_NOTIFICATION,
+      USER_FOLLOWERS,
+      TABLE_SUBSCRIPTION
+    } = this.app.config.constants.tables;
+    let { schema } = sequelize.options;
+    let sql = ``,
+      condSql = ``;
 
-    return UserNotification.findAll({
-      where: criteria,
-      offset: parseInt(fields.start),
-      limit: parseInt(fields.limit)
-    }).then(data => {
-      if (_.isEmpty(data)) throw new Error(`list empty!`);
-      return data;
-    });
+    if (fields.hasOwnProperty("start")) condSql = ` OFFSET ${fields.start}`;
+    if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
+
+    sql = `select n.*
+                from ${schema}.${USER_NOTIFICATION} n
+                join ${schema}.${USER_FOLLOWERS} uf on uf."userId"= n."userId"
+                join ${schema}.${TABLE_SUBSCRIPTION} 
+                where n."createdBy"=${fields.userId}  
+                ${condSql}`;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(rows => {
+        if (_.isEmpty(rows)) throw new Error(`No row list found`);
+        return rows;
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 
   /**

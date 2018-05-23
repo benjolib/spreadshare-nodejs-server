@@ -34,7 +34,8 @@ module.exports = {
     USER_FOLLOWERS: "userfollower",
     USER_CONNECTIONS: "userconnection",
     USER_LOCATION: "userlocation",
-    LOCATION: "location"
+    LOCATION: "location",
+    USER_NOTIFICATION: "usernotification"
   },
   tableSortType: {
     SPREADS: "totalSpread",
