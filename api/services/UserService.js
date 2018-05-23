@@ -102,6 +102,11 @@ module.exports = class UserService extends Service {
       });
   }
 
+  /**
+   * find publications of user
+   * @param fields
+   * @returns {Promise<T>}
+   */
   findPublication(fields) {
     let { sequelize } = this.app.orm.User;
     let { TABLE_ROW, TABLE, TABLE_INFO } = this.app.config.constants.tables;

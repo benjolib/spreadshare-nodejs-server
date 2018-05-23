@@ -251,7 +251,11 @@ module.exports = [
     handler: "TableController.updateTableRow",
     config: { id: "TableValidator.updateTableRow" }
   },
-
+  {
+    method: "POST",
+    path: "/api/v1/table/historylist",
+    handler: "TableController.historyList"
+  },
   /**
    * Collaboration apis
    */
