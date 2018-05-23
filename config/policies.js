@@ -65,12 +65,12 @@ module.exports = {
     list: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   },
   UserController: {
-    history: ["PassportPolicy.authenticate"],
-    statistic: ["PassportPolicy.authenticate"],
+    history: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    statistic: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
     forgotPassword: ["JoiPolicy.validate"],
     resetPasswordWithToken: ["JoiPolicy.validate"],
     changePassword: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
-    publication: ["PassportPolicy.authenticate"]
+    publication: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   },
 
   VoteController: {
@@ -99,7 +99,7 @@ module.exports = {
   CuratorController: {
     follow: ["PassportPolicy.authenticate"],
     unfollow: ["PassportPolicy.authenticate"],
-    list: ["JoiPolicy.validate"]
+    list: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   },
   CommentController: {
     add: [

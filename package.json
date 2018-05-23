@@ -23,7 +23,7 @@
     "rand-token": "^0.4.0",
     "trailpack-bootstrap": "^2.0.0",
     "trailpack-express": "^2.0.3",
-    "trailpack-joi": "^1.0.0",
+    "trailpack-joi": "^1.0.1",
     "trailpack-repl": "^2",
     "trailpack-router": "^2",
     "trailpack-sequelize": "3.0.0",

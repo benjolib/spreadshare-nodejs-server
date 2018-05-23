@@ -526,7 +526,7 @@ module.exports = class TableService extends Service {
       TABLE_COLUMN,
       TABLE_ROW
     } = this.app.config.constants.tables;
-    let { APPROVED } = this.app.config.constants.status;
+    let { APPROVED } = this.app.config.constants.rowStatusType;
     let { schema } = sequelize.options;
 
     let condSql = "",

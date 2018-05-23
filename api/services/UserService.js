@@ -17,7 +17,7 @@ module.exports = class UserService extends Service {
    */
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
-    let { TABLE, USER, TABLEVIEW } = this.app.config.constants.tables;
+    let { TABLE, USER, TABLE_VIEW } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
 
     let condSql = "",
@@ -37,7 +37,7 @@ module.exports = class UserService extends Service {
     let sql = `select t.*      
            from ${schema}.${TABLE} t 
            left join ${schema}.${USER} u on u.id = t.owner 
-           left join ${schema}.${TABLEVIEW} tw on tw."userId" = u.id
+           left join ${schema}.${TABLE_VIEW} tw on tw."userId" = u.id
            where u.id = ${fields.id} ${condSql}`;
 
     return sequelize
@@ -113,7 +113,7 @@ module.exports = class UserService extends Service {
   findPublication(fields) {
     let { sequelize } = this.app.orm.User;
     let { TABLE_ROW, TABLE, TABLE_INFO } = this.app.config.constants.tables;
-    let { APPROVED } = this.app.config.constants.status;
+    let { APPROVED } = this.app.config.constants.rowStatusType;
     let { schema } = sequelize.options;
 
     let condSql = "";

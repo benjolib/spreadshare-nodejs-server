@@ -71,7 +71,7 @@ module.exports = class CommentController extends Controller {
       return res.json({
         flag: true,
         data: comment,
-        message: "Successfully removem comment",
+        message: "Successfully removed comment",
         code: 200
       });
     } catch (e) {
