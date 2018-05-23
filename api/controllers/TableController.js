@@ -623,13 +623,15 @@ module.exports = class TableController extends Controller {
   async updateStatus(req, res) {
     let params = req.params;
     let body = req.body;
-    let tableId = req.tableRow.tableId;
+    let tableRow = req.tableRow;
+    let tableId = tableRow.tableId;
     let id = parseInt(params.id);
-    let { TableService } = this.app.services;
-    let { APPROVED } = this.app.config.constants.rowStatusType;
+    let { TableService, NotificationService } = this.app.services;
+    let { rowStatusType, notificationType } = this.app.config.constants;
     let user = req.user;
 
-    let status = body.sort && !_.isEmpty(body.sort) ? body.sort : APPROVED;
+    let status =
+      body.sort && !_.isEmpty(body.sort) ? body.sort : rowStatusType.APPROVED;
     let data = {
       status: status,
       updatedBy: user.id
@@ -639,7 +641,7 @@ module.exports = class TableController extends Controller {
 
       await TableService.updateCount(tableId); //add Total collaborations count
 
-      return res.json({
+      res.json({
         flag: true,
         data: table,
         message: "Success",
@@ -653,5 +655,15 @@ module.exports = class TableController extends Controller {
         code: 500
       });
     }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: notificationType.COLLABORATE,
+        text: `Update table row status by`,
+        userId: tableRow.updatedBy
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 };
