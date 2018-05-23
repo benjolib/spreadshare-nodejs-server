@@ -38,6 +38,7 @@ module.exports = {
     publish: ["JoiPolicy.validate"],
     list: ["JoiPolicy.validate"],
     addRow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    updateStatus: ["PassportPolicy.authenticate", "AuthPoilcy.loadTableRow"],
     deleteTableRow: [
       "PassportPolicy.authenticate",
       "JoiPolicy.validate",
@@ -74,7 +75,11 @@ module.exports = {
     removeVote: ["PassportPolicy.authenticate", "JoiPolicy.validate"]
   },
   SubscriberController: {
-    subscribe: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    subscribe: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable"
+    ],
     list: ["JoiPolicy.validate"]
   },
   ProfileController: {
@@ -89,12 +94,16 @@ module.exports = {
     get: ["PassportPolicy.authenticate"]
   },
   CuratorController: {
-    follow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    follow: ["PassportPolicy.authenticate"],
     unfollow: ["PassportPolicy.authenticate"],
     list: ["JoiPolicy.validate"]
   },
   CommentController: {
-    add: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    add: [
+      "PassportPolicy.authenticate",
+      "JoiPolicy.validate",
+      "AuthPoilcy.checkTable"
+    ],
     remove: ["PassportPolicy.authenticate"],
     list: ["JoiPolicy.validate", "JoiPolicy.validate"]
   },

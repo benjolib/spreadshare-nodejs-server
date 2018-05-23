@@ -14,17 +14,20 @@ module.exports = class CuratorController extends Controller {
    * @returns {Promise<*>}
    */
   async follow(req, res) {
-    let model = req.body;
-    let { CuratorService } = this.app.services;
+    let params = req.params;
+    let { CuratorService, NotificationService } = this.app.services;
+    let { FOLLOW } = this.app.config.constants.notificationType;
     let user = req.user;
+    let id = params.id;
     try {
       let data = {
-        userId: user.id,
-        followedBy: model.followedBy
+        userId: id,
+        followedBy: user.id
       };
 
       let follower = await CuratorService.create(data);
-      return res.json({
+
+      res.json({
         flag: true,
         data: follower,
         message: "Success",
@@ -38,6 +41,16 @@ module.exports = class CuratorController extends Controller {
         code: 500
       });
     }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: FOLLOW,
+        text: `following by`,
+        userId: id
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**

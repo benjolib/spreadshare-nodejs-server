@@ -15,20 +15,24 @@ module.exports = class CommentController extends Controller {
    */
   async add(req, res) {
     let body = req.body;
-    let { CommentService } = this.app.services;
+    let { CommentService, NotificationService } = this.app.services;
+    let { COMMENTS } = this.app.config.constants.notificationType;
     let user = req.user;
+    let params = req.params;
+    let table = req.table;
+
     let model = {
-      tableId: body.tableId,
+      tableId: params.id,
       parentId: body.parentId,
       userId: user.id,
       comment: body.comment
     };
     try {
       let comment = await CommentService.create(model);
-      return res.json({
+      res.json({
         flag: true,
         data: comment,
-        message: "Success",
+        message: "Successfully comment added!",
         code: 200
       });
     } catch (e) {
@@ -39,6 +43,16 @@ module.exports = class CommentController extends Controller {
         code: 500
       });
     }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: COMMENTS,
+        text: `Commented by`,
+        userId: table.owner
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**

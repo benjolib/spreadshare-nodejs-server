@@ -14,8 +14,8 @@ module.exports = class CollaborationController extends Controller {
    * @returns {Promise<*>}
    */
   async revokeSubmission(req, res) {
-    let { TableService } = this.app.services;
-    let { rowStatusType } = this.app.config.constants;
+    let { TableService, NotificationService } = this.app.services;
+    let { rowStatusType, notificationType } = this.app.config.constants;
     let params = req.params;
     let user = req.user;
     let tableRow = req.tableRow;
@@ -23,7 +23,7 @@ module.exports = class CollaborationController extends Controller {
 
     //Check tableRow status & its Owner
     if (tableRow.createdBy != user.id)
-      return res.json({
+      res.json({
         flag: false,
         message: `You have no permission to revoke this submission`
       });
@@ -42,7 +42,7 @@ module.exports = class CollaborationController extends Controller {
         { status: rowStatusType.REVOKED, updatedBy: user.id },
         id
       );
-      return res.json({
+      res.json({
         flag: true,
         message: `Your submission has been accepted!`
       });
@@ -51,6 +51,17 @@ module.exports = class CollaborationController extends Controller {
         flag: false,
         message: `Couldn't update detail, ${e.message}`
       });
+    }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: notificationType.COLLABORATE_UPDATE_STATUS,
+        text: `Update table row status by`,
+        userId: tableRow.updatedBy
+      };
+      await NotificationService.create(fields);
+    } catch (e) {
+      console.log(e);
     }
   }
 

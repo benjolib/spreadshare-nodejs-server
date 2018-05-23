@@ -157,7 +157,7 @@ module.exports = [
   },
   {
     method: "POST",
-    path: "/api/v1/subscriber/subscribe",
+    path: "/api/v1/subscriber/subscribe/:id",
     handler: "SubscriberController.subscribe",
     config: { id: "SubscriberValidator.subscribe" }
   },
@@ -251,7 +251,11 @@ module.exports = [
     handler: "TableController.updateTableRow",
     config: { id: "TableValidator.updateTableRow" }
   },
-
+  {
+    method: "POST",
+    path: "/api/v1/table/historylist",
+    handler: "TableController.historyList"
+  },
   /**
    * Collaboration apis
    */
@@ -337,10 +341,9 @@ module.exports = [
    * curator api
    */
   {
-    method: "POST",
-    path: "/api/v1/curator/follow",
-    handler: "CuratorController.follow",
-    config: { id: "CuratorValidator.follow" }
+    method: "GET",
+    path: "/api/v1/curator/follow/:id",
+    handler: "CuratorController.follow"
   },
   {
     method: "DELETE",
@@ -358,7 +361,7 @@ module.exports = [
    */
   {
     method: "POST",
-    path: "/api/v1/table/comment",
+    path: "/api/v1/table/comment/:id",
     handler: "CommentController.add",
     config: { id: "CommentValidator.add" }
   },
@@ -382,6 +385,12 @@ module.exports = [
     path: "/api/v1/search/list",
     handler: "SearchController.list",
     config: { id: "TableValidator.search" }
+  },
+  {
+    method: "PUT",
+    path: "/api/v1/table/updatestatus/:id",
+    handler: "TableController.updateStatus",
+    config: { id: "TableValidator.updateStatus" }
   },
 
   /**

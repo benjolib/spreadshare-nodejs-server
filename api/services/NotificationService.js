@@ -62,4 +62,29 @@ module.exports = class NotificationService extends Service {
       return data;
     });
   }
+
+  /**
+   * create User Notifications
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  create(fields) {
+    let { UserNotification } = this.app.orm;
+
+    let model = {
+      notificationType: fields.notificationType,
+      text: fields.text,
+      createdBy: fields.createdBy,
+      userId: fields.userId,
+      itemType: fields.itemType,
+      itemId: fields.itemId
+    };
+    return UserNotification.create(model)
+      .then(msg => {
+        return msg.toJSON();
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
 };

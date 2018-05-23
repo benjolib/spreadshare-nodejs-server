@@ -16,8 +16,10 @@ module.exports = class TableController extends Controller {
    */
   async create(req, res) {
     let model = req.body;
-    let { TableService } = this.app.services;
+    let { TableService, NotificationService } = this.app.services;
+    let { notificationType, notificationItemType } = this.app.config.constants;
     let user = req.user;
+    let table;
     try {
       let data = {
         owner: user.id,
@@ -31,8 +33,9 @@ module.exports = class TableController extends Controller {
         isPublished: model.isPublished
       };
 
-      let table = await TableService.create(data);
-      return res.json({
+      table = await TableService.create(data);
+
+      res.json({
         flag: true,
         data: table,
         message: "Success",
@@ -46,6 +49,18 @@ module.exports = class TableController extends Controller {
         code: 500
       });
     }
+    try {
+      let fields = {
+        createdBy: table.owner,
+        notificationType: notificationType.NEW_LIST,
+        text: `table list created by`,
+        userId: user.id,
+        itemType: notificationItemType.TABLE,
+        itemId: table.id
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**
@@ -525,6 +540,12 @@ module.exports = class TableController extends Controller {
     }
   }
 
+  /**
+   * get History list
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
   async historyList(req, res) {
     let { TableService } = this.app.services;
     let { tableSortType } = this.app.config.constants;
@@ -591,5 +612,58 @@ module.exports = class TableController extends Controller {
     } catch (e) {
       return res.json({ flag: false, data: [] });
     }
+  }
+
+  /**
+   * update Row status
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async updateStatus(req, res) {
+    let params = req.params;
+    let body = req.body;
+    let tableRow = req.tableRow;
+    let tableId = tableRow.tableId;
+    let id = parseInt(params.id);
+    let { TableService, NotificationService } = this.app.services;
+    let { rowStatusType, notificationType } = this.app.config.constants;
+    let user = req.user;
+
+    let status =
+      body.sort && !_.isEmpty(body.sort) ? body.sort : rowStatusType.APPROVED;
+    let data = {
+      status: status,
+      updatedBy: user.id
+    };
+    try {
+      let table = await TableService.updateRowStatus(data, id);
+
+      await TableService.updateCount(tableId); //add Total collaborations count
+
+      res.json({
+        flag: true,
+        data: table,
+        message: "Success",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: notificationType.COLLABORATE,
+        text: `Update table row status by`,
+        userId: tableRow.updatedBy
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 };
