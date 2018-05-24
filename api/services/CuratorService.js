@@ -56,9 +56,8 @@ module.exports = class CuratorService extends Service {
           (select count(*)::int from ${schema}.${TABLE} t where t."owner"=u.id and t."isPublished"= true) as Tablelist,
           (select count(*)::int from ${schema}.${VOTE} v where v."userId" = u.id) as totalShare
           from ${schema}.${USER} u 
-          join ${schema}.${VOTE} v on v."userId"=u.id 
+          left join ${schema}.${VOTE} v on v."userId"=u.id 
           left join ${schema}.${TABLE} t on t.owner = u.id
-          where v."itemId"=t.id
           ${condSql}`;
 
     return sequelize
@@ -67,7 +66,7 @@ module.exports = class CuratorService extends Service {
         type: sequelize.QueryTypes.SELECT
       })
       .then(result => {
-        if (_.isEmpty(result)) throw new Error(`No user profile found!.`);
+        if (_.isEmpty(result)) throw new Error(`No curator found!.`);
         let user = result[0];
         return _.omit(
           user,

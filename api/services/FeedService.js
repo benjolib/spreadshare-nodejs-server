@@ -60,7 +60,7 @@ module.exports = class FeedService extends Service {
     let { feedStatus } = this.app.config.constants;
     let {
       USER,
-      USER_FOLLOWER,
+      USER_FOLLOWERS,
       TABLE,
       TABLE_SUBSCRIPTION,
       FEED_ACTION
@@ -76,7 +76,7 @@ module.exports = class FeedService extends Service {
     let start = parseInt(fields.start) || 0;
     let limit = parseInt(fields.limit) || 10;
 
-    condSql = `(select case when "userId">0 then true else false end from ${schema}.${USER_FOLLOWER} uf
+    condSql = `(select case when "userId">0 then true else false end from ${schema}.${USER_FOLLOWERS} uf
                where uf."userId" in(select owner from ${schema}."${TABLE}" where id=f."tableId") 
                and "followedBy"=$1)
                or
