@@ -23,3 +23,5 @@ exports.Vote = require("./Vote");
 exports.UserNotification = require("./UserNotification");
 exports.Tags = require("./Tags");
 exports.TableInfo = require("./TableInfo");
+exports.FeedAction = require("./FeedAction");
+exports.FeedView = require("./FeedView");

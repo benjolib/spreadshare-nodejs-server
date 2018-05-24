@@ -35,7 +35,8 @@ module.exports = {
     USER_CONNECTIONS: "userconnection",
     USER_LOCATION: "userlocation",
     LOCATION: "location",
-    USER_NOTIFICATION: "usernotification"
+    USER_NOTIFICATION: "usernotification",
+    FEED_ACTION: "feedaction"
   },
   tableSortType: {
     SPREADS: "totalSpread",
@@ -88,5 +89,13 @@ module.exports = {
     TABLE: "T",
     TABLE_ROW: "TR",
     TABLE_COLUMN: "TC"
+  },
+  feedItemType: {
+    TABLE: "table",
+    TABLE_ROW: "tablerow"
+  },
+  feedStatus: {
+    PENDING: "P",
+    APPROVED: "A"
   }
 };

@@ -388,7 +388,16 @@ module.exports = [
     path: "/api/v1/table/updatestatus/:id",
     handler: "TableController.updateStatus"
   },
-
+  {
+    method: "POST",
+    path: "/api/v1/search/feed",
+    handler: "SearchController.getFeed"
+  },
+  {
+    method: "GET",
+    path: "/api/v1/search/feed/count",
+    handler: "SearchController.getFeedUnreadCount"
+  },
   /**
    * user Api routes
    */
