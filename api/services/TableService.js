@@ -605,4 +605,12 @@ module.exports = class TableService extends Service {
       })
       .then(result => {});
   }
+
+  createTableInfo(fields, id) {
+    let { TableInfo } = this.app.orm;
+
+    return TableInfo.create(fields, { where: { id } }).then(data => {
+      return data;
+    });
+  }
 };

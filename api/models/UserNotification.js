@@ -34,7 +34,7 @@ module.exports = class UserNotification extends Model {
     return {
       createdBy: { type: INTEGER, allowNull: false },
       userId: { type: INTEGER, allowNull: false },
-      notificationType: { type: STRING },
+      type: { type: STRING },
       text: { type: TEXT },
       isRead: { type: BOOLEAN, defaultValue: false },
       itemId: { type: INTEGER },

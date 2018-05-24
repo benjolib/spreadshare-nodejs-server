@@ -88,7 +88,7 @@ module.exports = class NotificationService extends Service {
     let { UserNotification } = this.app.orm;
 
     let model = {
-      notificationType: fields.notificationType,
+      type: fields.notificationType,
       text: fields.text,
       createdBy: fields.createdBy,
       userId: fields.userId,

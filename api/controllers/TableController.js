@@ -34,7 +34,14 @@ module.exports = class TableController extends Controller {
       };
 
       table = await TableService.create(data);
-
+      let tableinfodata = {
+        tableId: table.id,
+        totalSpreads: 0,
+        totalSubscribers: 0,
+        totalCollaborations: 0,
+        totalView: 0
+      };
+      await TableService.createTableInfo(tableinfodata);
       res.json({
         flag: true,
         data: table,
