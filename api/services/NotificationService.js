@@ -12,9 +12,9 @@ module.exports = class NotificationService extends Service {
    * @param id
    * @returns {Promise|*|PromiseLike<T>|Promise<T>}
    */
-  find(id) {
+  findsingle(id) {
     let { UserNotification } = this.app.orm;
-    return UserNotification.find({ where: id }).then(data => {
+    return UserNotification.find({ where: { id } }).then(data => {
       if (_.isEmpty(data)) throw new Error("notification not found");
       return data.toJSON();
     });

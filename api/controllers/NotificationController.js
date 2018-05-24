@@ -19,7 +19,7 @@ module.exports = class NotificationController extends Controller {
     let { NotificationService } = this.app.services;
 
     try {
-      let notification = await NotificationService.find(id);
+      let notification = await NotificationService.findsingle(id);
       return res.json({
         flag: true,
         data: notification,
