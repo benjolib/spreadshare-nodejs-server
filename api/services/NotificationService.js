@@ -62,9 +62,7 @@ module.exports = class NotificationService extends Service {
 
     sql = `select n.*
                 from ${schema}.${USER_NOTIFICATION} n
-                join ${schema}.${USER_FOLLOWERS} uf on uf."userId"= n."userId"
-                join ${schema}.${TABLE_SUBSCRIPTION} 
-                where n."createdBy"=${fields.userId}  
+                where n."isRead"= false and n."userId"=${fields.userId}  
                 ${condSql}`;
 
     return sequelize

@@ -19,13 +19,14 @@ module.exports = class CuratorController extends Controller {
     let { FOLLOW } = this.app.config.constants.notificationType;
     let user = req.user;
     let id = params.id;
+    let follower;
     try {
       let data = {
         userId: id,
         followedBy: user.id
       };
 
-      let follower = await CuratorService.create(data);
+      follower = await CuratorService.create(data);
 
       res.json({
         flag: true,
@@ -46,7 +47,8 @@ module.exports = class CuratorController extends Controller {
         createdBy: user.id,
         notificationType: FOLLOW,
         text: `following by`,
-        userId: id
+        userId: id,
+        itemId: follower.id
       };
       let notification = await NotificationService.create(fields);
       console.log(notification);
