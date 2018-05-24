@@ -103,7 +103,7 @@ module.exports = class CuratorController extends Controller {
       return res.json({
         flag: true,
         data: curator,
-        message: "curator list",
+        message: "Curator list",
         code: 200
       });
     } catch (e) {

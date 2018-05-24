@@ -23,7 +23,7 @@ module.exports = class NotificationController extends Controller {
       return res.json({
         flag: true,
         data: notification,
-        message: "get notification successfully",
+        message: "get notification successfully!",
         code: 200
       });
     } catch (e) {

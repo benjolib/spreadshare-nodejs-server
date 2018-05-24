@@ -50,7 +50,7 @@ module.exports = class CommentController extends Controller {
         text: `Commented by`,
         userId: table.owner
       };
-      let notification = await NotificationService.create(fields);
+      let notification = await NotificationService.create(fields); //add notification
       console.log(notification);
     } catch (e) {}
   }
@@ -71,7 +71,7 @@ module.exports = class CommentController extends Controller {
       return res.json({
         flag: true,
         data: comment,
-        message: "Successfully removed comment",
+        message: "Successfully removed comment!",
         code: 200
       });
     } catch (e) {
@@ -99,7 +99,7 @@ module.exports = class CommentController extends Controller {
       return res.json({
         flag: true,
         data: tag,
-        message: "comments list",
+        message: "Comment list",
         code: 200
       });
     } catch (e) {

@@ -95,7 +95,7 @@ module.exports = class SubscriberController extends Controller {
       return res.json({
         flag: true,
         data: tag,
-        message: "delete tag successfully",
+        message: "Successfully Unsubscribe!",
         code: 200
       });
     } catch (e) {
