@@ -17,18 +17,23 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   let schema = db.schema;
   let sql = `
-    CREATE OR REPLACE FUNCTION ${schema}.table_comment_inc() 
+     CREATE OR REPLACE FUNCTION ${schema}.table_comment_inc() 
     RETURNS trigger
     LANGUAGE plpgsql
     AS $function$
     BEGIN
-    IF NEW.type ='tablecomment' THEN
-    EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tablecomment SET "votesCount" = "votesCount"+1 WHERE "id" = $1."itemId"' USING NEW;
-    END IF;
-    RETURN NULL;
+    IF NEW.type='tablecomment' THEN
+	 execute 'UPDATE ' || TG_TABLE_SCHEMA || '.tablecomment SET "votesCount" = "votesCount"+1 WHERE "id" = $1."itemId"' USING NEW;
+	elseIF NEW.type='table' THEN
+     execute 'UPDATE ' || TG_TABLE_SCHEMA || '.tableinfo SET "totalSpreads" = "totalSpreads"+1 WHERE "tableId" = $1."itemId"' USING NEW;
+	else 
+	execute 'UPDATE ' || TG_TABLE_SCHEMA || '.tablerow SET "voteCount" = "voteCount"+1 WHERE "id" = $1."itemId"' USING NEW;
+ 	RETURN NULL;    
+	end if;
+  	RETURN NULL;
     END
     $function$;
-    
+
     CREATE TRIGGER incr_table_comment AFTER INSERT ON ${schema}.vote
     FOR EACH ROW EXECUTE procedure ${schema}.table_comment_inc();`;
 

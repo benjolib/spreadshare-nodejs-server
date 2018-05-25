@@ -58,6 +58,7 @@ module.exports = class TableRow extends Model {
       updatedBy: { type: INTEGER },
       action: { type: STRING, defaultValue: "S" },
       status: { type: STRING, defaultValue: "P", allowNull: false },
+      voteCount: { type: INTEGER, defaultValue: "0" },
       createdAt: {
         type: DATE,
         field: "createdAt",
