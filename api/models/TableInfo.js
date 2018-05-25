@@ -29,10 +29,14 @@ module.exports = class TableInfo extends Model {
 
     return {
       tableId: { type: INTEGER, allowNull: false },
-      totalSpreads: { type: INTEGER, allowNull: false },
-      totalSubscribers: { type: INTEGER, allowNull: false },
-      totalCollaborations: { type: INTEGER, allowNull: false },
-      totalView: { type: INTEGER, allowNull: false },
+      totalSpreads: { type: INTEGER, allowNull: false, defaultValue: "0" },
+      totalSubscribers: { type: INTEGER, allowNull: false, defaultValue: "0" },
+      totalCollaborations: {
+        type: INTEGER,
+        allowNull: false,
+        defaultValue: "0"
+      },
+      totalView: { type: INTEGER, allowNull: false, defaultValue: "0" },
       createdAt: {
         type: DATE,
         field: "createdAt",

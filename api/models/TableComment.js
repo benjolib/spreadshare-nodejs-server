@@ -38,7 +38,7 @@ module.exports = class TableComment extends Model {
       tableId: { type: INTEGER, allowNull: false },
       userId: { type: INTEGER, allowNull: false },
       comment: { type: TEXT },
-      votesCount: { type: INTEGER(11) },
+      votesCount: { type: INTEGER(11), defaultValue: "0" },
       createdAt: {
         type: DATE,
         field: "createdAt",

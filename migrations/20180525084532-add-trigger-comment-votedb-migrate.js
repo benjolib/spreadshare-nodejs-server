@@ -22,7 +22,9 @@ exports.up = function(db) {
     LANGUAGE plpgsql
     AS $function$
     BEGIN
+    IF NEW.type ='tablecomment' THEN
     EXECUTE 'UPDATE ' || TG_TABLE_SCHEMA || '.tablecomment SET "votesCount" = "votesCount"+1 WHERE "id" = $1."itemId"' USING NEW;
+    END IF;
     RETURN NULL;
     END
     $function$;
@@ -36,8 +38,8 @@ exports.up = function(db) {
 exports.down = function(db) {
   let schema = db.schema;
 
-  let sql = `DROP TRIGGER IF EXISTS incr_table_spreads ON ${schema}.vote;
-             DROP FUNCTION IF EXISTS ${schema}.table_spread_incr();`;
+  let sql = `DROP TRIGGER IF EXISTS incr_table_comment ON ${schema}.vote;
+             DROP FUNCTION IF EXISTS ${schema}.table_comment_inc();`;
 
   return db.runSql(sql);
 };
