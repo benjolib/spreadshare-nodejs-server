@@ -102,7 +102,8 @@ module.exports = class NotificationService extends Service {
       USER_NOTIFICATION,
       USER,
       TABLE_ROW,
-      USER_FOLLOWERS
+      USER_FOLLOWERS,
+      TABLE_SUBSCRIPTION
     } = this.app.config.constants.tables;
     let {
       COLLABORATE,
@@ -139,7 +140,9 @@ module.exports = class NotificationService extends Service {
       fields.userId
     } IN(select "followedBy" from  ${schema}.${USER_FOLLOWERS} where "userId"=n."createdBy"))
         or 
-        (type='${COMMENTS}' and n."userId"= ${fields.userId})
+        (type='${COMMENTS}' and ${
+      fields.userId
+    } In(select "userId" from ${schema}.${TABLE_SUBSCRIPTION} where "userId"=n."createdBy"))
         )${condSql}
         `;
 
