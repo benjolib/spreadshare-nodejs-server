@@ -12,12 +12,62 @@ module.exports = class NotificationService extends Service {
    * @param id
    * @returns {Promise|*|PromiseLike<T>|Promise<T>}
    */
-  findsingle(id) {
-    let { UserNotification } = this.app.orm;
-    return UserNotification.find({ where: { id } }).then(data => {
-      if (_.isEmpty(data)) throw new Error("notification not found");
-      return data.toJSON();
-    });
+  findsingle(fields) {
+    let { sequelize } = this.app.orm.Table;
+
+    let {
+      USER_NOTIFICATION,
+      USER,
+      TABLE_ROW,
+      USER_FOLLOWERS
+    } = this.app.config.constants.tables;
+    let {
+      COLLABORATE,
+      COLLABORATE_UPDATE_STATUS,
+      COMMENTS,
+      FOLLOW,
+      SUBSCRIBE,
+      NEW_LIST
+    } = this.app.config.constants.notificationType;
+    let { schema } = sequelize.options;
+    let sql = ``;
+
+    sql = `   
+        select n.*,u.name,tr."tableId" 
+        from ${schema}.${USER_NOTIFICATION} n
+        join ${schema}.${USER} u on u.id = n."createdBy"
+        left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
+        where (
+        (type='${FOLLOW}' and ${
+      fields.userId
+    } IN(select "userId" from ${schema}.${USER_FOLLOWERS} where id=n."itemId"::int))
+        or
+        (type='${COLLABORATE}' and n."userId"= ${fields.userId})
+        or
+        (type='${COLLABORATE_UPDATE_STATUS}' and n."userId"= ${fields.userId})
+         or
+        (type='${SUBSCRIBE}' and n."userId"= ${fields.userId})
+         or
+        (type='${NEW_LIST}' and  ${
+      fields.userId
+    } IN(select "followedBy" from  ${schema}.${USER_FOLLOWERS} where "userId"=n."createdBy"))
+        or 
+        (type='${COMMENTS}' and n."userId"= ${fields.userId})
+        ) and n.id =${fields.id}
+        `;
+
+    return sequelize
+      .query(sql, {
+        bind: [],
+        type: sequelize.QueryTypes.SELECT
+      })
+      .then(rows => {
+        if (_.isEmpty(rows)) throw new Error(`Notification not found`);
+        return rows;
+      })
+      .catch(err => {
+        throw err;
+      });
   }
 
   /**
@@ -50,9 +100,18 @@ module.exports = class NotificationService extends Service {
 
     let {
       USER_NOTIFICATION,
-      USER_FOLLOWERS,
-      TABLE_SUBSCRIPTION
+      USER,
+      TABLE_ROW,
+      USER_FOLLOWERS
     } = this.app.config.constants.tables;
+    let {
+      COLLABORATE,
+      COLLABORATE_UPDATE_STATUS,
+      COMMENTS,
+      FOLLOW,
+      SUBSCRIBE,
+      NEW_LIST
+    } = this.app.config.constants.notificationType;
     let { schema } = sequelize.options;
     let sql = ``,
       condSql = ``;
@@ -60,10 +119,29 @@ module.exports = class NotificationService extends Service {
     if (fields.hasOwnProperty("start")) condSql = ` OFFSET ${fields.start}`;
     if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
 
-    sql = `select n.*
-                from ${schema}.${USER_NOTIFICATION} n
-                where n."isRead"= false and n."userId"=${fields.userId}  
-                ${condSql}`;
+    sql = `   
+        select n.*,u.name,tr."tableId" 
+        from ${schema}.${USER_NOTIFICATION} n
+        join ${schema}.${USER} u on u.id = n."createdBy"
+        left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
+        where (
+        (type='${FOLLOW}' and ${
+      fields.userId
+    } IN(select "userId" from ${schema}.${USER_FOLLOWERS} where id=n."itemId"::int))
+        or
+        (type='${COLLABORATE}' and n."userId"= ${fields.userId})
+        or
+        (type='${COLLABORATE_UPDATE_STATUS}' and n."userId"= ${fields.userId})
+         or
+        (type='${SUBSCRIBE}' and n."userId"= ${fields.userId})
+         or
+        (type='${NEW_LIST}' and  ${
+      fields.userId
+    } IN(select "followedBy" from  ${schema}.${USER_FOLLOWERS} where "userId"=n."createdBy"))
+        or 
+        (type='${COMMENTS}' and n."userId"= ${fields.userId})
+        )${condSql}
+        `;
 
     return sequelize
       .query(sql, {
@@ -71,7 +149,7 @@ module.exports = class NotificationService extends Service {
         type: sequelize.QueryTypes.SELECT
       })
       .then(rows => {
-        if (_.isEmpty(rows)) throw new Error(`No row list found`);
+        if (_.isEmpty(rows)) throw new Error(`Notification list not found`);
         return rows;
       })
       .catch(err => {

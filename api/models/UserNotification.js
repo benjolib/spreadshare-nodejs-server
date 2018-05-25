@@ -29,14 +29,16 @@ module.exports = class UserNotification extends Model {
   }
 
   static schema(app, Sequelize) {
-    let { INTEGER, DATE, literal, STRING, TEXT, BOOLEAN } = Sequelize;
+    let { INTEGER, DATE, literal, STRING, TEXT, BOOLEAN, ENUM } = Sequelize;
 
     return {
       createdBy: { type: INTEGER, allowNull: false },
-      userId: { type: INTEGER, allowNull: false },
-      type: { type: STRING },
+      userId: { type: INTEGER },
+      type: {
+        type: ENUM,
+        values: ["F", "S", "NL", "C", "CUS", "COM"]
+      },
       text: { type: TEXT },
-      isRead: { type: BOOLEAN, defaultValue: false },
       itemId: { type: INTEGER },
       itemType: { type: STRING },
       createdAt: {

@@ -50,8 +50,7 @@ module.exports = class CuratorController extends Controller {
         userId: id,
         itemId: follower.id
       };
-      let notification = await NotificationService.create(fields);
-      console.log(notification);
+      await NotificationService.create(fields);
     } catch (e) {}
   }
 

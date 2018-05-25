@@ -16,10 +16,16 @@ module.exports = class NotificationController extends Controller {
   async get(req, res) {
     let params = req.params;
     let id = parseInt(params.id);
+    let user = req.user;
     let { NotificationService } = this.app.services;
 
+    let model = {
+      id: id,
+      userId: user.id
+    };
+
     try {
-      let notification = await NotificationService.findsingle(id);
+      let notification = await NotificationService.findsingle(model);
       return res.json({
         flag: true,
         data: notification,

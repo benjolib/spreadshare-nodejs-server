@@ -58,10 +58,10 @@ module.exports = class TableController extends Controller {
     }
     try {
       let fields = {
-        createdBy: table.owner,
+        createdBy: user.id,
         notificationType: notificationType.NEW_LIST,
         text: `table list created by`,
-        userId: user.id,
+        userId: null,
         itemType: notificationItemType.TABLE,
         itemId: table.id
       };
@@ -378,8 +378,12 @@ module.exports = class TableController extends Controller {
    * @returns {Promise<*>}
    */
   async addRow(req, res) {
-    let { TableService } = this.app.services;
-    let { tableRowActionType } = this.app.config.constants;
+    let { TableService, NotificationService } = this.app.services;
+    let {
+      tableRowActionType,
+      notificationType,
+      notificationItemType
+    } = this.app.config.constants;
     let model = req.body;
     let user = req.user;
     let data = {
@@ -387,15 +391,16 @@ module.exports = class TableController extends Controller {
       createdBy: user.id,
       action: tableRowActionType.SUBMITTED
     };
-
+    let row, table;
     try {
-      let table = await TableService.find(model.tableId); //check table is available or not
+      table = await TableService.find(model.tableId); //check table is available or not
+
       let id = parseInt(user.id);
       if (id == table.owner) {
         data.status = "A";
       }
 
-      let row = await TableService.addrow(data); //create table row
+      row = await TableService.addrow(data); //create table row
 
       let field = _.map(model.rowColumns, rc => {
         return _.extend({}, rc, { rowId: row.id, userId: user.id });
@@ -403,7 +408,7 @@ module.exports = class TableController extends Controller {
 
       let cell = await TableService.addTableCellInBulks(field); //create table cell
       row.column = cell;
-      return res.json({
+      res.json({
         flag: true,
         data: row,
         message: "Table row created!",
@@ -417,6 +422,18 @@ module.exports = class TableController extends Controller {
         code: 500
       });
     }
+    try {
+      let fields = {
+        createdBy: user.id,
+        notificationType: notificationType.COLLABORATE,
+        text: `Add table row by`,
+        userId: table.owner,
+        itemId: row.id,
+        itemType: notificationItemType.TABLE_ROW
+      };
+      let notification = await NotificationService.create(fields);
+      console.log(notification);
+    } catch (e) {}
   }
 
   /**
@@ -633,7 +650,11 @@ module.exports = class TableController extends Controller {
     let tableId = tableRow.tableId;
     let id = parseInt(params.id);
     let { TableService, NotificationService } = this.app.services;
-    let { rowStatusType, notificationType } = this.app.config.constants;
+    let {
+      rowStatusType,
+      notificationType,
+      notificationItemType
+    } = this.app.config.constants;
     let user = req.user;
 
     let status =
@@ -664,9 +685,11 @@ module.exports = class TableController extends Controller {
     try {
       let fields = {
         createdBy: user.id,
-        notificationType: notificationType.COLLABORATE,
+        notificationType: notificationType.COLLABORATE_UPDATE_STATUS,
         text: `Update table row status by`,
-        userId: tableRow.updatedBy
+        userId: tableRow.updatedBy,
+        itemId: tableId,
+        itemType: notificationItemType.TABLE_ROW
       };
       let notification = await NotificationService.create(fields);
       console.log(notification);

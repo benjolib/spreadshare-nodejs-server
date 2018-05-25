@@ -27,8 +27,9 @@ module.exports = class CommentController extends Controller {
       userId: user.id,
       comment: body.comment
     };
+    let comment;
     try {
-      let comment = await CommentService.create(model);
+      comment = await CommentService.create(model);
       res.json({
         flag: true,
         data: comment,
@@ -48,10 +49,10 @@ module.exports = class CommentController extends Controller {
         createdBy: user.id,
         notificationType: COMMENTS,
         text: `Commented by`,
-        userId: table.owner
+        userId: table.owner,
+        itemId: comment.id
       };
-      let notification = await NotificationService.create(fields); //add notification
-      console.log(notification);
+      await NotificationService.create(fields); //add notification
     } catch (e) {}
   }
 

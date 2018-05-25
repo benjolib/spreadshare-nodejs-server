@@ -44,7 +44,7 @@ module.exports = class SubscriberController extends Controller {
     let { SubscriberService, NotificationService } = this.app.services;
     let { SUBSCRIBE } = this.app.config.constants.subscribeType;
     let table = req.table;
-
+    let subscriber;
     let model = {
       tableId: params.id,
       status: SUBSCRIBE,
@@ -52,7 +52,7 @@ module.exports = class SubscriberController extends Controller {
       userId: user.id
     };
     try {
-      let subscriber = await SubscriberService.subscribe(model);
+      subscriber = await SubscriberService.subscribe(model);
       res.json({
         flag: true,
         data: subscriber,
@@ -69,10 +69,11 @@ module.exports = class SubscriberController extends Controller {
     }
     try {
       let fields = {
-        createdBy: table.owner,
+        createdBy: user.id,
         notificationType: SUBSCRIBE,
         text: `subscribe by`,
-        userId: user.id
+        userId: table.owner,
+        itemId: subscriber.id
       };
       let notification = await NotificationService.create(fields);
       console.log(notification);
