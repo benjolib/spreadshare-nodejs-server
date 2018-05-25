@@ -116,35 +116,6 @@ module.exports = [
   },
 
   /**
-   * ProfileController
-   */
-  {
-    method: "GET",
-    path: "/api/v1/profile",
-    handler: "ProfileController.getProfile"
-  },
-  {
-    method: "PUT",
-    path: "/api/v1/profile",
-    handler: "ProfileController.updateProfile"
-  },
-  {
-    method: "PUT",
-    path: "/api/v1/profile/userconnection",
-    handler: "ProfileController.upsertConnections"
-  },
-  {
-    method: "GET",
-    path: "/api/v1/profile/userconnection/:userid",
-    handler: "ProfileController.getUserConnections"
-  },
-  {
-    method: "POST",
-    path: "/api/v1/profile/upload",
-    handler: "ProfileController.uploadImage"
-  },
-
-  /**
    * tags api route
    */
 

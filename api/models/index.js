@@ -25,3 +25,4 @@ exports.Tags = require("./Tags");
 exports.TableInfo = require("./TableInfo");
 exports.FeedAction = require("./FeedAction");
 exports.FeedView = require("./FeedView");
+exports.ReadNotification = require("./ReadNotification");
