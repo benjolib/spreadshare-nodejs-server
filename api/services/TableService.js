@@ -109,8 +109,10 @@ module.exports = class TableService extends Service {
       TABLE_COLUMN,
       VOTE,
       TAGS,
-      USER
+      USER,
+      TABLE_ROW
     } = this.app.config.constants.tables;
+    let { tableRowActionType, rowStatusType } = this.app.config.constants;
     let { schema } = sequelize.options;
     let sql = ``,
       condSql = ` LIMIT 1`,
@@ -132,7 +134,10 @@ module.exports = class TableService extends Service {
              json_agg(json_build_object('id',tc.id,'title', tc.title, 'position' , tc.position, 'width' , tc.width)) as columns,                       
              ${voteSql},
              ${tagSql},        
-             ${curatorSql}        
+             ${curatorSql}    
+             (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings    
             from ${schema}."${TABLE}" t 
             join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id                                      
             where t.id=${id} ${whereCond}
@@ -193,7 +198,8 @@ module.exports = class TableService extends Service {
    */
   findPopular(fields) {
     let { sequelize } = this.app.orm.User;
-    let { TABLE, TABLE_INFO } = this.app.config.constants.tables;
+    let { TABLE, TABLE_INFO, TABLE_ROW } = this.app.config.constants.tables;
+    let { tableRowActionType, rowStatusType } = this.app.config.constants;
     let { schema } = sequelize.options;
 
     let condSql = "",
@@ -219,6 +225,9 @@ module.exports = class TableService extends Service {
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
     let sql = `select t.*,ti."totalSubscribers",ti."totalCollaborations"                
+            (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings
            from ${schema}.${TABLE} t 
            left join ${schema}.${TABLE_INFO} ti on ti."tableId"= t.id 
            ${whereCond}

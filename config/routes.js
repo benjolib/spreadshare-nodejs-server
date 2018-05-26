@@ -299,7 +299,7 @@ module.exports = [
   },
   {
     method: "POST",
-    path: "/api/v1/notification",
+    path: "/api/v1/notification/read",
     handler: "NotificationController.read"
   },
   {

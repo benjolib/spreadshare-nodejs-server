@@ -17,9 +17,14 @@ module.exports = class UserService extends Service {
    */
   findHistory(fields) {
     let { sequelize } = this.app.orm.User;
-    let { TABLE, USER, TABLE_VIEW } = this.app.config.constants.tables;
+    let {
+      TABLE,
+      USER,
+      TABLE_VIEW,
+      TABLE_ROW
+    } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
-
+    let { rowStatusType, tableRowActionType } = this.app.config.constants;
     let condSql = "",
       order;
 
@@ -34,7 +39,10 @@ module.exports = class UserService extends Service {
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
 
-    let sql = `select t.*      
+    let sql = `select t.* ,     
+           (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings
            from ${schema}.${TABLE} t 
            left join ${schema}.${USER} u on u.id = t.owner 
            left join ${schema}.${TABLE_VIEW} tw on tw."userId" = u.id
@@ -113,7 +121,7 @@ module.exports = class UserService extends Service {
   findPublication(fields) {
     let { sequelize } = this.app.orm.User;
     let { TABLE_ROW, TABLE, TABLE_INFO } = this.app.config.constants.tables;
-    let { APPROVED } = this.app.config.constants.rowStatusType;
+    let { rowStatusType, tableRowActionType } = this.app.config.constants;
     let { schema } = sequelize.options;
 
     let condSql = "";
@@ -122,12 +130,17 @@ module.exports = class UserService extends Service {
 
     let sql = `select DISTINCT(t.id),t.*
                    totalSubscribers,ti."totalSubscribers"
+                   (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings
                    from ${schema}.${TABLE} t
         left join ${schema}.${TABLE_ROW} tr on tr."tableId" = t.id
         left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
         where t.owner = ${
           fields.userId
-        } or tr."createdBy" = t.owner or tr.status = '${APPROVED}'    
+        } or tr."createdBy" = t.owner or tr.status = '${
+      rowStatusType.APPROVED
+    }'    
            ${condSql}`;
     //todo percentage of contribution
     return sequelize

@@ -19,7 +19,10 @@ module.exports = class NotificationService extends Service {
       USER_NOTIFICATION,
       USER,
       TABLE_ROW,
-      USER_FOLLOWERS
+      USER_FOLLOWERS,
+      READ_NOTIFICATION,
+      TABLE,
+      TABLE_SUBSCRIPTION
     } = this.app.config.constants.tables;
     let {
       COLLABORATE,
@@ -31,12 +34,15 @@ module.exports = class NotificationService extends Service {
     } = this.app.config.constants.notificationType;
     let { schema } = sequelize.options;
     let sql = ``;
-
+    let condSql = ``;
+    condSql = `${condSql} LIMIT 1`;
     sql = `   
-        select n.*,u.name,tr."tableId" 
+        select distinct(n.id), n.*,u.name,tr."tableId", t.title, rn."isRead"=true
         from ${schema}.${USER_NOTIFICATION} n
         join ${schema}.${USER} u on u.id = n."createdBy"
         left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
+        left join  ${schema}.${TABLE} t on t.id = n."itemId"
+        left join ${schema}.${READ_NOTIFICATION} rn on rn."notificationId" = n.id 
         where (
         (type='${FOLLOW}' and ${
       fields.userId
@@ -52,8 +58,10 @@ module.exports = class NotificationService extends Service {
       fields.userId
     } IN(select "followedBy" from  ${schema}.${USER_FOLLOWERS} where "userId"=n."createdBy"))
         or 
-        (type='${COMMENTS}' and n."userId"= ${fields.userId})
-        ) and n.id =${fields.id}
+        (type='${COMMENTS}' and ${
+      fields.userId
+    } In( select "userId" from ${schema}.${TABLE_SUBSCRIPTION} where "tableId"=n."itemId"))
+        ) and n.id =${fields.id} ${condSql}
         `;
 
     return sequelize
@@ -102,7 +110,8 @@ module.exports = class NotificationService extends Service {
       TABLE_ROW,
       USER_FOLLOWERS,
       TABLE_SUBSCRIPTION,
-      READ_NOTIFICATION
+      READ_NOTIFICATION,
+      TABLE
     } = this.app.config.constants.tables;
     let {
       COLLABORATE,
@@ -120,11 +129,12 @@ module.exports = class NotificationService extends Service {
     if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
 
     sql = `   
-        select n.*,u.name,tr."tableId" 
+        select distinct(n.id), n.*,u.name,tr."tableId", t.title, rn."isRead"=true
         from ${schema}.${USER_NOTIFICATION} n
         join ${schema}.${USER} u on u.id = n."createdBy"
         left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
-        left join ${schema}.${READ_NOTIFICATION} rn on rn."isRead" = true 
+        left join  ${schema}.${TABLE} t on t.id = n."itemId"
+        left join ${schema}.${READ_NOTIFICATION} rn on rn."notificationId" = n.id 
         where (
         (type='${FOLLOW}' and ${
       fields.userId
