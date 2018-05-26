@@ -71,23 +71,21 @@ module.exports = class NotificationService extends Service {
   }
 
   /**
-   * update isRead for read notification
-   * @param isRead
-   * @param id
-   * @returns {Promise<T>}
+   * Read Notification isRead Update
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
    */
-  updateIsRead(isRead, id) {
-    let { UserNotification } = this.app.orm;
+  updateIsRead(fields) {
+    let { ReadNotification } = this.app.orm;
 
-    return UserNotification.update(
-      {
-        isRead
-      },
-      { where: { id: id } }
-    ).then(data => {
-      if (_.isEmpty(data)) throw new Error("Is read Not updated.");
-      return data;
-    });
+    return ReadNotification.bulkCreate(fields.data, { returning: true }).then(
+      data => {
+        data = _.map(data, kw => {
+          return kw.toJSON();
+        });
+        return data;
+      }
+    );
   }
 
   /**
@@ -103,7 +101,8 @@ module.exports = class NotificationService extends Service {
       USER,
       TABLE_ROW,
       USER_FOLLOWERS,
-      TABLE_SUBSCRIPTION
+      TABLE_SUBSCRIPTION,
+      READ_NOTIFICATION
     } = this.app.config.constants.tables;
     let {
       COLLABORATE,
@@ -125,6 +124,7 @@ module.exports = class NotificationService extends Service {
         from ${schema}.${USER_NOTIFICATION} n
         join ${schema}.${USER} u on u.id = n."createdBy"
         left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
+        left join ${schema}.${READ_NOTIFICATION} rn on rn."isRead" = true 
         where (
         (type='${FOLLOW}' and ${
       fields.userId

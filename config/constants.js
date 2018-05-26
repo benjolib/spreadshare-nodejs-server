@@ -36,7 +36,8 @@ module.exports = {
     USER_LOCATION: "userlocation",
     LOCATION: "location",
     USER_NOTIFICATION: "usernotification",
-    FEED_ACTION: "feedaction"
+    FEED_ACTION: "feedaction",
+    READ_NOTIFICATION: "readnotification"
   },
   tableSortType: {
     SPREADS: "totalSpread",
@@ -86,9 +87,9 @@ module.exports = {
     SUBSCRIBE: "S"
   },
   notificationItemType: {
-    TABLE: "T",
-    TABLE_ROW: "TR",
-    TABLE_COLUMN: "TC"
+    TABLE: "table",
+    TABLE_ROW: "tablerow",
+    TABLE_COLUMN: "tablecolumn"
   },
   feedItemType: {
     TABLE: "table",

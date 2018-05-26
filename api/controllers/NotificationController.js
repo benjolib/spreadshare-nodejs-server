@@ -49,20 +49,31 @@ module.exports = class NotificationController extends Controller {
    * @returns {Promise<*>}
    */
   async read(req, res) {
-    let params = req.params;
-    let id = parseInt(params.id);
+    let model = req.body;
     let { NotificationService } = this.app.services;
+    let user = req.user;
+    let data = {
+      data: []
+    };
+
+    //map column with tableId
+    _.map(model.data, d => {
+      data.data.push({
+        userId: user.id,
+        notificationId: d.id,
+        isRead: true
+      });
+    });
 
     try {
-      let read = await NotificationService.updateIsRead(true, id);
+      let readNotification = await NotificationService.updateIsRead(data);
       return res.json({
         flag: true,
-        data: read,
-        message: "updated isRead",
+        data: readNotification,
+        message: "Multiple notification read successfully!",
         code: 200
       });
     } catch (e) {
-      console.log(e);
       return res.json({
         flag: false,
         data: e,

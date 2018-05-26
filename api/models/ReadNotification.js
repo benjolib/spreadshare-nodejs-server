@@ -17,7 +17,7 @@ module.exports = class ReadNotification extends Model {
               foreignKey: "notificationId",
               onDelete: "NO ACTION"
             });
-            models.UserNotification.belongsTo(models.User, {
+            models.ReadNotification.belongsTo(models.User, {
               targetKey: "id",
               foreignKey: "userId",
               onDelete: "NO ACTION"
@@ -28,7 +28,7 @@ module.exports = class ReadNotification extends Model {
     };
   }
 
-  static schema() {
+  static schema(app, Sequelize) {
     let { INTEGER, DATE, literal, BOOLEAN } = Sequelize;
 
     return {
