@@ -129,15 +129,15 @@ module.exports = class TableService extends Service {
               from ${schema}.${USER} u where u.id =ANY(t.curator)) as curators `;
 
     sql = `SELECT t.*,ti."totalSubscribers"::int,
-             ti."totalCollaborations"::int
+             ti."totalCollaborations"::int,
+              (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings   
              FROM (select t.*,
              json_agg(json_build_object('id',tc.id,'title', tc.title, 'position' , tc.position, 'width' , tc.width)) as columns,                       
              ${voteSql},
              ${tagSql},        
              ${curatorSql}    
-             (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
-      tableRowActionType.SUBMITTED
-    }' and tr."status"= '${rowStatusType.APPROVED}') as listings    
             from ${schema}."${TABLE}" t 
             join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id                                      
             where t.id=${id} ${whereCond}
@@ -224,7 +224,7 @@ module.exports = class TableService extends Service {
     }
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
-    let sql = `select t.*,ti."totalSubscribers",ti."totalCollaborations"                
+    let sql = `select t.*,ti."totalSubscribers",ti."totalCollaborations",               
             (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
       tableRowActionType.SUBMITTED
     }' and tr."status"= '${rowStatusType.APPROVED}') as listings

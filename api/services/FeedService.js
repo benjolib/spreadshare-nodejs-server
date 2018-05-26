@@ -175,8 +175,12 @@ module.exports = class FeedService extends Service {
    */
   findTableFeed(fields) {
     let { sequelize } = this.app.orm.Table;
-    let { votesType } = this.app.config.constants;
-    let { TABLE, VOTE } = this.app.config.constants.tables;
+    let {
+      votesType,
+      tableRowActionType,
+      rowStatusType
+    } = this.app.config.constants;
+    let { TABLE, VOTE, TABLE_ROW } = this.app.config.constants.tables;
     let { schema } = sequelize.options;
     let sql = ``,
       condSql = ``,
@@ -193,7 +197,10 @@ module.exports = class FeedService extends Service {
     if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
 
     sql = `select t.*,                 
-                 ${voteSql}  
+                 ${voteSql}, 
+                  (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings   
                 from ${schema}."${TABLE}" t                
                 where t."id"=ANY('{${
                   fields.tableIds

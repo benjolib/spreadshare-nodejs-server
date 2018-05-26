@@ -129,7 +129,7 @@ module.exports = class UserService extends Service {
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
 
     let sql = `select DISTINCT(t.id),t.*
-                   totalSubscribers,ti."totalSubscribers"
+                   totalSubscribers,ti."totalSubscribers",
                    (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
       tableRowActionType.SUBMITTED
     }' and tr."status"= '${rowStatusType.APPROVED}') as listings
