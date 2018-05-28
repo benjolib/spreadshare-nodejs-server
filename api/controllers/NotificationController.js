@@ -52,21 +52,21 @@ module.exports = class NotificationController extends Controller {
     let model = req.body;
     let { NotificationService } = this.app.services;
     let user = req.user;
-    let data = {
-      data: []
-    };
+    let data = [];
 
     //map column with tableId
-    _.map(model.data, d => {
-      data.data.push({
+    _.map(model.id, d => {
+      data.push({
         userId: user.id,
-        notificationId: d.id,
+        notificationId: d,
         isRead: true
       });
     });
 
     try {
-      let readNotification = await NotificationService.updateIsRead(data);
+      let readNotification = await NotificationService.updateIsRead({
+        data: data
+      });
       return res.json({
         flag: true,
         data: readNotification,

@@ -37,7 +37,8 @@ module.exports = class NotificationService extends Service {
     let condSql = ``;
     condSql = `${condSql} LIMIT 1`;
     sql = `   
-        select distinct(n.id), n.*,u.name,tr."tableId", t.title, rn."isRead"=true
+        select distinct(n.id), n.*,u.name,tr."tableId", t.title, 
+        CASE WHEN rn."isRead"=true THEN true ELSE false end as "isRead" 
         from ${schema}.${USER_NOTIFICATION} n
         join ${schema}.${USER} u on u.id = n."createdBy"
         left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
@@ -71,7 +72,7 @@ module.exports = class NotificationService extends Service {
       })
       .then(rows => {
         if (_.isEmpty(rows)) throw new Error(`Notification not found`);
-        return rows;
+        return rows[0];
       })
       .catch(err => {
         throw err;
@@ -129,7 +130,8 @@ module.exports = class NotificationService extends Service {
     if (fields.limit) condSql = `${condSql} LIMIT ${fields.limit}`;
 
     sql = `   
-        select distinct(n.id), n.*,u.name,tr."tableId", t.title, rn."isRead"=true
+        select distinct(n.id), n.*,u.name,tr."tableId", t.title,        
+        CASE WHEN rn."isRead"=true THEN true ELSE false end as "isRead" 
         from ${schema}.${USER_NOTIFICATION} n
         join ${schema}.${USER} u on u.id = n."createdBy"
         left join ${schema}.${TABLE_ROW} tr on tr.id = n."itemId"
