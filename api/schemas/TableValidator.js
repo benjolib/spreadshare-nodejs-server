@@ -12,7 +12,15 @@ module.exports = class TableValidator {
       description: Joi.string(),
       isThumbnail: Joi.boolean(),
       curator: Joi.array(),
-      isPublished: Joi.boolean()
+      isPublished: Joi.boolean(),
+      columns: Joi.array().items(
+        Joi.object().keys({
+          title: Joi.string().required(),
+          position: Joi.number(),
+          width: Joi.number()
+        })
+      ),
+      rows: Joi.array()
     });
   }
 

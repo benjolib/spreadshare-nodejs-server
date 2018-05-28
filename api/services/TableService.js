@@ -119,20 +119,26 @@ module.exports = class TableService extends Service {
       whereCond = ``,
       voteSql = ``,
       tagSql = ``,
-      curatorSql = ``;
+      curatorSql = ``,
+      listingCount = ``;
+
     voteSql = `(SELECT count(*)::int from ${schema}.${VOTE} where "itemId"=t.id AND "type"='${
       votesType.TABLE
     }') as votes`;
+
     tagSql = `(select json_agg(json_build_object('id', tg.id, 'title' , tg.title)) 
               from ${schema}.${TAGS} tg where tg.id =ANY(t.tags)) as tags `;
+
     curatorSql = `(select json_agg(json_build_object('id', u.id, 'name' , u.name)) 
               from ${schema}.${USER} u where u.id =ANY(t.curator)) as curators `;
 
+    listingCount = `(select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings`;
+
     sql = `SELECT t.*,ti."totalSubscribers"::int,
              ti."totalCollaborations"::int,
-              (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
-      tableRowActionType.SUBMITTED
-    }' and tr."status"= '${rowStatusType.APPROVED}') as listings   
+              ${listingCount} 
              FROM (select t.*,
              json_agg(json_build_object('id',tc.id,'title', tc.title, 'position' , tc.position, 'width' , tc.width)) as columns,                       
              ${voteSql},
@@ -372,8 +378,6 @@ module.exports = class TableService extends Service {
     let { ChangeRequest } = this.app.orm;
     let { rowStatusType } = this.app.config.constants;
     let data = [];
-
-    //Todo change from content
 
     _.map(fields.data, f => {
       data.push({
