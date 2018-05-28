@@ -143,19 +143,30 @@ module.exports = class AuthController extends Controller {
   async loginBySession(req, res) {
     let { email, password } = req.body;
     let { User, Passport } = this.app.orm;
+    let { status } = this.app.config.constants.user;
+    let { ProfileService } = this.app.services;
 
     try {
       let user = await User.findOne({
         where: { email },
         include: [{ model: Passport }]
       });
+
+      user = user.toJSON ? user.toJSON() : user;
       if (!user) throw new Error("User not exists");
+
+      //check user is active or not
+      if (!user.confirmed && user.status == status.DEACTIVE)
+        throw new Error(
+          `Your email is not confirmed yet, Please confirm it to login!`
+        );
+
       let passport = user.Passports.find(o => {
         return o.protocol == "basic";
       });
       if (!passport) throw new Error("passport not exists");
       let isMatch = await this.app.config.passport.bcrypt.compare(
-        password,
+        ProfileService.makePassword(password),
         passport.password
       );
       if (!isMatch) throw new Error("Oops! password does not match.");
@@ -163,7 +174,7 @@ module.exports = class AuthController extends Controller {
 
       return res.json({
         flag: true,
-        data: { user },
+        data: { user: _.omit(user, "password") },
         message: "Success",
         code: 200
       });
@@ -186,6 +197,8 @@ module.exports = class AuthController extends Controller {
   async loginByCookie(req, res) {
     let { email, password } = req.body;
     let { User, Passport } = this.app.orm;
+    let { status } = this.app.config.constants.user;
+    let { ProfileService } = this.app.services;
 
     try {
       let user = await User.findOne({
@@ -193,12 +206,19 @@ module.exports = class AuthController extends Controller {
         include: [{ model: Passport }]
       });
       if (!user) throw new Error("User not exists");
+      user = user.toJSON ? user.toJSON() : user;
+
+      if (!user.confirmed && user.status == status.DEACTIVE)
+        throw new Error(
+          `Your email is not confirmed yet, Please confirm it to login!`
+        );
+
       let passport = user.Passports.find(o => {
         return o.protocol == "basic";
       });
       if (!passport) throw new Error("passport not exists");
       let isMatch = await this.app.config.passport.bcrypt.compare(
-        password,
+        ProfileService.makePassword(password),
         passport.password
       );
       if (!isMatch) throw new Error("Oops! password does not match.");
@@ -206,7 +226,7 @@ module.exports = class AuthController extends Controller {
 
       return res.json({
         flag: true,
-        data: { user },
+        data: { user: _.omit(user, "password") },
         message: "Success",
         code: 200
       });
@@ -230,9 +250,10 @@ module.exports = class AuthController extends Controller {
 
     try {
       let user = await User.findOne({ where: { id: req.user.id } });
+      user = user.toJSON ? user.toJSON() : user;
       return res.json({
         flag: true,
-        data: { user },
+        data: { user: _.omit(user, "password") },
         message: "Success",
         code: 200
       });
@@ -252,10 +273,12 @@ module.exports = class AuthController extends Controller {
    * @param res
    */
   checkJWT(req, res) {
+    let user = req.user;
+    user = user.toJSON ? user.toJSON() : user;
     try {
       return res.json({
         flag: true,
-        data: { user: req.user },
+        data: { user: _.omit(user, "password") },
         message: "Success",
         code: 200
       });

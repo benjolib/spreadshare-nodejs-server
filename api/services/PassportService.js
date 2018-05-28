@@ -13,6 +13,9 @@ module.exports = class PassportService extends Service {
    */
   init() {
     let { User, Passport } = this.app.orm;
+    let { ProfileService } = this.app.services;
+    let { status } = this.app.config.constants.user;
+
     let {
       basic,
       jwt,
@@ -30,12 +33,22 @@ module.exports = class PassportService extends Service {
           .then(u => u && u.toJSON())
           .then(async user => {
             if (!user) return done(null, false);
+
+            //check user is active or not
+            if (!user.confirmed && user.status == status.DEACTIVE)
+              return done(
+                new Error(
+                  `Your email is not confirmed yet, Please confirm it to login!`
+                ),
+                false
+              );
+
             let { password } =
               user.Passports.find(o => {
                 return o.protocol == "basic";
               }) || {};
             let isMatch = await this.app.config.passport.bcrypt.compare(
-              passwd,
+              ProfileService.makePassword(passwd),
               password
             );
             if (isMatch) {
@@ -59,12 +72,23 @@ module.exports = class PassportService extends Service {
           .then(u => u && u.toJSON())
           .then(async user => {
             if (!user) return done(null, false);
+
+            //check user is active or not
+            console.log(`user.confirmed`, user.confirmed);
+            if (!user.confirmed && user.status == status.DEACTIVE)
+              return done(
+                new Error(
+                  `Your email is not confirmed yet, Please confirm it to login!`
+                ),
+                false
+              );
+
             let { password } =
               user.Passports.find(o => {
                 return o.protocol == "basic";
               }) || {};
             let isMatch = await this.app.config.passport.bcrypt.compare(
-              passwd,
+              ProfileService.makePassword(passwd),
               password
             );
             if (isMatch) {
@@ -97,7 +121,9 @@ module.exports = class PassportService extends Service {
               if (!user) {
                 user = await User.create({
                   name: profile._json.first_name,
-                  email: profile._json.email
+                  email: profile._json.email,
+                  status: status.ACTIVE,
+                  confirmed: true
                 });
                 await Passport.create({
                   user_id: user.id,
@@ -154,7 +180,9 @@ module.exports = class PassportService extends Service {
               if (!user) {
                 user = await User.create({
                   name: profile.displayName,
-                  email: profile.emails[0].value
+                  email: profile.emails[0].value,
+                  status: status.ACTIVE,
+                  confirmed: true
                 });
                 await Passport.create({
                   user_id: user.id,
@@ -212,7 +240,9 @@ module.exports = class PassportService extends Service {
               if (!user) {
                 user = await User.create({
                   name: profile.displayName,
-                  email: profile.emails[0].value
+                  email: profile.emails[0].value,
+                  status: status.ACTIVE,
+                  confirmed: true
                 });
                 await Passport.create({
                   user_id: user.id,
