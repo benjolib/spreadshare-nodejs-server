@@ -222,6 +222,11 @@ module.exports = [
   },
   {
     method: "POST",
+    path: "/api/v1/table/row/multiple",
+    handler: "TableController.addMultipleRows"
+  },
+  {
+    method: "POST",
     path: "/api/v1/table/row/remove",
     handler: "TableController.deleteTableRow"
   },

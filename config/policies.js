@@ -31,14 +31,30 @@ module.exports = {
   },
   TableController: {
     create: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
-    addColumn: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
-    addMultipleColumns: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    addColumn: [
+      "PassportPolicy.authenticate",
+      "AuthPoilcy.checkTable",
+      "JoiPolicy.validate"
+    ],
+    addMultipleColumns: [
+      "PassportPolicy.authenticate",
+      "AuthPoilcy.checkTable",
+      "JoiPolicy.validate"
+    ],
     updateColumn: ["JoiPolicy.validate"],
     update: ["JoiPolicy.validate"],
     publish: ["JoiPolicy.validate"],
     list: ["JoiPolicy.validate"],
-    addRow: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
-    addMultipleRows: ["PassportPolicy.authenticate", "JoiPolicy.validate"],
+    addRow: [
+      "PassportPolicy.authenticate",
+      "AuthPoilcy.checkTable",
+      "JoiPolicy.validate"
+    ],
+    addMultipleRows: [
+      "PassportPolicy.authenticate",
+      "AuthPoilcy.checkTable",
+      "JoiPolicy.validate"
+    ],
     updateStatus: ["PassportPolicy.authenticate", "AuthPoilcy.loadTableRow"],
     deleteTableRow: [
       "PassportPolicy.authenticate",

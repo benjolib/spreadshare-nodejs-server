@@ -145,7 +145,7 @@ module.exports = class TableService extends Service {
              ${tagSql},        
              ${curatorSql}    
             from ${schema}."${TABLE}" t 
-            join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id                                      
+            left join ${schema}."${TABLE_COLUMN}" tc on tc."tableId"=t.id                                      
             where t.id=${id} ${whereCond}
             group by t.id ${condSql})t
             LEFT join ${schema}."${TABLE_INFO}" ti on ti."tableId"=t.id`;

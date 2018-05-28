@@ -389,7 +389,7 @@ module.exports = class TableController extends Controller {
     let model = req.body;
     let id = parseInt(params.id);
     let { TableService } = this.app.services;
-    let time = new Date().getTime();
+    let time = moment().format();
     let data = {
       isPublished: model.isPublished,
       publishedAt: time

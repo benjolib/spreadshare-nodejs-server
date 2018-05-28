@@ -80,6 +80,7 @@ module.exports = class Table extends Model {
       curator: { type: ARRAY(INTEGER) },
       relatedList: { type: ARRAY(INTEGER) },
       isPublished: { type: BOOLEAN, defaultValue: false },
+      isDraft: { type: BOOLEAN, defaultValue: false },
       publishedAt: {
         type: DATE
       },

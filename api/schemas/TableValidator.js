@@ -5,14 +5,15 @@ const Constant = require("../../config/constants");
 module.exports = class TableValidator {
   create() {
     return Joi.object().keys({
-      title: Joi.string(),
-      tags: Joi.array(),
+      title: Joi.string().required(),
+      tags: Joi.array().required(),
       tagline: Joi.string(),
       image: Joi.string(),
       description: Joi.string(),
       isThumbnail: Joi.boolean(),
       curator: Joi.array(),
       isPublished: Joi.boolean(),
+      isDraft: Joi.boolean(),
       columns: Joi.array().items(
         Joi.object().keys({
           title: Joi.string().required(),
@@ -30,6 +31,20 @@ module.exports = class TableValidator {
           )
         })
       )
+    });
+  }
+
+  update() {
+    return Joi.object().keys({
+      title: Joi.string().required(),
+      tags: Joi.array(),
+      tagline: Joi.string(),
+      image: Joi.string(),
+      description: Joi.string(),
+      isThumbnail: Joi.boolean(),
+      curator: Joi.array(),
+      isPublished: Joi.boolean(),
+      isDraft: Joi.boolean()
     });
   }
 
