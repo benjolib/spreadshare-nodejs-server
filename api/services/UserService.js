@@ -69,44 +69,47 @@ module.exports = class UserService extends Service {
    * @param fields
    * @returns {Promise<T>}
    */
-  find(fields) {
+  findStatistics(fields) {
     let { sequelize } = this.app.orm.User;
     let {
       USER,
       TABLE,
+      TABLE_ROW,
       TABLE_INFO,
       TABLE_SUBSCRIPTION
     } = this.app.config.constants.tables;
+    let { rowStatusType } = this.app.config.constants;
     let { schema } = sequelize.options;
 
-    let condSql = "";
-    if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
-    if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
+    let params = [fields.userId];
 
-    let sql = `select u.*,              
-          (select count(*)::int from ${schema}.${TABLE_SUBSCRIPTION} ts where ts."status"= '${
-      fields.status
-    }') as totalsubscriber,
-          (select count(*)::int from ${schema}.${TABLE} t where t."isPublished"= true) as totalpublications, 
-          (select sum("ti"."totalCollaborations")::int from ${schema}.${TABLE_INFO} ti) as totalCollaborations
-          from ${schema}.${USER} u 
-          where u.id = ${fields.userId} ${condSql}`;
-    //todo Karma Count pending
+    let publicationSql = `with publications as(select DISTINCT(t.id),t.title,t.description,t.id as "tableId",ti."totalSubscribers",ti."totalSpreads"                   
+                   from ${schema}.${TABLE} t
+                   left join ${schema}.${TABLE_ROW} tr on tr."tableId" = t.id
+                   left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
+                   where t.owner = $1 
+                   or (tr."createdBy" = $1 AND tr.status = '${
+                     rowStatusType.APPROVED
+                   }'))`;
+
+    let tableSql = `array(select id from ${schema}."${TABLE}" where owner=$1)`;
+    let sql = `${publicationSql} select count(*)::int as publications,
+                   (select count(*)::int from ${schema}.${TABLE_SUBSCRIPTION} where "tableId"=ANY(${tableSql})) as subscribers,
+                   (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."status"= '${
+      rowStatusType.APPROVED
+    }' and tr."tableId" = ANY(${tableSql})) as collaborations
+                   from publications`;
 
     return sequelize
       .query(sql, {
-        bind: [],
+        bind: params,
         type: sequelize.QueryTypes.SELECT
       })
       .then(result => {
-        if (_.isEmpty(result)) throw new Error(`No user data found!.`);
-        let user = result[0];
-        return _.omit(
-          user,
-          "emailConfirmationToken",
-          "passwordResetToken",
-          "password"
-        );
+        if (_.isEmpty(result))
+          throw new Error(`No user statistics data found!.`);
+
+        return result[0];
       })
       .catch(err => {
         throw err;
@@ -124,36 +127,44 @@ module.exports = class UserService extends Service {
     let { rowStatusType, tableRowActionType } = this.app.config.constants;
     let { schema } = sequelize.options;
 
-    let condSql = "";
+    let condSql = "",
+      params = [fields.userId];
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
 
-    let sql = `select DISTINCT(t.id),t.*
-                   totalSubscribers,ti."totalSubscribers",
-                   (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+    let listingSql = `(select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
       tableRowActionType.SUBMITTED
-    }' and tr."status"= '${rowStatusType.APPROVED}') as listings
-                   from ${schema}.${TABLE} t
-        left join ${schema}.${TABLE_ROW} tr on tr."tableId" = t.id
-        left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
-        where t.owner = ${
-          fields.userId
-        } or tr."createdBy" = t.owner or tr.status = '${
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings`;
+    let contributionSql = `(select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+      tableRowActionType.SUBMITTED
+    }' and tr."status"= '${
       rowStatusType.APPROVED
-    }'    
-           ${condSql}`;
-    //todo percentage of contribution
+    }' and "createdBy"=$1) as totalcontribution`;
+
+    let sql = `select DISTINCT(t.id),t.title,t.description,t.id as "tableId",ti."totalSubscribers",ti."totalSpreads"
+                   ,${listingSql}
+                   ,${contributionSql}
+                   from ${schema}.${TABLE} t
+                   left join ${schema}.${TABLE_ROW} tr on tr."tableId" = t.id
+                   left join ${schema}.${TABLE_INFO} ti on ti."tableId" = t.id
+                   where t.owner = $1 or (tr."createdBy" = $1 AND tr.status = '${
+                     rowStatusType.APPROVED
+                   }') ${condSql}`;
+
     return sequelize
       .query(sql, {
-        bind: [],
+        bind: params,
         type: sequelize.QueryTypes.SELECT
       })
       .then(result => {
         if (_.isEmpty(result)) throw new Error(`Table not found!.`);
 
-        return _.map(result, data => {
-          return data;
+        _.map(result, d => {
+          d.contribution =
+            parseInt(d.totalcontribution) * 100 / parseInt(d.listings);
         });
+
+        return result;
       })
       .catch(err => {
         throw err;

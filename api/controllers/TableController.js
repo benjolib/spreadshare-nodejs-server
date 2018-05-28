@@ -45,6 +45,9 @@ module.exports = class TableController extends Controller {
         isPublished: model.isPublished
       };
 
+      if (model.isPublished && !model.publishedAt)
+        data.publishedAt = moment().format();
+
       let table = await TableService.create(data);
 
       //add multiple columns to table
@@ -348,7 +351,7 @@ module.exports = class TableController extends Controller {
   }
 
   /**
-   * update table
+   * update table with basic detail
    * @param req
    * @param res
    * @returns {Promise<*>}
@@ -360,8 +363,10 @@ module.exports = class TableController extends Controller {
     let { TableService } = this.app.services;
 
     try {
+      if (model.isPublished && !model.publishedAt)
+        model.publishedAt = moment().format();
+
       let table = await TableService.update(model, id);
-      //todo Update column pending
       return res.json({
         flag: true,
         data: table,
@@ -497,7 +502,7 @@ module.exports = class TableController extends Controller {
       return res.json({
         flag: true,
         data: table,
-        message: "Populer table list",
+        message: "Popular table list",
         code: 200
       });
     } catch (e) {
@@ -596,6 +601,7 @@ module.exports = class TableController extends Controller {
       _.map(model.rowColumns, cell => {
         let existCell = _.find(tableRowCells, { id: cell.id });
         cell.from = existCell.content;
+        cell.lastEditedBy = user.id;
       });
 
       //Add change request for cells
@@ -610,7 +616,7 @@ module.exports = class TableController extends Controller {
         };
       });
 
-      //Check owner deleting table row then direct delete it
+      //Check owner updating table row then direct update it
       if (user.id == table.owner) {
         //Make entry in changeRequest table so that we can have history record for this row
         let changeRequests = await TableService.addChangeRequest({
@@ -623,7 +629,7 @@ module.exports = class TableController extends Controller {
 
         message = "Row cell updated successfully!";
       } else {
-        //Make delete request entry in tableRow
+        //Make update request entry in tableRow
         let data = {
           tableId: model.tableId,
           rowId: model.rowId,
@@ -632,9 +638,16 @@ module.exports = class TableController extends Controller {
         };
 
         let row = await TableService.addrow(data); //create table row
+
+        //Add tableRowId for above change request
+        _.map(cellData, d => {
+          d.tableRowId = row.id;
+        });
+
         let changeRequests = await TableService.addChangeRequest({
           data: cellData
         });
+
         message =
           "Your update request has been added! Please wait for approval.";
       }
@@ -792,21 +805,65 @@ module.exports = class TableController extends Controller {
     let { TableService, NotificationService } = this.app.services;
     let {
       rowStatusType,
+      tableRowActionType,
       notificationType,
       notificationItemType
     } = this.app.config.constants;
     let user = req.user;
+    let changeRequests = []; // load old change request
+    let rowColumns = []; // update cells
 
-    let status =
-      body.sort && !_.isEmpty(body.sort) ? body.sort : rowStatusType.APPROVED;
+    let status = body.status;
     let data = {
       status: status,
       updatedBy: user.id
     };
+
     try {
       let table = await TableService.updateRowStatus(data, id);
 
-      await TableService.updateCount(tableId); //add Total collaborations count
+      if (status == rowStatusType.APPROVED) {
+        //If other user requested to delete table then update status for parent row Id also
+        if (tableRow.action == tableRowActionType.DELETED) {
+          let parentRowData = {
+            status: rowStatusType.DELETED,
+            updatedBy: user.id
+          };
+
+          await TableService.updateRowStatus(parentRowData, tableRow.rowId);
+        } else if (tableRow.action == tableRowActionType.UPDATED) {
+          //Load change requests
+          changeRequests = await TableService.findChangeRequest({
+            rowId: tableRow.id
+          });
+
+          _.map(changeRequests, r => {
+            rowColumns.push({
+              content: r.to,
+              id: r.cellId,
+              lastEditedBy: r.userId
+            });
+          });
+
+          //Todo update row using sequelize
+
+          //Update actual table cells
+          await TableService.updateRowCells({ rowColumns: rowColumns });
+          //update Change Request
+          await TableService.updateChangeRequest(
+            { status: rowStatusType.APPROVED },
+            { ids: _.map(changeRequests, "id") }
+          );
+        }
+
+        await TableService.updateCount(tableId); //update Total collaborations count
+      } else if (tableRow.ACTION == tableRowActionType.UPDATED) {
+        //update Change Request
+        await TableService.updateChangeRequest(
+          { status: rowStatusType.REJECTED },
+          { rowId: tableRow.id }
+        );
+      }
 
       res.json({
         flag: true,
@@ -822,17 +879,20 @@ module.exports = class TableController extends Controller {
         code: 500
       });
     }
-    try {
-      let fields = {
-        createdBy: user.id,
-        notificationType: notificationType.COLLABORATE_UPDATE_STATUS,
-        text: `Update table row status by`,
-        userId: tableRow.updatedBy,
-        itemId: tableId,
-        itemType: notificationItemType.TABLE_ROW
-      };
-      let notification = await NotificationService.create(fields);
-      console.log(notification);
-    } catch (e) {}
+
+    if (status == rowStatusType.APPROVED) {
+      try {
+        let fields = {
+          createdBy: user.id,
+          notificationType: notificationType.COLLABORATE_UPDATE_STATUS,
+          text: `Update table row status by`,
+          userId: tableRow.updatedBy,
+          itemId: tableId,
+          itemType: notificationItemType.TABLE_ROW
+        };
+
+        let notification = await NotificationService.create(fields);
+      } catch (e) {}
+    }
   }
 };

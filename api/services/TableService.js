@@ -185,6 +185,48 @@ module.exports = class TableService extends Service {
   }
 
   /**
+   * Find change Request
+   * @param fields
+   * @returns {Promise<T>}
+   */
+  findChangeRequest(fields) {
+    let { ChangeRequest } = this.app.orm;
+
+    return ChangeRequest.findAll({ where: { tableRowId: fields.rowId } }).then(
+      data => {
+        if (_.isEmpty(data)) throw new Error(`No change requests found`);
+
+        data = _.map(data, d => {
+          return d.toJSON();
+        });
+
+        return data;
+      }
+    );
+  }
+
+  /**
+   * Approve| reject changed cell requests
+   * @param fields
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  updateChangeRequest(fields) {
+    let { ChangeRequest } = this.app.orm;
+    let model = {
+      status: fields.status
+    };
+    let criteria = {};
+
+    if (fields.rowId) criteria.tableRowId = fields.rowId;
+
+    if (fields.ids && fields.ids.length) criteria.id = { $in: fields.ids };
+
+    return ChangeRequest.update(model, { where: criteria }).then(rows => {
+      return rows;
+    });
+  }
+
+  /**
    * remove table
    * @param id
    * @returns {*|PromiseLike<T>|Promise<T>}
@@ -228,12 +270,15 @@ module.exports = class TableService extends Service {
       order = fields.order === "asc" ? "ASC" : "DESC";
       condSql = `${condSql} ORDER BY "${fields.sort}" ${order}`;
     }
+
     if (parseInt(fields.start)) condSql += " OFFSET " + fields.start;
     if (parseInt(fields.limit)) condSql += " LIMIT " + fields.limit;
-    let sql = `select t.*,ti."totalSubscribers",ti."totalCollaborations",               
-            (select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
+
+    let listingSql = `(select count(*)::int from ${schema}.${TABLE_ROW} tr where tr."tableId" = t.id and tr."action"='${
       tableRowActionType.SUBMITTED
-    }' and tr."status"= '${rowStatusType.APPROVED}') as listings
+    }' and tr."status"= '${rowStatusType.APPROVED}') as listings`;
+    let sql = `select t.*,ti."totalSubscribers",ti."totalCollaborations",               
+            ${listingSql}
            from ${schema}.${TABLE} t 
            left join ${schema}.${TABLE_INFO} ti on ti."tableId"= t.id 
            ${whereCond}
@@ -347,18 +392,19 @@ module.exports = class TableService extends Service {
 
     _.map(fields.rowColumns, (data, index) => {
       if (index > 0) values = `${values},`;
-      values = `${values} (${data.id},'${data.content}','${
-        data.link
-      }','${date}')`;
+      values = `${values} (${data.id},'${data.content}','${data.link}',${
+        data.lastEditedBy
+      },'${date}')`;
     });
 
     let sql = `UPDATE ${schema}.${TABLE_CELL} as t set
                  content = c.content,
                  link = c.link, 
+                 "lastEditedBy" = c.lastEditedBy, 
                  "updatedAt" = c.updatedAt::timestamp
               FROM (
                  ${values}
-              ) AS c(id, content, link,updatedAt)
+              ) AS c(id, content, link,lastEditedBy,updatedAt)
               WHERE
                  c.id  = t.id 
               RETURNING t.*;`;

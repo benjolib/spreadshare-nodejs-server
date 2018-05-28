@@ -71,7 +71,8 @@ module.exports = {
       "PassportPolicy.authenticate",
       "JoiPolicy.validate",
       "AuthPoilcy.checkTable"
-    ]
+    ],
+    remove: ["PassportPolicy.authenticate", "AuthPoilcy.checkTableOwner"]
   },
 
   CollaborationController: {

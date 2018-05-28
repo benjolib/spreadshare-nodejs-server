@@ -158,7 +158,9 @@ module.exports = class TableValidator {
   updateStatus() {
     let { rowStatusType } = Constant;
     return Joi.object().keys({
-      status: Joi.any().valid(_.values(rowStatusType))
+      status: Joi.any()
+        .valid(_.values(rowStatusType))
+        .required()
     });
   }
 

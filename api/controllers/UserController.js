@@ -57,25 +57,22 @@ module.exports = class UserController extends Controller {
    * @returns {Promise.<void>}
    */
   async statistic(req, res) {
-    let model = req.body;
     let user = req.user;
     let { UserService } = this.app.services;
     let { SUBSCRIBE } = this.app.config.constants.user.status;
 
     let data = {
-      limit: model.limit,
-      start: model.start,
       userId: user.id,
       status: SUBSCRIBE
     };
     try {
-      let statistics = await UserService.find(data);
+      let statistics = await UserService.findStatistics(data);
       return res.json({
         flag: true,
         data: {
-          totalsubscriber: statistics.totalsubscriber,
-          totalpublications: statistics.totalpublications,
-          totalcollaborations: statistics.totalcollaborations
+          subscribers: statistics.subscribers,
+          publications: statistics.publications,
+          collaborations: statistics.collaborations
         },
         message: "User Statistics",
         code: 200
@@ -109,14 +106,15 @@ module.exports = class UserController extends Controller {
 
     try {
       let list = await UserService.findPublication(data);
+
       _.map(list, data => {
-        if (data.owner == user.id) {
+        if (data && data.owner == user.id) {
           data.role = "curator";
         } else {
           data.role = "Collaborator";
         }
       });
-      list.role = data.role;
+
       return res.json({
         flag: true,
         data: {

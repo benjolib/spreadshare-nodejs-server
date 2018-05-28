@@ -389,7 +389,7 @@ module.exports = [
     handler: "UserController.history"
   },
   {
-    method: "POST",
+    method: "GET",
     path: "/api/v1/user/statistic",
     handler: "UserController.statistic"
   },

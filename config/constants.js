@@ -38,10 +38,11 @@ module.exports = {
     USER_FOLLOWER: "userfollower",
     USER_NOTIFICATION: "usernotification",
     FEED_ACTION: "feedaction",
-    READ_NOTIFICATION: "readnotification"
+    READ_NOTIFICATION: "readnotification",
+    CHANGE_REQUEST: "changerequest"
   },
   tableSortType: {
-    SPREADS: "totalSpread",
+    SPREADS: "totalSpreads",
     SUBSCRIBERS: "totalSubscribers",
     COLLABORATIONS: "totalCollaborations",
     VIEWS: "totalView",
@@ -56,7 +57,8 @@ module.exports = {
     PENDING: "P",
     APPROVED: "A",
     REJECTED: "R",
-    REVOKED: "RE"
+    REVOKED: "RE",
+    DELETED: "D"
   },
   collaborateTypes: {
     SUBMITTED: "submitted",
