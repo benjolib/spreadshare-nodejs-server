@@ -114,6 +114,11 @@ module.exports = [
     path: "/api/v1/user/change-password",
     handler: "UserController.changePassword"
   },
+  {
+    method: "GET",
+    path: "/api/v1/user/confirm/:token",
+    handler: "UserController.confirmEmail"
+  },
 
   /**
    * tags api route

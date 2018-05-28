@@ -266,4 +266,33 @@ module.exports = class UserController extends Controller {
       });
     }
   }
+
+  /**
+   * Confirm user email and set active user
+   * @param req
+   * @param res
+   * @returns {Promise<void>}
+   */
+  async confirmEmail(req, res) {
+    let params = req.params;
+
+    let { ProfileService } = this.app.services;
+    let { user } = this.app.config.constants;
+
+    //Check password token exist, & update its accessed detail for token
+    try {
+      // if token found then confirm email & set status Active
+      await ProfileService.updateConfirmed(
+        { confirmed: true, status: user.status.ACTIVE },
+        params.token
+      );
+
+      res.json({
+        flag: true,
+        message: `Your email has been confirmed you can access your account by login!`
+      });
+    } catch (e) {
+      res.json({ flag: false, message: e.message });
+    }
+  }
 };

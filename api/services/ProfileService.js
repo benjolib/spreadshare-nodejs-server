@@ -38,6 +38,21 @@ module.exports = class ProfileService extends Service {
   }
 
   /**
+   * Check username/email exists
+   * @param criteria
+   * @returns {Promise|Promise.<TResult>|*}
+   */
+  checkUserNameEmailExist(criteria) {
+    let { User } = this.app.orm;
+
+    return User.findOne({ where: criteria }).then(data => {
+      if (_.isEmpty(data)) throw new Error(`No user found!`);
+
+      return data.toJSON();
+    });
+  }
+
+  /**
    * Validate password
    * @param pass
    * @param dbPassword
@@ -148,6 +163,27 @@ module.exports = class ProfileService extends Service {
     }
 
     return User.update(model, { where: { id: userid } }).then(rows => {
+      return rows;
+    });
+  }
+
+  /**
+   * Set user confirmation by email token
+   * @param fields
+   * @param token
+   * @returns {Promise|*|PromiseLike<T>|Promise<T>}
+   */
+  updateConfirmed(fields, token) {
+    let { User } = this.app.orm;
+    let model = _.omit(fields, "locationId");
+
+    if (fields.password) {
+      model.password = this.makePassword(fields.password);
+    }
+
+    return User.update(model, {
+      where: { emailConfirmationToken: token }
+    }).then(rows => {
       return rows;
     });
   }

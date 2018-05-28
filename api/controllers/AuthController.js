@@ -3,6 +3,7 @@
 const Controller = require("trails/controller");
 const JWT = require("jsonwebtoken");
 const randtoken = require("rand-token");
+const _ = require("lodash");
 
 /**
  * @module AuthController
@@ -16,6 +17,7 @@ module.exports = class AuthController extends Controller {
    * @returns {Promise<void>}
    */
   async signup(req, res) {
+    let { ProfileService } = this.app.services;
     let body = req.body;
     let etoken = randtoken.generate(16);
 
@@ -26,7 +28,7 @@ module.exports = class AuthController extends Controller {
       handle: body.handle,
       emailSettings: body.emailSettings,
       username: body.username,
-      password: body.password,
+      password: ProfileService.makePassword(body.password),
       description: body.description,
       location: body.location,
       tagline: body.tagline,
@@ -36,6 +38,34 @@ module.exports = class AuthController extends Controller {
 
     let { User, Passport } = this.app.orm;
 
+    //Check user exist by username/email
+    try {
+      let user = await ProfileService.checkUserNameEmailExist({
+        $or: [
+          {
+            email: {
+              $eq: body.email
+            }
+          },
+          {
+            username: {
+              $eq: body.username
+            }
+          }
+        ]
+      });
+
+      return res.json({
+        flag: false,
+        data: {},
+        message: "This username,email is already exist!",
+        code: 200
+      });
+    } catch (e) {
+      // not handle error here
+    }
+
+    //Create user and create its passport
     try {
       let user = await User.create(model);
       let passport = await Passport.create({
@@ -43,10 +73,20 @@ module.exports = class AuthController extends Controller {
         protocol: "basic",
         password: model.password
       });
+
+      let data = _.omit(
+        user,
+        "password",
+        "passwordResetSentAt",
+        "confirmed",
+        "passwordResetToken"
+      );
+
       return res.json({
         flag: true,
-        data: user,
-        message: "Success",
+        data: { link: `/api/v1/user/confirm/${user.emailConfirmationToken}` },
+        message:
+          "We have sent you a link, Please confirm your account by verifing your email!",
         code: 200
       });
     } catch (e) {

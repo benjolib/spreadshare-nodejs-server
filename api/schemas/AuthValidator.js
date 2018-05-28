@@ -13,7 +13,7 @@ module.exports = class AuthValidator {
       .required();
     let emailsetup = {
       type: Joi.any().valid(_.values(Constant.user.type)),
-      email: Joi.string()
+      email: Joi.boolean()
     };
 
     return Joi.object().keys({

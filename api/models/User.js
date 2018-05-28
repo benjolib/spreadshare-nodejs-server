@@ -62,7 +62,8 @@ module.exports = class User extends Model {
       },
       email: {
         type: STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       mobile: {
         type: STRING
@@ -75,7 +76,8 @@ module.exports = class User extends Model {
       },
       username: {
         type: STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       password: {
         type: STRING,
