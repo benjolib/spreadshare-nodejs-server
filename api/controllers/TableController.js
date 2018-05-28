@@ -17,10 +17,22 @@ module.exports = class TableController extends Controller {
   async create(req, res) {
     let model = req.body;
     let { TableService, NotificationService } = this.app.services;
-    let { notificationType, notificationItemType } = this.app.config.constants;
+    let {
+      rowStatusType,
+      notificationType,
+      notificationItemType
+    } = this.app.config.constants;
     let user = req.user;
+    let columns = [],
+      tableColumns = [];
+    let rows = [],
+      tableRows = [];
+    let cells = [],
+      tableCells = [];
     let table;
+
     try {
+      //Create table
       let data = {
         owner: user.id,
         title: model.title,
@@ -33,7 +45,68 @@ module.exports = class TableController extends Controller {
         isPublished: model.isPublished
       };
 
-      table = await TableService.create(data);
+      let table = await TableService.create(data);
+
+      //add multiple columns to table
+      if (model.columns && model.columns.length) {
+        _.map(model.columns, d => {
+          columns.push({
+            tableId: table.id,
+            userId: user.id,
+            title: d.title,
+            position: d.position,
+            width: d.width
+          });
+        });
+        tableColumns = await TableService.addMultipleColumns({
+          tableId: table.id,
+          data: columns
+        });
+        table.columns = tableColumns;
+      }
+
+      //Create table Rows in bulk
+      if (model.rows && model.rows.length) {
+        if (!model.columns.length)
+          return res.json({ flag: false, message: `Column required!` });
+
+        _.map(model.rows, (d, dIndex) => {
+          rows.push({
+            tableId: table.id,
+            createdBy: user.id,
+            rowColumns: d.rowColumns,
+            status: rowStatusType.APPROVED
+          });
+        });
+
+        tableRows = await TableService.addMultipleRows({ data: rows });
+
+        //Map rows with rowsId & columns Id Insert cells for all table Rows
+        _.map(rows, (r, rIndex) => {
+          r.id = tableRows[rIndex].id;
+
+          _.map(r.rowColumns, (c, cIndex) => {
+            r.column = tableColumns[cIndex];
+
+            cells.push({
+              rowId: r.id,
+              columnId: r.column.id,
+              userId: user.id,
+              content: c.content,
+              link: c.link
+            });
+          });
+        });
+
+        //create table cells in bulk
+        tableCells = await TableService.addTableCellInBulks(cells);
+        _.map(tableRows, tr => {
+          tr.rowColumns = _.filter(tableCells, { rowId: tr.id });
+        });
+
+        table.rows = tableRows;
+      }
+
       let tableinfodata = {
         tableId: table.id,
         totalSpreads: 0,
@@ -42,7 +115,8 @@ module.exports = class TableController extends Controller {
         totalView: 0
       };
       await TableService.createTableInfo(tableinfodata);
-      res.json({
+
+      return res.json({
         flag: true,
         data: table,
         message: "table successfully created!",
@@ -137,6 +211,72 @@ module.exports = class TableController extends Controller {
         flag: true,
         data: columns,
         message: "add Multiplecolumn successfully!",
+        code: 200
+      });
+    } catch (e) {
+      return res.json({
+        flag: false,
+        data: e,
+        message: e.message,
+        code: 500
+      });
+    }
+  }
+
+  /**
+   * add multiple table-content (must be by owner)
+   * @param req
+   * @param res
+   * @returns {Promise<*>}
+   */
+  async addMultipleRows(req, res) {
+    let model = req.body;
+    let { TableService } = this.app.services;
+    let { rowStatusType } = this.app.config.constants;
+    let user = req.user;
+    let rows = [],
+      tableRows = [];
+    let cells = [],
+      tableCells = [];
+
+    try {
+      //Create table Rows in bulk
+      _.map(model.rows, (d, dIndex) => {
+        rows.push({
+          tableId: model.tableId,
+          createdBy: user.id,
+          rowColumns: d.rowColumns,
+          status: rowStatusType.APPROVED
+        });
+      });
+
+      tableRows = await TableService.addMultipleRows({ data: rows });
+
+      //Map rows with rowsId & columns Id Insert cells for all table Rows
+      _.map(rows, (r, rIndex) => {
+        r.id = tableRows[rIndex].id;
+
+        _.map(r.rowColumns, (c, cIndex) => {
+          cells.push({
+            rowId: r.id,
+            columnId: c.columnId,
+            userId: user.id,
+            content: c.content,
+            link: c.link
+          });
+        });
+      });
+
+      //create table cells in bulk
+      tableCells = await TableService.addTableCellInBulks(cells);
+      _.map(tableRows, tr => {
+        tr.rowColumns = _.filter(tableCells, { rowId: tr.id });
+      });
+
+      return res.json({
+        flag: true,
+        data: tableRows,
+        message: "Success",
         code: 200
       });
     } catch (e) {

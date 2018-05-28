@@ -35,6 +35,7 @@ module.exports = {
     USER_CONNECTIONS: "userconnection",
     USER_LOCATION: "userlocation",
     LOCATION: "location",
+    USER_FOLLOWER: "userfollower",
     USER_NOTIFICATION: "usernotification",
     FEED_ACTION: "feedaction",
     READ_NOTIFICATION: "readnotification"

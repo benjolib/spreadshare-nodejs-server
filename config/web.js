@@ -1,9 +1,11 @@
-'use strict'
+"use strict";
 
-const passport = require('passport')
-const session = require('express-session')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
+const passport = require("passport");
+const session = require("express-session");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+//const multer = require('multer')
+const fileUpload = require("express-fileupload");
 
 /**
  * Server Configuration
@@ -15,7 +17,7 @@ const cookieParser = require('cookie-parser')
  */
 
 module.exports = {
-  express: require('express'),
+  express: require("express"),
 
   /**
    * CORS options
@@ -33,34 +35,32 @@ module.exports = {
    * Middlewares to load (in order)
    */
   middlewares: {
-
     //middlewares loading order
     order: [
-     'addMethods',
-     'cookieParser',
-     'session',
-     'bodyParser',
-     'passportInit',
-     'passportSession',
-     'compression',
-     'methodOverride',
-     'www',
-     'router',
-     '404',
-     '500',
+      "addMethods",
+      "cookieParser",
+      "session",
+      "fileUpload",
+      "bodyParser",
+      "passportInit",
+      "passportSession",
+      "compression",
+      "methodOverride",
+      "www",
+      "router",
+      "404",
+      "500"
     ],
-    session: session({ secret: 'keyboard' }),
+    session: session({ secret: "keyboard" }),
     cookieParser: cookieParser(),
     passportInit: passport.initialize(),
     passportSession: passport.session(),
 
     /**
      * Middlewares to load for body parsing*/
-    bodyParser: [
-      bodyParser.json(),
-      bodyParser.urlencoded({ extended: false })
-    ]
-
+    bodyParser: [bodyParser.json(), bodyParser.urlencoded({ extended: false })],
+    //multer:multer({dest:'./public/uploads/'}).any()
+    fileUpload: fileUpload()
   },
 
   /***************************************************************************
@@ -88,7 +88,7 @@ module.exports = {
   /**
    * The host to bind the web server to
    */
-  host: process.env.HOST || '0.0.0.0'
+  host: process.env.HOST || "0.0.0.0"
 
   /**
    * Alternate method to add multiple template engine, for single view template use config.views.engine
@@ -125,4 +125,4 @@ module.exports = {
    * SSL need to be enabled
    */
   //portHttp: 80
-}
+};

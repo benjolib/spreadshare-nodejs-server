@@ -20,7 +20,16 @@ module.exports = class TableValidator {
           width: Joi.number()
         })
       ),
-      rows: Joi.array()
+      rows: Joi.array().items(
+        Joi.object().keys({
+          rowColumns: Joi.array().items(
+            Joi.object().keys({
+              content: Joi.string(),
+              link: Joi.string()
+            })
+          )
+        })
+      )
     });
   }
 
@@ -73,6 +82,25 @@ module.exports = class TableValidator {
     return Joi.object().keys({
       tableId: Joi.number(),
       rowColumns: Joi.array()
+    });
+  }
+
+  addRowMultiple() {
+    return Joi.object().keys({
+      tableId: Joi.number().required(),
+      rows: Joi.array()
+        .items(
+          Joi.object().keys({
+            rowColumns: Joi.array().items(
+              Joi.object().keys({
+                content: Joi.string(),
+                link: Joi.string(),
+                columnId: Joi.number().required()
+              })
+            )
+          })
+        )
+        .required()
     });
   }
 

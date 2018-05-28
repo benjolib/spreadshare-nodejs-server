@@ -269,6 +269,27 @@ module.exports = class TableService extends Service {
   }
 
   /**
+   * add multiple rows
+   * @param fields
+   * @returns {*|PromiseLike<T>|Promise<T>}
+   */
+  addMultipleRows(fields) {
+    let { TableRow } = this.app.orm;
+    let data = [];
+
+    data = _.map(fields.data, d => {
+      return { tableId: d.tableId, createdBy: d.createdBy, status: d.status };
+    });
+
+    return TableRow.bulkCreate(data, { returning: true }).then(data => {
+      data = _.map(data, kw => {
+        return kw.toJSON();
+      });
+      return data;
+    });
+  }
+
+  /**
    * get row in table
    * @param rowId
    * @returns {Promise|*|PromiseLike<T>|Promise<T>}
